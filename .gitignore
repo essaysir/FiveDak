@@ -61,7 +61,7 @@ local.properties
 
 # Uncomment this line if you wish to ignore the project description file.
 # Typically, this file would be tracked if it contains build/dependency configurations:
-.
+.classpath
 .project
 
 ### Eclipse Patch ###
@@ -93,5 +93,10 @@ local.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Common files
+/FiveDak/src/main/webapp/images
+/FiveDak/src/main/webapp/WEB-INF/Command.properties
+/FiveDak/src/main/java/semiproject/dak/security/SecretMyKey.java
 
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
