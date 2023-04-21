@@ -67,16 +67,16 @@
 	button.check{
 		color:#ffffff !important; 
 		border: solid 1px #cccccc; 
-		font-weight:bold; 
 		background-color:#FFA751;
-		width:140px;
+		width:100px;
+		font-size: 10pt;
 	}
 	button.check_success{
-		color:red !important; 
+		color:#ccc !important; 
 		border: solid 1px #cccccc; 
-		font-weight:bold; 
-		background-color:#cccccc;
-		width:140px;
+		font-size: 10pt;
+		background-color:##ffffff;
+		width:100px;
 	}
 	button#find_address{
 		color:#ffffff !important; 
@@ -133,7 +133,7 @@
 		// 우편번호 찾기 클릭시 
 		$("button#find_address").click(addressDaum);
 		
-		$('#birthyy, #birthmm, #birthdd').on('change', valiDate);
+		$('#birthyy, #birthmm, #birthdd').on('change', validDate);
 	 	
 	
 	} // END OF FUNCTION SETEVENTHANDLING()
@@ -150,21 +150,24 @@
 	}// END OF FUNCTION LOADPAGE()
 	
 	//날짜 유효성 func 만들기 
-	function valiDate() {
+	function validDate() {
 
-	    const year = $('#birthyy').val();
-	    const month = $('#birthmm').val();
-	    const day = $('#birthdd').val();
+	    const year = parseInt($('#birthyy').val());
+	    const month = parseInt($('#birthmm').val());
+	    const day = parseInt($('#birthdd').val());
 	    
+	    if (isNaN(year) || isNaN(month) || isNaN(day)) {
+	        return;
+	      }
 	    const date = new Date(year, month - 1, day);
 	    
-
-	    if (isNaN(date.getTime())) {
-	   const warningMsg = year + "년 " + month + "월은 " + day + " 까지 입니다."
-	      $('#dateWarning').text(warningMsg);
-	    } else {
-	      $('#dateWarning').text('');
-	    }
+	    
+	    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+	        const lastDayOfMonth = new Date(year, month, 0).getDate();
+	        $('#dateWarning').text(` \${year}년 \${month}월은 \${lastDayOfMonth}일 까지입니다.`);
+	      } else {
+	        $('#dateWarning').text('');
+	      }
 	}// end of valiDate
 
 	function createYear(){
@@ -216,22 +219,23 @@
 		if( flag ){ // 중복확인이 된 경우
 			$('button.'+id).removeClass("check");
 			$('button.'+id).addClass("check_success");
+			$('button.'+id).text("확인완료");
 		}
 		else{
 			$('button.'+id).removeClass("check_success");
-			$('button.'+id).addClass("check");	
+			$('button.'+id).addClass("check");
+			$('button.'+id).text("중복확인");
 		}
 		
 		
 	} // END OF FUNCTION BTNFLAG 
 	
 	function idDuplicateCheck(e){
-		if ( $('span#error_id').text() != ""){
-			alert('아이디 조건을 충족해주세요');
+		if ( $('span#error_id').text() != "" || $("input#inputId1").val() == ""){
+			alert('아이디 입력 형식에 맞게 정확히 입력해주세요.');
 			return ;
 		}
-		id_flag = true ;
-		btnFlag(id_flag,'idcheck');
+		
 		$.ajax({  
      	   url:"<%=ctxPath %>/register/checkDuplicateId.dak" , 
      	   data:{"userid":$("input#inputId1").val() } , 
@@ -243,8 +247,9 @@
              		$("input#userid").val("");
              		alert("이미 사용중인 아이디입니다.");
              	}
-             	else if( !json.isExists && $("input#userid").val().trim() != ""){
-             		
+             	else if( !json.isExists && $("input#inputId1").val().trim() != ""){
+             		id_flag = true ;
+            		btnFlag(id_flag,'idcheck');
              	}
             							
              },
@@ -358,8 +363,8 @@
 	}// END OF FUNCTION EMAILCHECK
 	
 	function emailDuplicateCheck(){
-		if ($('span#error_email').text() != ""){
-			alert('이메일 조건을 만족해야 중복확인이 가능합니다');
+		if ($('span#error_email').text() != "" || $("input#inputEmail1").val() == ""){
+			alert('이메일을 정확하게 입력해주세요.');
 			return ;
 		}
 		
@@ -512,7 +517,7 @@
 		// 주소
 		// console.log($('input#postcode').val());
 		if ($('input#postcode').val() == ""){
-			alert('우편번호는 필수입력사항입니다.');
+			alert('우편주소를 입력해주세요');
 			return ;
 		}
 
@@ -545,13 +550,14 @@
 		const inputEmail = $("input#inputEmail1").val();
 		const emailSelected = $("select#emailSelector").val();
 		if(emailSelected == "other") {
-			myfrm.value = inputEmail;	
+			myfrm.email.value = inputEmail;	
 		} else {
-			myfrm.value = inputEmail + emailSelected;
+			myfrm.email.value = inputEmail + emailSelected;
 		}
 		
+		console.log(myfrm.email.value);
 		
-		myfrm.action = "memberRegister.dak"
+		myfrm.action = "register.dak"
 		myfrm.method = "post";
 		myfrm.submit();
 		
@@ -636,16 +642,15 @@
 		        <option value="" selected disabled>성별선택</option>
 		        <option value="1" >남자</option>
 		        <option value="2" >여자</option>
-		        <option value="3" >선택안함</option>
 		      </select>
 		 </div>
 		 
 		 <label for="exampleInputgender">생년월일</label>
 		 
 		 <div class="row">
-		 		<select id="birthyy" name="birthyy" class="mx-3 col-md-4" style="margin-left: 2%; width: 100px !important; padding: 8px;"></select>
-		    	<select id="birthmm" name="birthmm" class="mx-3 col-md-4" style="margin-left: 2%; width: 60px; padding: 8px;"></select>
-            	<select id="birthdd" name="birthdd" class="mx-3 col-md-4" style="margin-left: 2%; width: 60px; padding: 8px;"></select> 
+		 		<select id="birthyy" name="birthyy" class="mx-3 col-md-2" style="width: 100px !important; padding: 8px;"></select>
+		    	<select id="birthmm" name="birthmm" class="mx-3 col-md-2" style="width: 60px; padding: 8px;"></select>
+            	<select id="birthdd" name="birthdd" class="mx-3 col-md-2" style="width: 60px; padding: 8px;"></select> 
 		 </div>
 		 <div><span id="dateWarning" style="color:red;"></span></div>
 		 
