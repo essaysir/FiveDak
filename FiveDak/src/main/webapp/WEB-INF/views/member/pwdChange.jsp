@@ -34,102 +34,55 @@
 
     .wrap_button {width:384px; margin:0 auto;}
     .box_pwdChange .password_button1 {width:187px; margin-right:2px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #999; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #fff;}
-    .box_pwdChange .password_button1 a.password_button_gray {color:#555; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
+    .box_pwdChange .password_button1 span.password_button_gray {color:#555; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
 
-    .password_button1 a:link {text-decoration: none!important;}
-    .password_button1 a:hover {text-decoration: none!important; background: #fafafa!important; width:187px; padding:13px 20px 14px 20px; }
+    .password_button1 span:link {text-decoration: none!important;}
+    .password_button1 span:hover {text-decoration: none!important; background: #fafafa!important; width:187px; padding:13px 20px 14px 20px; }
 
     .box_pwdChange .password_button2 {width:187px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #c82370; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #ff7E32;}
-    .box_pwdChange .password_button2 a.password_button_orange {color:#fff; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
+    .box_pwdChange .password_button2 span.password_button_orange {color:#fff; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
 
-    .password_button2 a:link {text-decoration: none!important;}
-	.password_button2 a:hover {text-decoration: none!important; background: #ff7232!important; width:187px; padding:13px 20px 14px 20px; }
+    .password_button2 span:link {text-decoration: none!important;}
+	.password_button2 span:hover {text-decoration: none!important; background: #ff7232!important; width:187px; padding:13px 20px 14px 20px; }
 </style>
 
 </head>
 <body>
 
 <script type="text/javascript">
-    var $j = jQuery.noConflict();
-    var baseParamz = 'printType=1&strvalue2=goldgudtjr&strvalue3=1997-04-18&strvalue4=%ea%b9%80%ed%98%95%ec%84%9d';
-    var req = 0;
-    var resultCode = "0";
-    var json = {};
-
-    $j(function () {
-        $j('#newpassword').blur(function () {
-            var query = $j('#newpassword').val();
-
-            if (!query || query.length == 0) {
-                resultCode = "0";
-                alert("비밀번호를 입력해 주세요");
-                return;
-            }
-
-            if (query.length < 6) {
-                resultCode = "0";
-                alert("비밀번호는 6글자 이상이어야 합니다.");
-                return;
-            }
-
-            var paramz = 'cmd=check&id=password&' + baseParamz + '&strvalue=' + encodeURIComponent(query);
-
-            req = $j.ajax({
-                type: "GET",
-                url: "/account/wjoin_check.aspx?" + paramz,
-                // dataType: "json",
-                cache: false,
-                timeout: 5000,
-                beforeSend: function (xhr) { },
-                complete: function (xhr, status) { },
-                success: function (jsonStr) {
-                    jsonStr = jsonStr.replace(/\'/g, "\"");
-                    json = $j.parseJSON(jsonStr);
-
-                    if (json.ResultMsgDetail != '') {
-                        alert(json.ResultMsgDetail.replace(/<br\/>/g, "\r\n").replace("-", "").replace(" ", ""));
-                    }
-
-                    if (json.ResultCode != '') {
-                        resultCode = json.ResultCode;
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    
-                }
-            });
-        });
-    });
-
-    function submitChangePassword() {
-
-        if (resultCode != "1") {
-            //$j('#newpassword').focus();
-            return;
-        }
-        if (document.frmPw.newpassword.value == "") {
-            alert("새 비밀번호를 넣어주세요.");
-            document.frmPw.newpassword.focus();
-            return false;
-        }
-        if (document.frmPw.newpassword.value.length < 6) {
-            alert("새 비밀번호가 6자리 이상이어야 합니다.");
-            document.frmPw.newpassword.focus();
-            return false;
-        }
-        if (document.frmPw.chknewpassword.value != document.frmPw.newpassword.value) {
-            alert("비밀번호가 서로 일치하지 않습니다. 다시 입력해주세요.");
-            document.frmPw.chknewpassword.focus();
-            return false;
-        }        
-
-        document.frmPw.submit();
-    }
-
-    function pwdExpiredUpdate(isChanged) {
-        document.frmPw.isChanged.value = isChanged;
-        document.frmPw.submit();
-    }
+$(document).ready(function(){
+	
+	$("a#password_button_orange").click(function(){
+		const pwd = $("input#newpassword").val();
+		const pwd2 = $("input#chknewpassword").val();
+		
+		const regExp = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$/g;
+		const bool = regExp.test(pwd);
+		
+		if(!bool) {
+			alert("암호는 8글자 이상 15글 이하의 영문자, 숫자, 특수기호가 혼합되어야만 합니다.")
+			$("input#newpassword").val("");
+			$("input#chknewpassword").val("");
+			return; // 종료
+		}
+		else if(bool && pwd != pwd2) {
+			alert("암호가 일치하지 않습니다.")
+			$("input#newpassword").val("");
+			$("input#chknewpassword").val("");
+			return; // 종료
+		}
+		else {
+			const frm = document.pwdUpdateEndFrm;
+			
+			frm.action = "<%=request.getContextPath()%>/views/member/pwdUpdateEnd.up";
+			frm.method = "POST";
+			frm.submit();
+		}
+		
+	}); // end of $("button#btnUpdate").click(function(){})
+	
+	
+}); // end of $(document).ready(function(){})
 </script>
 
 <form id="pwdChangeForm" method="post">
@@ -149,8 +102,8 @@
             <div class="password_txt">비밀번호는 영문자, 숫자, 특수문자를 3가지 이상 사용하여 <br> 8자 이상, 16자 이하로 설정해주세요.</div>
 
             <div class="wrap_button">
-                <div class="password_button1"><a href="" class="password_button_gray" onclick="">3개월 후 변경하기</a></div>
-                <div class="password_button2"><a href="" class="password_button_orange" onclick="">비밀번호 변경하기</a></div>
+                <div class="password_button1"><button type="button" class="pwdbutton1"><span class="password_button_gray">3개월 후 변경하기</span></button></div>
+                <div class="password_button2"><button class="pwdbutton2"><a href="" class="password_button_orange">비밀번호 변경하기</a></button></div>
             </div>    
         </div>
         <!-- PC 비밀 번호 변경 end --> 
