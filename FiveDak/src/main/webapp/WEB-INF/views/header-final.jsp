@@ -145,7 +145,7 @@
 
 
 	<!-- 맨 위에 있는 배너 모음 -->
-	<div class="container-fluid banner">
+	<div class="container-fluid banner" style="margin-bottom:13px;">
 		<div class="row justify-content-center">
 			<img id="header-banner" src="<%=ctxPath%>/images/메인배너.png" style="width: 100%;">
  		</div>
@@ -385,6 +385,3 @@
 
 
 		
-</body>
-
-</html>
