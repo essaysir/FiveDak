@@ -6,15 +6,16 @@ public class MemberDTO {
 	private String mbrId;
 	private String mbrPwd;
 	private String mbrName;
-	private String mbrPhone;
+	private String mbrMobile;
 	private String mbrEmail;
 	private int mbrPoint;
 	private String mbrGender;
 	private String mbrBirth;
-	private String mbrZipCode;
+	private String mbrPostcode;
 	private String mbrAddress;
 	private String mbrDetailAddress;
-	private String mbrTierId; // 나중에 수정 MembershipDTO 만들거나 조인으로 그냥 바로 받아오거나? 
+	private int mbrTierId; // 나중에 수정 MembershipDTO 만들거나 조인으로 그냥 바로 받아오거나?
+	private int mbrPurchaseAmount;
 	private String mbrRegDate;
 	private int mbrStatus;
 	private int mbrIdle;
@@ -27,6 +28,26 @@ public class MemberDTO {
 	}
 	
 	
+	
+	
+	public MemberDTO(String userid, String pwd, String name, String email, String mobile, String postcode,
+			String address, String detailAddress, String gender, String birth) {
+		this.mbrId = userid;
+		this.mbrPwd = pwd;
+		this.mbrName = name;
+		this.mbrEmail = email;
+		this.mbrMobile = mobile;
+		this.mbrPostcode = postcode;
+		this.mbrAddress = address;
+		this.mbrDetailAddress = detailAddress;
+		this.mbrGender = gender;
+		this.mbrBirth = birth;
+		
+	}
+
+
+
+
 	public int getMbrNum() {
 		return mbrNum;
 	}
@@ -51,12 +72,7 @@ public class MemberDTO {
 	public void setMbrName(String mbrName) {
 		this.mbrName = mbrName;
 	}
-	public String getMbrPhone() {
-		return mbrPhone;
-	}
-	public void setMbrPhone(String mbrPhone) {
-		this.mbrPhone = mbrPhone;
-	}
+	
 	public String getMbrEmail() {
 		return mbrEmail;
 	}
@@ -81,12 +97,7 @@ public class MemberDTO {
 	public void setMbrBirth(String mbrBirth) {
 		this.mbrBirth = mbrBirth;
 	}
-	public String getMbrZipCode() {
-		return mbrZipCode;
-	}
-	public void setMbrZipCode(String mbrZipCode) {
-		this.mbrZipCode = mbrZipCode;
-	}
+	
 	public String getMbrAddress() {
 		return mbrAddress;
 	}
@@ -99,12 +110,7 @@ public class MemberDTO {
 	public void setMbrDetailAddress(String mbrDetailAddress) {
 		this.mbrDetailAddress = mbrDetailAddress;
 	}
-	public String getMbrTierId() {
-		return mbrTierId;
-	}
-	public void setMbrTierId(String mbrTierId) {
-		this.mbrTierId = mbrTierId;
-	}
+	
 	public String getMbrRegDate() {
 		return mbrRegDate;
 	}
@@ -130,9 +136,38 @@ public class MemberDTO {
 		this.mbrLastPwdChanged = mbrLastPwdChanged;
 	}
 	
+	public String getMbrMobile() {
+		return mbrMobile;
+	}
+	public void setMbrMobile(String mbrMobile) {
+		this.mbrMobile = mbrMobile;
+	}
+
+	public String getMbrPostcode() {
+		return mbrPostcode;
+	}
+	public void setMbrPostcode(String mbrPostcode) {
+		this.mbrPostcode = mbrPostcode;
+	}
 	
-	
-	
+	public int getMbrTierId() {
+		return mbrTierId;
+	}
+
+
+	public void setMbrTierId(int mbrTierId) {
+		this.mbrTierId = mbrTierId;
+	}
+
+
+	public int getMbrPurchaseAmount() {
+		return mbrPurchaseAmount;
+	}
+
+
+	public void setMbrPurchaseAmount(int mbrPurchaseAmount) {
+		this.mbrPurchaseAmount = mbrPurchaseAmount;
+	}
 	
 	
 	
