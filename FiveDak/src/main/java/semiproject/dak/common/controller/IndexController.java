@@ -8,9 +8,9 @@ public class IndexController extends AbstractController {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		// 수정할지도
+		// 임시조치임 (header)
 		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/index.jsp");
+		super.setViewPage("/WEB-INF/views/header.jsp");
 		
 
 	}
