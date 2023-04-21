@@ -10,7 +10,7 @@ public class IndexController extends AbstractController {
 		
 		// 임시조치임 (header)
 		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/views/header.jsp");
+		super.setViewPage("/WEB-INF/views/index.jsp");
 		
 
 	}
