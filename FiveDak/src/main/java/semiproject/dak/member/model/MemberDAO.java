@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -122,6 +123,38 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return result;
 	}
+
+	@Override
+	public boolean CheckDuplicateID(String userid) throws SQLException {
+		boolean result = false;
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select * "
+					+    " from tbl_member "
+					+    " where member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			
+			rs = pstmt.executeQuery();
+			result = rs.next();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+	}
+	
+	
+	@Override
+	public MemberDTO getMemberByLoginMap(Map<String, String> loginMap) throws SQLException {
+		// 로그인 메소드 구현하기
+		return null;
+	}
+
+	
 	
 
 }

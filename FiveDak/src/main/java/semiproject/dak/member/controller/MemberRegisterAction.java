@@ -10,7 +10,7 @@ import semiproject.dak.member.model.MemberDTO;
 
 public class MemberRegisterAction extends AbstractController {
 	
-	private static final String REGISTER_PAGE = "/WEB-INF/view/signUpForm.jsp";
+	private static final String REGISTER_PAGE = "/WEB-INF/views/member/memberRegister.jsp";
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
