@@ -95,11 +95,32 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return result;
 	}
-
+	
+	// 이메일이 존재하는 이메일인지 확인하기
 	@Override
 	public boolean CheckDuplicateEmail(String email) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select * "
+					+    " from tbl_member "
+					+    " where member_email = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, aes.encrypt(email));
+			
+			rs = pstmt.executeQuery();
+			result = rs.next();
+			
+		} catch (UnsupportedEncodingException | GeneralSecurityException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		return result;
 	}
 	
 
