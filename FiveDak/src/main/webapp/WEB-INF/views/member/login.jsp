@@ -209,6 +209,63 @@
 
 </style>
 
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		setLoginEvent();
+	});
+	
+	function setLoginEvent() {
+		$("button#loginButton").on('click', loginSubmit);
+		$("input#loginPwd").on("keydown", function(e){
+			if(e.keyCode == 13) {
+				loginSubmit();
+			}
+		});
+		
+		
+		if(localStorage.getItem("saveid") != null) {
+			$("input:text[name='userid']").val(localStorage.getItem("saveid"));
+			$("input:checkbox[name='saveid']").prop("checked",true);
+		}
+		
+		
+	}
+	
+	function loginSubmit() {
+		
+		const loginUserid = $("input#loginUserid").val().trim();
+		const loginPwd = $("input#loginPwd").val().trim();
+		
+		if(loginUserid == "") {
+			alert("회원 아이디를 입력해주세요.");
+			$("input#loginUserid").val("");
+			$("input#loginUserid").focus();
+			return;
+		}
+		if(loginPwd == "") {
+			alert("비밀번호를 입력해주세요");
+			$("input#loginPwd").val("");
+			$("input#loginPwd").focus();
+			return;
+		}
+		
+		if($("input:checkbox[name='saveid']").prop("checked")) {
+			localStorage.setItem("saveid", $("input:text[name='userid']").val())
+		} else {
+			localStorage.removeItem("saveid");
+		}
+		
+		const frm = document.loginFrm;
+		frm.method = "POST";
+		frm.action = "<%=ctxPath%>/login.dak";
+		frm.submit();
+	}
+	
+
+</script>
+
+
 <body>
 
 
@@ -223,25 +280,25 @@
 
 
       <fieldset>
-         <form class="loginFrm">
+         <form name="loginFrm" class="loginFrm">
              <div class="inputBox1">
-                 <input type="text" class="input_id" placeholder="아이디" maxlength="100"/>
+                 <input type="text" id="loginUserid" class="input_id" name="userid" placeholder="아이디" maxlength="100"/>
              </div>
              <div class="inputBox2">
-                 <input type="password" class="input_pwd" placeholder="비밀번호" maxlength="100"/>
+                 <input type="password" id="loginPwd" class="input_pwd" name="pwd" placeholder="비밀번호" maxlength="100"/>
              </div>
              
              
              <div class="checkBox">
                <label for="agree" class="chk_box">
-                  <input type="checkbox" id="agree" checked="checked" />
+                  <input type="checkbox" id="agree" name="saveid"/>
                   <span class="on"></span>
                   아이디저장
                </label>
              </div>
              
              
-             <button class="loginbtn" type="submit"><span>로그인</span></button>
+             <button id="loginButton" class="loginbtn" type="button"><span>로그인</span></button>
          </form>
       </fieldset>
    
@@ -255,16 +312,10 @@
    
    
       <div >
-         <button class="joinbtn position-relative" style="left:-20px;" href="#"><span>회원가입</span></button>
+         <button class="joinbtn position-relative" style="left:-20px;" href="<%=ctxPath%>/register.dak"><span>회원가입</span></button>
       </div>
       
-<!--  <div class="nonMbr">
-         <ul>
-             <li>
-                <a href="#"><span>비회원주문조회</span></a>
-             </li>
-         </ul>
-      </div> -->
+
       
       <img id="benefit" alt="회원가입 혜택 이미지" src="../images/로그인페이지사진.png">
 

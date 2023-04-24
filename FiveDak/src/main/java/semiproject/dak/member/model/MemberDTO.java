@@ -15,6 +15,8 @@ public class MemberDTO {
 	private String mbrAddress;
 	private String mbrDetailAddress;
 	private int mbrTierId; // 나중에 수정 MembershipDTO 만들거나 조인으로 그냥 바로 받아오거나?
+	private MembershipTierDTO mbrTier;
+	
 	private int mbrPurchaseAmount;
 	private String mbrRegDate;
 	private int mbrStatus;
@@ -177,6 +179,19 @@ public class MemberDTO {
 	
 	public void setRequirePwdChange(boolean requirePwdChange) {
 		this.requirePwdChange = requirePwdChange;
+	}
+
+
+
+	public MembershipTierDTO getMbrTier() {
+		return mbrTier;
+	}
+
+
+
+
+	public void setMbrTier(MembershipTierDTO mbrTier) {
+		this.mbrTier = mbrTier;
 	}
 	
 	
