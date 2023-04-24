@@ -43,7 +43,7 @@
 		  const randomIndex = Math.floor(Math.random() * placeholders.length);
 		  console.log(`${placeholders[randomIndex]}`);
 
-		  const input = $('<input>', { id: 'search-header', type: 'text', placeholder: placeholders[randomIndex],naem:'searchWord' });
+		  const input = $('<input>', { id: 'search-header', type: 'text', placeholder: placeholders[randomIndex],name:'searchWord' });
 		  const button = $('<button>', { class: 'position-absolute btn-search' }).append($('<i>', { class: 'fa-solid fa-magnifying-glass' }));
 
 		  $('div.div-input').empty().append(input).append(button);
@@ -189,10 +189,10 @@
 		<c:if test="${sessionScope.loginuser == null }">
 			<ul class="nav" id="login_menu" >
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그인</a>
+				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/views/member/login.jsp">로그인</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">회원가입</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/member/memberEditInfo.dak">회원가입</a>
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
