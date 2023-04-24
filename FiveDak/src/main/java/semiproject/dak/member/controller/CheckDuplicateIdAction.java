@@ -20,10 +20,9 @@ public class CheckDuplicateIdAction extends AbstractController {
 			String userid = request.getParameter("userid");
 			InterMemberDAO dao = new MemberDAO();
 			boolean isExists = dao.CheckDuplicateID(userid);
+			
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("isExists", isExists);
-			
-			
 			String json = jsonObj.toString();
 			request.setAttribute("json", json);
 			
@@ -36,11 +35,6 @@ public class CheckDuplicateIdAction extends AbstractController {
 			request.setAttribute("loc", loc);
 			super.setViewPage("/WEB-INF/views/msg.jsp");
 		}
-		
-		
-		
-		
 
 	}
-
 }
