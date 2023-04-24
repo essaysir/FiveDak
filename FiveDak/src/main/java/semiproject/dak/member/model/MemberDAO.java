@@ -69,23 +69,43 @@ public class MemberDAO implements InterMemberDAO {
 		
 		try {
 			conn = ds.getConnection();
-			String sql = " insert into tbl_member(member_id, member_pwd, member_name, member_mobile, member_email, member_gender, member_birth, member_postcode, member_address, member_detail_address)\r\n"
-					+ "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+			String sql = " insert into tbl_member(member_id, member_pwd, member_name, member_mobile, member_email, member_gender, member_birth, member_postcode, member_address, member_detail_address )"
+					+ " values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 			pstmt = conn.prepareStatement(sql);
 			
-			int count = 1;
-			pstmt.setString(count++, member.getMbrId());
-			pstmt.setString(count++, Sha256.encrypt(member.getMbrPwd()));
-			pstmt.setString(count++, member.getMbrName());
-			pstmt.setString(count++, aes.encrypt(member.getMbrMobile()));
-			pstmt.setString(count++, aes.encrypt(member.getMbrEmail()));
-			pstmt.setString(count++, member.getMbrGender());
-			pstmt.setString(count++, member.getMbrBirth());
-			pstmt.setString(count++, member.getMbrPostcode());
-			pstmt.setString(count++, member.getMbrAddress());
-			pstmt.setString(count++, member.getMbrDetailAddress());
+			pstmt.setString(1, member.getMbrId());
+			pstmt.setString(2, Sha256.encrypt(member.getMbrPwd()));
+			pstmt.setString(3, member.getMbrName());
+			pstmt.setString(4, aes.encrypt(member.getMbrMobile()));
+			pstmt.setString(5, aes.encrypt(member.getMbrEmail()));
+			pstmt.setString(6, member.getMbrGender());
+			pstmt.setString(7, member.getMbrBirth());
+			pstmt.setString(8, member.getMbrPostcode());
+			pstmt.setString(9, member.getMbrAddress());
+			pstmt.setString(10, member.getMbrDetailAddress());
 			
 			result = (pstmt.executeUpdate() == 1);
+			
+			if(result) {
+				//회원가입 완료시 1000포인트 지급
+				int registerPoint = 1000;
+				
+				//멤버 테이블 업데이트
+		        pstmt = conn.prepareStatement("UPDATE tbl_member SET member_point = member_point + ? WHERE member_id = ?");
+		        pstmt.setInt(1, registerPoint);
+		        pstmt.setString(2, member.getMbrId());
+		        pstmt.executeUpdate();
+
+		        // 포인트 변동내역 업데이트
+		        pstmt = conn.prepareStatement("INSERT INTO member_point_history (point_member_id, point_before, point_change, point_after, point_reason, point_change_type) VALUES (?, ?, ?, ?, ?, ?)");
+		        pstmt.setString(1, member.getMbrId());
+		        pstmt.setInt(2, 0);
+		        pstmt.setInt(3, registerPoint);
+		        pstmt.setInt(4, registerPoint);
+		        pstmt.setString(5, "회원가입 지급");
+		        pstmt.setInt(6, 1);
+		        pstmt.executeUpdate();
+			}
 			
 			
 		} catch (UnsupportedEncodingException | GeneralSecurityException e) {
