@@ -1,7 +1,9 @@
-package semiproject.dak.common.controller;
+package semiproject.dak.member.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import semiproject.dak.common.controller.AbstractController;
 
 public class PwdController extends AbstractController {
 

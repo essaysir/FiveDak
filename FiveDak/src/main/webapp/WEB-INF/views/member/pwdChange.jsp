@@ -103,7 +103,7 @@ $(document).ready(function(){
 
             <div class="wrap_button">
                 <div class="password_button1"><button type="button" class="pwdbutton1"><span class="password_button_gray">3개월 후 변경하기</span></button></div>
-                <div class="password_button2"><button class="pwdbutton2"><a href="" class="password_button_orange">비밀번호 변경하기</a></button></div>
+                <div class="password_button2"><button type="button" class="pwdbutton2"><span class="password_button_orange">비밀번호 변경하기</span></button></div>
             </div>    
         </div>
         <!-- PC 비밀 번호 변경 end --> 
