@@ -14,4 +14,5 @@ public interface InterMemberDAO {
 
 	boolean CheckDuplicateID(String userid)  throws SQLException;
 
+
 }
