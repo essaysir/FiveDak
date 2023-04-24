@@ -47,18 +47,18 @@
 	let check_ok_flag2 = false;
 	let check_ok_flag3 = false;
 
-	$(document).ready(function(){
-				
-		$("span#findPwdNameError").hide();
-		$("span#findPwdEmailError").hide();
-		$("span#findPwdIdError").hide();
-		$("input#findPwdSubmit").prop("disabled", true); // 초기 버튼 비활성화 
-		
+	$(document).ready(function(){		
 		setEventHandling();
 	});
 	
 	
 	function setEventHandling() {
+		
+		$("span#findPwdNameError").hide();
+		$("span#findPwdEmailError").hide();
+		$("span#findPwdIdError").hide();
+		
+		$("input#findPwdSubmit").prop("disabled", true); // 초기 버튼 비활성화 
 		
 		$("input#dh-findpwd-id").change(dhpwdfindid);         // 아이디 입력 부분을 변경하는 경우
 		$("input#dh-findpwd-name").change(dhpwdfindname);    // 성명 입력 부분을 변경하는 경우 
@@ -232,8 +232,8 @@
 				$("input#dh-findpwd-email").val(inputEmail + "@" + emailSelected);
 			}
 			
-	       	const frm = document.idFindFrm;
-			frm.action = "<%= ctxPath %>/memberIdFind.dak";    // action 부분
+	       	const frm = document.getElementById("pwdFindFrm");
+			frm.action = "<%= ctxPath %>/memberPwdFind.dak";    // action 부분
 			frm.method = "post";    // 무슨 타입으로 보낼래? get? POST?
 			frm.submit();	 	// 보내자 
 	       	
@@ -251,7 +251,7 @@
 <div class="dh-findid-all">
 	<div class="container">
 		<div class="dh-all-divcss">
-			<form id="idFindFrm" style="margin: 10% 10%;" method="post">   <%-- method="post" 를 해야만 post방식으로 넘어간다.  --%>
+			<form id="pwdFindFrm" style="margin: 10% 10%;" method="post">   <%-- method="post" 를 해야만 post방식으로 넘어간다.  --%>
 				<!-- <div class = "row"> -->
 					
 					<p class="h2 col-12" style="padding: 0;">비밀번호 찾기</p>
@@ -269,7 +269,7 @@
 					 
 			         <div style="display: flex;"> 			    
 			           
-			          <input type="text" name="memberFindIdEmail" class="findpwd-input col-7" id="dh-findpwd-email" aria-describedby="emailHelp" placeholder="이메일 주소" style="margin-top:20px;">
+			          <input type="text" name="memberFindPwdEmail" class="findpwd-input col-7" id="dh-findpwd-email" aria-describedby="emailHelp" placeholder="이메일 주소" style="margin-top:20px;">
 			           
 			            <select class="findpwd-input findpwd-email-sel col-4 offset-1" id="dh-select-findpwd" style="height:50px; margin-top:20px;">
 			              <option value="other" selected>직접입력</option>
@@ -286,14 +286,12 @@
 					<span id="findPwdEmailError" class="findpwd-span"></span>
 					
 					
-					<div></div>  <!-- 인증번호 입력 부분 html 추가로 받을것임 -->
-					
 					<div>
 						<input type="submit" id="findPwdSubmit" style="width:100%; border-radius : 5px; border: none; height: 50px; margin-top: 3%;" value="인증번호 받기"/>
 					</div>
-				
-				
+
 			</form>
+			
 		</div>
 	</div>
 </div>
