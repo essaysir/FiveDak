@@ -303,7 +303,33 @@ public class MemberDAO implements InterMemberDAO {
 		return userid;
 	}
 
-
+	
+	// 로그인한 유저의 비밀번호와 내정보 수정에서 입력한 비밀번호가 일치하는지 확인
+	@Override
+	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
+		
+		boolean result = false;
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select * "
+					+    " from tbl_member "
+					+    " where member_id = ? and member_pwd = ? ";
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, Sha256.encrypt(paraMap.get("password")));	
+			
+			rs = pstmt.executeQuery();
+			result = rs.next();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+	}// end of public boolean passwdCheck(Map<String, String> paraMap) throws SQLException-----------------
 
 
 
