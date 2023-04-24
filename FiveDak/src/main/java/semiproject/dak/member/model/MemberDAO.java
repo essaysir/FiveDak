@@ -176,13 +176,13 @@ public class MemberDAO implements InterMemberDAO {
 			String sql = "SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
 					"		   MEMBER_POINT , MEMBER_GENDER , MEMBER_BIRTH , MEMBER_POSTCODE , MEMBER_ADDRESS , "+
 					"		   MEMBER_DETAIL_ADDRESS , MEMBER_TIER_ID , MEMBER_REG_DATE , pwdchangegap "+
-					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap "+
+					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, TIER_NAME, AMOUNT_NEEDED, REWARD_PERCENTAGE, TIER_IMAGE "+
 					" FROM  "+
 					" ( "+
 					" select MEMBER_NUM , MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_MOBILE, MEMBER_POSTCODE, MEMBER_ADDRESS, MEMBER_DETAIL_ADDRESS "+
 					"       , MEMBER_GENDER , MEMBER_POINT , MEMBER_BIRTH , MEMBER_TIER_ID , LAST_PWD_CHANGED , MEMBER_REG_DATE  "+
 					"       , to_char(MEMBER_REG_DATE, 'yyyy-mm-dd') AS registerday "+
-					"       , trunc(months_between(sysdate,LAST_PWD_CHANGED) ,0) AS pwdchangegap "+
+					"       , trunc(months_between(sysdate,LAST_PWD_CHANGED) ,0) AS pwdchangegap, MEMBER_PURCHASE_AMOUNT "+
 					" from tbl_member   "+
 					" where MEMBER_STATUS = 1 and MEMBER_ID = ? and MEMBER_PWD= ? "+
 					" )M "+
@@ -191,7 +191,7 @@ public class MemberDAO implements InterMemberDAO {
 					" select trunc( months_between(sysdate, max(LOGIN_TIME)) , 0 ) AS lastlogin_time  "+
 					" from member_login_history  "+
 					" where LOGIN_MEMBER_ID = ? "+
-					" )H ";
+					" )H JOIN membership_tier T ON M.MEMBER_TIER_ID = T.TIER_ID ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, loginMap.get("userid"));
@@ -202,6 +202,7 @@ public class MemberDAO implements InterMemberDAO {
 			rs = pstmt.executeQuery();
 			int cnt = 1 ;
 			if (rs.next()) {
+				
 				mdto = new MemberDTO();
 				mdto.setMbrNum(rs.getInt(cnt++));
 				mdto.setMbrId(rs.getString(cnt++));
@@ -216,6 +217,14 @@ public class MemberDAO implements InterMemberDAO {
 				mdto.setMbrDetailAddress(rs.getString(cnt++));
 				mdto.setMbrTierId(rs.getInt(cnt++));
 				mdto.setMbrRegDate(rs.getString(cnt++));
+				mdto.setMbrPurchaseAmount(rs.getInt("MEMBER_PURCHASE_AMOUNT"));
+				
+				MembershipTierDTO mbrTier = new MembershipTierDTO();				
+				mbrTier.setTierName(rs.getString("TIER_NAME"));
+				mbrTier.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
+				mbrTier.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
+				mbrTier.setTierImage(rs.getString("TIER_IMAGE"));
+				mdto.setMbrTier(mbrTier);
 				
 				
 				
@@ -245,6 +254,8 @@ public class MemberDAO implements InterMemberDAO {
 					sql = " insert into member_login_history (LOGIN_MEMBER_ID, IP_ADDRESS) values ( ? , ? ) ";
 					
 					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, loginMap.get("userid"));
+					pstmt.setString(2, loginMap.get("clientip"));
 					
 					pstmt.executeUpdate();
 				}// end of if 
@@ -303,11 +314,8 @@ public class MemberDAO implements InterMemberDAO {
 		return userid;
 	}
 
-	
-	// 로그인한 유저의 비밀번호와 내정보 수정에서 입력한 비밀번호가 일치하는지 확인
 	@Override
 	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
-		
 		boolean result = false;
 		
 		try {
@@ -329,7 +337,15 @@ public class MemberDAO implements InterMemberDAO {
 		}
 		
 		return result;
-	}// end of public boolean passwdCheck(Map<String, String> paraMap) throws SQLException-----------------
+	}
+
+	@Override
+	public int updateMember(MemberDTO member) throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 
 
 
