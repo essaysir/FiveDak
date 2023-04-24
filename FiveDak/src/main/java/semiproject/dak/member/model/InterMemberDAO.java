@@ -19,7 +19,8 @@ public interface InterMemberDAO {
 	
 	// 로그인한 유저의 비밀번호와 내정보 수정에서 입력한 비밀번호가 일치하는지 확인
 	boolean passwdCheck(Map<String, String> paraMap) throws SQLException;
-
+	
+	// 회원의 개인 정보 변경하기
 	int updateMember(MemberDTO member) throws SQLException;
 	
 	
