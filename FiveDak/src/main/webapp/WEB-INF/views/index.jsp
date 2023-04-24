@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <% String ctxPath = request.getContextPath(); %>      
-<!DOCTYPE html>
-<html>
-<head>
+
 <jsp:include page="./header-final.jsp"/>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
 <title>오조 닭조</title>
@@ -25,7 +23,6 @@
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	 
 	function setEventHandling(){
-		randomInput();
 		imageSlider();
 	
 		eventTimer('timer','2023-05-20T00:00:00');
@@ -33,21 +30,7 @@
 		
 	}// END OF FUNCTION SETEVENTHANDLING
 	
-	function randomInput(){
-		const placeholders = [
-			  '원하는 날짜에 맞춰서 자동 배송',
-			  '쿠폰 받고 여름 준비 시-작!',
-			  '실시간 T.O.P를 소개합니다!',
-			  '밤 12시 이전 주문시 내일 도착!' ];
-		
-		const randomIndex = Math.floor(Math.random() * placeholders.length);
-		// console.log(`${placeholders[randomIndex]}`);
-		
-		$("div.div-input").html(`<input id="search-header" type="text" placeholder='${placeholders[randomIndex]}'/> 
-		<button class="position-absolute btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>`);
 
-	}
-	
 	function imageSlider(){
 	   
 		// 이미지 슬라이드로 만들기 1
