@@ -270,8 +270,55 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return mdto;
 	}
+	
+
+
+	// // 아이디찾기에서 성명과 이메일로 아이디가 있는지 확인하기 위해 
+	@Override
+	public String findUserid(Map<String, String> paraMap) throws SQLException {
+
+		String userid = null;
+		
+		try {
+			
+			conn = ds.getConnection();   // date source 에서 가져옴
+			
+			String sql = " select member_id "
+					   + " from tbl_member "
+					   + " where member_name = ? and member_email = ? ";
+			
+			
+			// 우편배달부
+			pstmt = conn.prepareStatement(sql);
+			
+			// 위치 홀더
+			pstmt.setString(1, paraMap.get("memberFindIdName"));   //name 키값을써서 name 을 가져오자	
+			pstmt.setString(2, aes.encrypt(paraMap.get("memberFindIdEmail")) );  // email 키 값을 써서 email 을 가져올껀데 암호화가 되어 있으므로 암호화 하여 비교한다.
+			
+			rs = pstmt.executeQuery();
+			
+			// selete 된 값이 있다면  
+			if(rs.next()) {
+				userid = rs.getString(1);    // 첫번째 컬럼을 userid 에 넣는다.
+			}
+			// selete 값이 없다면 null 이 넘어간다. 
+			
+					
+		} catch ( GeneralSecurityException | UnsupportedEncodingException e) {			// 오류 두개를 같이 잡을때 | 는 or를 뜻한다.
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		
+		return userid;
+	}
+
+
+
+
 
 	
-	
+
 
 }
