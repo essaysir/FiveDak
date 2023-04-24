@@ -314,6 +314,7 @@ public class MemberDAO implements InterMemberDAO {
 		return userid;
 	}
 
+	// 비밀번호 찾기 부분 
 	@Override
 	public boolean isUserExist(Map<String, String> paraMap) throws SQLException {
 
