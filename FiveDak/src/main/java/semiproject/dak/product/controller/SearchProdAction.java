@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import semiproject.dak.common.controller.AbstractController;
 import semiproject.dak.product.model.InterProductDAO;
 import semiproject.dak.product.model.ProductDAO;
+import semiproject.dak.product.model.ProductDTO;
 
 
 public class SearchProdAction extends AbstractController {
@@ -75,14 +76,14 @@ public class SearchProdAction extends AbstractController {
 		int totalPage = pdao.getTotalPage(paraMap);
 		
 		//
-		List<ProductDAO> prdoList = pdao.selectPagingProduct(paraMap);
+		List<ProductDTO> prodList = pdao.selectPagingProduct(paraMap);
 		
 		request.setAttribute("searchWord", searchWord);
 		request.setAttribute("orderBy", orderBy);
 		request.setAttribute("orderWay", orderWay);
 		request.setAttribute("sizePerPage", sizePerPage);
 		request.setAttribute("currentShowPageNo", currentShowPageNo);
-		request.setAttribute("prodList", prdoList);
+		request.setAttribute("prodList", prodList);
 		
 		String pageBar = "";
 		int blockSize = 10 ;
@@ -145,7 +146,7 @@ public class SearchProdAction extends AbstractController {
 		request.setAttribute("pageBar", pageBar);
 		
 		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/member/prodList.jsp");
+		super.setViewPage("/WEB-INF/views/product/prodList.jsp");
 	}// END OF 	PUBLIC VOID EXECUTE(HTTPSERVLETREQUEST REQUEST, HTTPSERVLETRESPONSE RESPONSE) THROWS EXCEPTION {
 
 	

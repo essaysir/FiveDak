@@ -1,19 +1,20 @@
 package semiproject.dak.product.model;
 
+
 public class ProductDTO {
 	private int prodNum ; // 제품번호
 	private String prodName ; // 제품명
 	private int fk_prodCateNum ; // 제품 카데고리 코드(번호)
 	private int fk_prodBrandNum ; // 제품 브랜드 코드(번호)
-	private int prodPrice ; // 가격
+	private int prodPrice ; // 정가
 	private int prodStock ; // 재고 
 	private int prodSales ; // 판매량 (??)
-	private int prodDiscount ; // 할인가격
+	private int prodDiscount ; // 판매가
 	private int prodAvgRating ; // 평균 별점
 	private String prodImage1 ; // 제품 이미지
 	
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
-	// private CategoryDTO cateDTO ; // 카테고리 DTO 
+	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	// private BrandDTO brandDTO ; // 브랜드 DTO 
 	
 	// 기본 생성자 
@@ -115,7 +116,25 @@ public class ProductDTO {
 	public void setProdImage1(String prodImage1) {
 		this.prodImage1 = prodImage1;
 	}
-	
-	
+	public CategoryDTO getCateDTO() {
+		return cateDTO;
+	}
+
+	public void setCateDTO(CategoryDTO cateDTO) {
+		this.cateDTO = cateDTO;
+	}
+	///////////////////////////////////////////////
+	// *** 제품의 할인률 ***
+	public int getDiscountPercent() {
+		// 정가   :  판매가 = 100 : x
+		
+		// 5000 : 3800 = 100 : x
+		// x = (3800*100)/5000 
+		// x = 76
+		// 100 - 76 ==> 24% 할인
+		
+		// 할인률 = 100 - (판매가 * 100) / 정가
+		return 100 - (prodDiscount * 100)/prodPrice;
+	}
 	
 }
