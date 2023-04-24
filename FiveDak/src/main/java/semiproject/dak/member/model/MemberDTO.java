@@ -21,6 +21,8 @@ public class MemberDTO {
 	private int mbrIdle;
 	private String mbrLastPwdChanged;
 	
+	///
+	private boolean requirePwdChange = false;
 	
 	//기본 생성자
 	public MemberDTO() {
@@ -169,7 +171,13 @@ public class MemberDTO {
 		this.mbrPurchaseAmount = mbrPurchaseAmount;
 	}
 	
+	public boolean isRequirePwdChange() {
+		return requirePwdChange;
+	}
 	
+	public void setRequirePwdChange(boolean requirePwdChange) {
+		this.requirePwdChange = requirePwdChange;
+	}
 	
 	
 	

@@ -10,11 +10,10 @@ import semiproject.dak.member.model.MemberDTO;
 
 public class MemberRegisterAction extends AbstractController {
 	
-	private static final String REGISTER_PAGE = "/WEB-INF/view/signUpForm.jsp";
+	private static final String REGISTER_PAGE = "/WEB-INF/views/member/memberRegister.jsp";
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		super.setRedirect(false);
 		super.setViewPage(REGISTER_PAGE);
 		String method = request.getMethod();
 		if ("GET".equals(method)) {return;}
@@ -36,15 +35,29 @@ public class MemberRegisterAction extends AbstractController {
 		InterMemberDAO dao = new MemberDAO();
 		
 		try {
+			String msg = "";
+			String loc = "";
 			if(dao.registerMember(dto)) {
 				request.setAttribute("userid", userid);
 				request.setAttribute("pwd", pwd);
 				
 				super.setRedirect(false);
-				super.setViewPage("/WEB-INF/login/registerAfterAutoLogin.jsp");
+				//super.setViewPage("/WEB-INF/login/registerAfterAutoLogin.jsp");  
+				// 임시조치 login 메소드 구현후 재수정
+				msg = "회원가입에 성공했습니다.";
+				loc = request.getContextPath() + "/index.dak";
+			} else {
+				
+				msg = "회원가입에 실패했습니다.";
+				loc = "javascript:history.back()";
+				
 			}
+			request.setAttribute("message", msg);
+			request.setAttribute("loc", loc);
+			super.setViewPage("/WEB-INF/views/msg.jsp");
 		} catch (Exception e) {
-			// 예외 처리 (이따가)
+			e.printStackTrace();
+			System.out.println("SQL 에러 // MemberRegisterAction");
 		}
 		
 		
