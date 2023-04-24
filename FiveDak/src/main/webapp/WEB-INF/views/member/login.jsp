@@ -274,7 +274,7 @@
     <div class="login_Box">
         <div class="login_Intro">
             <span id="hello" style="font-size:32pt;">안녕하세요 :)</span>
-            <img id="logo_img" src="../images/5조닭조투명이미지.png">
+            <img id="logo_img" src="<%=ctxPath %>/images/5조닭조투명이미지.png">
             <span class="logo_hello" style="font-size: 15pt; font-weight: bold;">입니다.</span>
         </div>
 
@@ -305,8 +305,8 @@
    
       <div class="find_Info position-relative" style="left:-14px;">
           <ul style="margin-top : 20px;">
-              <li class="border-right"><a href="#" style="margin-right: 35px; margin-left: 80px;">아이디 찾기</a></li>
-              <li style="margin-left:30px;"><a href="#">비밀번호 찾기</a></li>
+              <li class="border-right"><a href="<%=ctxPath %>/memberIdFind.dak" style="margin-right: 35px; margin-left: 80px;">아이디 찾기</a></li>
+              <li style="margin-left:30px;"><a href="<%=ctxPath %>/memberPwdFind.dak">비밀번호 찾기</a></li>
           </ul>
       </div>
    
@@ -317,7 +317,7 @@
       
 
       
-      <img id="benefit" alt="회원가입 혜택 이미지" src="../images/로그인페이지사진.png">
+      <img id="benefit" alt="회원가입 혜택 이미지" src="<%=ctxPath %>/images/로그인페이지사진.png">
 
 
    </div>

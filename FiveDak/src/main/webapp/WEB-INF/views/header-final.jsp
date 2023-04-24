@@ -50,11 +50,10 @@
 		}
 	
 	function setHeaderEvent(){
+		// 헤더 로고 클릭시 indexPage로 돌아올 수 있게 하기 
+		
 		// 헤더 카테고리 
 	    // 2차 카테고리 열리게
-
-		
-	    
 	    $('.dropdown-menu li').mouseover(function(){
 	        $(this).find('.header-list').show();
 	    });
@@ -189,10 +188,10 @@
 		<c:if test="${sessionScope.loginuser == null }">
 			<ul class="nav" id="login_menu" >
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/views/member/login.jsp">로그인</a>
+				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/login.dak">로그인</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/member/memberEditInfo.dak">회원가입</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/register.dak">회원가입</a>
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
@@ -209,7 +208,7 @@
 				    <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그아웃</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">내정보수정</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/main.dak">내정보수정</a>
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
@@ -225,7 +224,7 @@
 	<div class="container position-relative" style="display: flex; margin-bottom:50px;" >
 		
 			
-		<a class="row col-3" href="#" ><img src="<%=ctxPath%>/images/5조닭조.png" /></a>
+		<a class="row col-3" href="<%=ctxPath%>/index.dak" ><img src="<%=ctxPath%>/images/5조닭조.png" /></a>
 		
 		
 		<div class=" header-search col-5 offset-1" >

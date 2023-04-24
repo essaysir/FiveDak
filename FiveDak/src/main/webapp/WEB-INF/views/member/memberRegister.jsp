@@ -567,7 +567,7 @@
 
 
 
-<div id="container">
+<div id="container" style="margin-top: 50px; margin-bottom:50px;">
 
 	<h2 style="margin: 50px 0 30px 30px; position: relative; left: 50px; font-weight: 700;">회원가입</h2>
 	
