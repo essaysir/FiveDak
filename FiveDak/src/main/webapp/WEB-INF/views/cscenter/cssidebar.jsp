@@ -93,27 +93,6 @@
 	    	</div><!--end of sidebar-menu-wrap -->
 		</div>
     </div><!-- 사이드바 -->
-    
-    <div class="col-md-9">
-      <!-- 오른쪽에 들어갈 내용 -->
-      
-      
-      
-      
-      
-      <!-- 오른쪽에 들어갈 내용 -->
-    </div>
-  </div>
-</div>
-
-
-
-
-<!-- 마이페이지 -->
-
-
-
-
-<jsp:include page="/WEB-INF/views/footer.jsp"/>
-
-	
+ </div>
+</div> 
+ 

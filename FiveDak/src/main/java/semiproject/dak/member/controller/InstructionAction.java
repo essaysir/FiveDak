@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import semiproject.dak.common.controller.AbstractController;
 
-public class TermsAction extends AbstractController {
+public class InstructionAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
