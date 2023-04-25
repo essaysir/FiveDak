@@ -15,13 +15,13 @@ public class PasswdCheckAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			String method = request.getMethod();
+		String method = request.getMethod();
 		
 		if("POST".equals(method)) {
 			String userid = request.getParameter("userid");
 			String password = request.getParameter("password");
 			InterMemberDAO dao = new MemberDAO();
-			
+		//	System.out.println(userid);
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("userid", userid);
 			paraMap.put("password", password);
@@ -38,11 +38,8 @@ public class PasswdCheckAction extends AbstractController {
 			
 			super.setViewPage("/WEB-INF/views/jsonview.jsp");
 		} else {
-			String msg = "비정상적인 접근입니다.";
-			String loc = "javascript:history.back()";
-			request.setAttribute("message", msg);
-			request.setAttribute("loc", loc);
-			super.setViewPage("/WEB-INF/views/msg.jsp");
+			super.setRedirect(false);
+			super.setViewPage("/WEB-INF/views/member/pwdCheckForEdit.jsp");
 		}
 		
 		

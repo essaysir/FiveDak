@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%
+	String ctxPath = request.getContextPath();
+%>
 
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>
 
@@ -71,6 +73,8 @@
 	}
     
   </style>
+
+  
 </head>
 
 
@@ -161,7 +165,7 @@
 	                    <a href="" class="menu">회원정보관리</a>
 	                    <ul class="menu-list">
 	                        <li class="check"><a class="list" href="">배송지 관리</a></li>
-	                        <li class="check"><a class="list" href="">정보수정</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath%>/mypage/infoedit.dak">정보수정</a></li>
 	                    </ul>
 	                </li>
 	            </ul>
@@ -178,7 +182,7 @@
       
       
       <!-- 오른쪽에 들어갈 내용 -->
-    </div>
+   <%--  </div>
   </div>
 </div>
 
@@ -191,5 +195,5 @@
 
 
 <jsp:include page="/WEB-INF/views/footer.jsp"/>
-
+ --%>
 	

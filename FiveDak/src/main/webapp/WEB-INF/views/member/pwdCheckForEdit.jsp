@@ -4,20 +4,12 @@
 <%
     String ctxPath = request.getContextPath();
 %> 
-<!DOCTYPE html>
-<html>
-<head>
- <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
-    
-     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../bootstrap-4.6.0-dist/css/bootstrap.min.css" type="text/css">
-<title>정보수정인증</title>
+
+
+<jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
 
 <style type="text/css">
-div {
+   div {
     color: #333;
     font-size: 14px;
     font-weight: 400;
@@ -27,12 +19,12 @@ div {
     padding: 0;
     border: 0;
 }
-.MPE1{
+/* .MPE1{
    width: 1000px;
     min-width: 320px;
     padding: 0 30px;
     float: right;
-}
+} */
 .MPE2{
     width: 820px;
 }
@@ -134,19 +126,19 @@ input#MPE11password {
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
+		$("button#checkPwdBtn").on('click',passwdCheck); 
 	});
 	
 	function passwdCheck() {
 		$.ajax({  
-	     	   url:"<%=ctxPath %>/member/passwdCheck.dak" , 
+	     	   url:"<%=ctxPath %>/mypage/infoedit.dak" , 
 	     	   data:{"password":$("input#password").val() , "userid":"${sessionScope.loginuser.mbrId}"} , 
 	     	   type:"post" , 
 	     	   dataType: "json" , 
 	             async:true ,
 	             success:function(json){
 	             	if(json["passwdCheck"]){ // 로그인유저아이디의 비밀번호가 입력한 passwd랑 데이터 베이스에있는 비번과 일치한다면 
-						
+	             		 $("div#editInfoBox").load("/mypage/modifypage.dak");
 	             	}
 	             	else {
 	             		alert("비밀번호가 일치하지 않습니다!!");
@@ -161,9 +153,7 @@ input#MPE11password {
 
 </script>
 
-</head>
-<body>
-
+<div id="editInfoBox">
 <form name="pwdCheckForEdit">
 	<div class="MPE1" id="memberInfoContents">
 	    <div class="MPE2">
@@ -177,7 +167,7 @@ input#MPE11password {
 	                    <p class="MPE9">회원님의 개인정보 보호를 위해 비밀번호를 다시 한번 확인 합니다.<br>비밀번호가 노출되지 않도록 주의해주세요.</p>
 	                    <div class="MPE10 type-lg w-full">
 	                        <input id="password" type="password" id="MPE11password" name="password" class="input-text" placeholder="비밀번호 입력">
-	                        <span class="MPE12"><button type="button" class="MPE13 btn-primary btn_submit"><span>확인</span></button></span>
+	                        <span class="MPE12"><button type="button" id="checkPwdBtn" class="MPE13 btn-primary btn_submit"><span>확인</span></button></span>
 	                    </div>
 	                </div>
 	            </div><!--// input-guide-box -->
@@ -185,5 +175,11 @@ input#MPE11password {
 	    </div><!--// frame-cnt-inner -->
 </div>
 </form>
-</body>
-</html>
+</div>
+ </div>
+  </div>
+</div>
+
+
+<jsp:include page="/WEB-INF/views/footer.jsp"/>
+

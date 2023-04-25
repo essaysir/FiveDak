@@ -3,8 +3,8 @@
     
 <%
     String ctxPath = request.getContextPath();
-    //    /Fivedak
-%>
+    //    /MyMVC
+%>     
 <!DOCTYPE html>
 <html>
 <head>
@@ -453,6 +453,10 @@ function memberEditInfo(){
 
 
 	
+
+</head>
+<body>
+	
 	<div class="col-md-9">
 		<div style="margin-left:40px;">
 			<h2 style="padding-bottom: 10px; margin: 20px 0px 60px 0px; color:#333; border-bottom : solid 1px #333;">회원정보수정</h2>
@@ -561,3 +565,6 @@ function memberEditInfo(){
 			</div>
 		</div>
 	</div>
+	
+</body>
+</html>
