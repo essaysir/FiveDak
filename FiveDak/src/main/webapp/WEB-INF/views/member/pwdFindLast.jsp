@@ -30,14 +30,7 @@
 		width: 100%;
 	}
 	
-	.idFindorange {
-		border: solid 1px #FF7E32;
-		color: #FF7E32;
-		background-color: white;
-		border-radius: 5px;
-	}
-	
-	.idFindorange2 {
+	.idFindorange3 {
 		border: solid 1px #FF7E32;
 		color: white;
 		background-color: #FF7E32;
@@ -102,10 +95,10 @@
 					<p class="h3 col-12" style="padding: 0;">고객님의 이메일로 인증코드를 발송했습니다.</p>
 					<p class="h5 col-12" style="padding: 0;">발송된 이메일 : ${requestScope.memberFindPwdEmail}</p>
 					
-					<input type="text" class = "col-12" id="Codecheck" placeholder="인증번호를 입력하세요" style="border-radius: 5px; height:40px;" />
+					<input type="text" class = "col-10 offser-1" id="Codecheck" placeholder="인증번호를 입력하세요" style="border-radius: 5px; height:40px; margin-top: 40px;" />
 				
 					<div style="height: 50px;">
-						<button type="button" id="EmailCode" class="idFindorange col-12" style="margin-top: 20px;">인증번호 확인 및 비밀번호 재설정</button>
+						<button type="button" id="EmailCode" class="idFindorange3 col-12" style="margin: 28px auto 20px auto; height: 50px;">인증번호 확인 및 비밀번호 재설정</button>
 					</div>
 			</div>
 		</div>
