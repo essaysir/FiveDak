@@ -59,7 +59,7 @@ $(document).ready(function(){
 		else {
 			const frm = document.pwdChangeForm;
 				
-			frm.action = "<%= ctxPath%>/pwdChange.jsp";
+			frm.action = "<%= ctxPath%>/pwdUpdate.dak";
 			frm.method = "POST";
 			frm.submit();
 		}

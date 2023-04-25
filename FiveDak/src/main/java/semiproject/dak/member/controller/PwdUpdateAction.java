@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import semiproject.dak.common.controller.AbstractController;
 
-public class PassiveController extends AbstractController {
+public class PwdUpdateAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
