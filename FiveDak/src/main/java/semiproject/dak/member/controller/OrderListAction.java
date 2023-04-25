@@ -5,12 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import semiproject.dak.common.controller.AbstractController;
 
-public class MemberEditInfoAction extends AbstractController {
+public class OrderListAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		super.setViewPage("/WEB-INF/views/member/member_modify.jsp");
-		
+		super.setRedirect(false);
+		super.setViewPage("/WEB-INF/views/member/mypage_order.jsp");
 	}
 
 }

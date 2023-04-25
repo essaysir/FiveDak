@@ -68,9 +68,7 @@ public class MemberLoginAction extends AbstractController {
 	            if (loginuser.isRequirePwdChange()) {
 					
 					String message = "비밀번호를 변경하신지 3개월이 지났습니다. 암호를 변경하세요!!" ;
-
-					String loc = request.getContextPath()+"/pwdChange.dak";
-
+					String loc = request.getContextPath()+"/index.dak";
 					// 원래는 위와 같이 index.up 이 아니라 휴면인 계정을 풀어주는 페이지로 잡아주어야 한다.
 					
 					request.setAttribute("message", message);
