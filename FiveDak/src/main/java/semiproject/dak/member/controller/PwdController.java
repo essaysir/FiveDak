@@ -12,7 +12,7 @@ public class PwdController extends AbstractController {
 		
 		//
 		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/views/member/passivePwdChange.jsp");
+		super.setViewPage("/WEB-INF/views/member/pwdChange.jsp");
 		
 		
 	}
