@@ -11,7 +11,8 @@ public class PwdController extends AbstractController {
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		//
-		super.setViewPage("/WEB-INF/views/member/pwdChange.jsp");
+		super.setRedirect(false);
+		super.setViewPage("/WEB-INF/views/member/passivePwdChange.jsp");
 		
 		
 	}
