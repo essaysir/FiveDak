@@ -313,6 +313,76 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return userid;
 	}
+	
+	// 로그인한 유저의 비밀번호와 내정보 수정에서 입력한 비밀번호가 일치하는지 확인
+	@Override
+	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
+		boolean result = false;
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select * "
+					+    " from tbl_member "
+					+    " where member_id = ? and member_pwd = ? ";
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, Sha256.encrypt(paraMap.get("password")));	
+			
+			rs = pstmt.executeQuery();
+			result = rs.next();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+	}
+	
+	
+	// 회원의 개인 정보 변경하기
+	@Override
+	public int updateMember(MemberDTO member) throws SQLException {
+		int result = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set member_name = ? "
+										 		 + " , member_pwd = ? "
+												 + " , member_email = ? "
+												 + " , member_mobile = ? "
+												 + " , member_postcode = ? "
+												 + " , member_address = ? "
+												 + " , member_detail_address = ? "
+												 + " , member_gender = ? "
+												 + " , member_birth = ? "
+												 + " , lastpwdchangedate = sysdate "
+					   + " where member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getMbrName());
+			pstmt.setString(2, Sha256.encrypt(member.getMbrPwd()) );  // 암호를 SHA256 알고리즘으로 단방향 암호화 시킨다. 비밀번호는 "qwer1234$" 가 아닌 암호화 시키는 작업을 해야한다.
+			pstmt.setString(3, aes.encrypt(member.getMbrEmail()) );   // 이메일을 AES256 알고리즘으로 양방향 암호화 시킨다.
+			pstmt.setString(4, aes.encrypt(member.getMbrMobile()) );  // 휴대폰 번호를 AES256 알고리즘으로 양방향 암호화 시킨다.
+			pstmt.setString(5, member.getMbrPostcode());	
+			pstmt.setString(6, member.getMbrAddress());
+			pstmt.setString(7, member.getMbrDetailAddress());
+			pstmt.setString(8, member.getMbrGender());
+			pstmt.setString(9, member.getMbrBirth());
+			pstmt.setString(10, member.getMbrId());
+			
+			result = pstmt.executeUpdate();	// dml문 insert여서 리턴 int
+			
+		} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		} 
+		
+		return result;
+	}// end of public int updateMember(MemberVO member) throws SQLException{} -----------------------------
 
 	// 비밀번호 찾기 부분 
 	@Override
@@ -351,6 +421,34 @@ public class MemberDAO implements InterMemberDAO {
 		
 		
 		return isUserExist;
+	}
+
+	// 암호 변경하기
+	@Override
+	public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
+		
+		int result = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set pwd = ? "
+					   + " 		 , LAST_PWD_CHANGED = sysdate "
+					   + " where userid = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, Sha256.encrypt(paraMap.get("pwd"))); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(2, paraMap.get("userid"));
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+		
 	}
 
 
