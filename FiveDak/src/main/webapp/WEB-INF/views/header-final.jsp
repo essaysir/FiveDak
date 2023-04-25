@@ -208,7 +208,6 @@
 				    <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그아웃</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/member/memberEditInfo.dak">내정보수정</a>
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/infoedit.dak">내정보수정</a>
 
 				  </li>
