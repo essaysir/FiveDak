@@ -3,13 +3,11 @@
 
 <% String ctxPath = request.getContextPath(); %>
 
-<jsp:include page="/WEB-INF/views/header-final.jsp"/>
 
 
   <style type="text/css">
   	
-  	
-  	.orange-text {color: #FF7E32;}
+  	.orange-text {color: #FF7E32;} 
   	
     
     .sidebar-menu-wrap {
@@ -64,15 +62,13 @@
 	}
     
   </style>
-</head>
-
 
 <!-- 마이페이지 -->
 <!-- 유저 정보 -->
 
 
 <!-- 사이드바 -->
-<div class="container my-4">
+<div class="container my-4"">
   <div class="row">
     <div class="col-md-3">
 		<div class="sidebar-left">
@@ -93,6 +89,4 @@
 	    	</div><!--end of sidebar-menu-wrap -->
 		</div>
     </div><!-- 사이드바 -->
- </div>
-</div> 
- 
+

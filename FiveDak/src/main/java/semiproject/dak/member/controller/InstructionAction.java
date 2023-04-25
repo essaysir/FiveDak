@@ -10,7 +10,7 @@ public class InstructionAction extends AbstractController {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		super.setViewPage("/WEB-INF/views/cscenter/cssidebar.jsp");
+		super.setViewPage("/WEB-INF/views/userInfo.jsp");
 
 	}
 
