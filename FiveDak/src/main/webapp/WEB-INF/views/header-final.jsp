@@ -22,8 +22,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 <!-- 글꼴 적용하기 -->
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
-
-
+<link rel="icon" href="<%=ctxPath%>/images/파비콘.svg">
+<title>랭킹닭컴</title>
 <script type="text/javascript">
 	$(document).ready(function(){
 		randomInput()
@@ -43,18 +43,17 @@
 		  const randomIndex = Math.floor(Math.random() * placeholders.length);
 		  console.log(`${placeholders[randomIndex]}`);
 
-		  const input = $('<input>', { id: 'search-header', type: 'text', placeholder: placeholders[randomIndex],naem:'searchWord' });
+		  const input = $('<input>', { id: 'search-header', type: 'text', placeholder: placeholders[randomIndex],name:'searchWord' });
 		  const button = $('<button>', { class: 'position-absolute btn-search' }).append($('<i>', { class: 'fa-solid fa-magnifying-glass' }));
 
 		  $('div.div-input').empty().append(input).append(button);
 		}
 	
 	function setHeaderEvent(){
+		// 헤더 로고 클릭시 indexPage로 돌아올 수 있게 하기 
+		
 		// 헤더 카테고리 
 	    // 2차 카테고리 열리게
-
-		
-	    
 	    $('.dropdown-menu li').mouseover(function(){
 	        $(this).find('.header-list').show();
 	    });
@@ -189,10 +188,10 @@
 		<c:if test="${sessionScope.loginuser == null }">
 			<ul class="nav" id="login_menu" >
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그인</a>
+				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/login.dak">로그인</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">회원가입</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/register.dak">회원가입</a>
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
@@ -209,7 +208,7 @@
 				    <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그아웃</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">내정보수정</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/main.dak">내정보수정</a>
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
@@ -225,7 +224,7 @@
 	<div class="container position-relative" style="display: flex; margin-bottom:50px;" >
 		
 			
-		<a class="row col-3" href="#" ><img src="<%=ctxPath%>/images/5조닭조.png" /></a>
+		<a class="row col-3" href="<%=ctxPath%>/index.dak" ><img src="<%=ctxPath%>/images/5조닭조.png" /></a>
 		
 		
 		<div class=" header-search col-5 offset-1" >

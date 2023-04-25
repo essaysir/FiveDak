@@ -90,14 +90,73 @@ public class ProductDAO implements InterProductDAO {
 
 	// 검색을 하였을 때 검색리스트를 가져오는 메소드 
 	@Override
-	public List<ProductDAO> selectPagingProduct(Map<String, String> paraMap)  throws SQLException {
-		List<ProductDAO> prodList = new ArrayList<>();
+	public List<ProductDTO> selectPagingProduct(Map<String, String> paraMap)  throws SQLException {
+		List<ProductDTO> prodList = new ArrayList<>();
 		try {
 			conn = ds.getConnection();
+			String sql = "";
+			if ( "asc".equalsIgnoreCase(paraMap.get("orderWay"))) {
+				
+		
+				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME "+
+						" FROM "+
+						" (\n"+
+						" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
+						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME "+
+						" from tbl_product P "+
+						" JOIN tbl_category C  "+
+						" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
+						" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
+						" )V "+
+						" WHERE RNO BETWEEN ? AND ?  "+
+						" ORDER BY ? asc ";
+				}
 			
-			String sql = " SELECT "
-					   + ""
-					   + "";
+			else {
+				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME "+
+						" FROM "+
+						" (\n"+
+						" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
+						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME "+
+						" from tbl_product P "+
+						" JOIN tbl_category C  "+
+						" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
+						" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
+						" )V "+
+						" WHERE RNO BETWEEN ? AND ?  "+
+						" ORDER BY ? desc ";
+			}
+			
+			pstmt = conn.prepareStatement(sql);
+			int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));
+			int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
+
+			pstmt.setString(1, paraMap.get("searchWord"));
+			pstmt.setInt(2, (sizePerPage*currentShowPageNo)-(sizePerPage-1));
+			pstmt.setInt(3, sizePerPage*currentShowPageNo);
+			pstmt.setString(4, paraMap.get("orderBy"));
+			
+			rs = pstmt.executeQuery();
+			
+			while ( rs.next()) {
+				ProductDTO pdto = new ProductDTO();
+				pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+				pdto.setProdName(rs.getString("PRODUCT_NAME"));
+				pdto.setFk_prodCateNum(rs.getInt("PRODUCT_CATEGORY_ID"));
+				pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
+				pdto.setProdDiscount(rs.getInt("PRODUCT_SALES"));
+				pdto.setProdAvgRating(rs.getInt("AVERAGE_RATING"));
+				pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+				
+				CategoryDTO cdto = new CategoryDTO();
+				cdto.setCateName(rs.getString("CATEGORY_NAME"));
+				pdto.setCateDTO(cdto);
+				
+				prodList.add(pdto);
+				
+			}// END OF WHILE( RS.NEXT()) {
+			
+			
 			
 		}finally {
 			close();

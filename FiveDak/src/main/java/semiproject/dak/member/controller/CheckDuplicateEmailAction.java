@@ -14,22 +14,27 @@ public class CheckDuplicateEmailAction extends AbstractController {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		InterMemberDAO dao = new MemberDAO(); 
-		String email = request.getParameter("email");
-		boolean isExist = dao.CheckDuplicateEmail(email);
+		String method = request.getMethod();
 		
-		JSONObject jsonObj = new JSONObject();
-		// {"isExists":true}
-		// {"isExists":false}
-		
-		jsonObj.put("isExist", isExist);
-		
-		String json = jsonObj.toString();
-		
-		request.setAttribute("json", json);
-		
-		// super.setRedirect(false);
-		super.setViewPage("/WEB-INF/views/jsonview.jsp");
-	}
+		if("POST".equals(method)) {
+			InterMemberDAO dao = new MemberDAO(); 
+			String email = request.getParameter("email");
+			boolean isExist = dao.CheckDuplicateEmail(email);
+			
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("isExist", isExist);
+			String json = jsonObj.toString();
+			request.setAttribute("json", json);
+			
+			
+			super.setViewPage("/WEB-INF/views/jsonview.jsp");
+		} else { // get
+			String msg = "비정상적인 접근입니다.";
+			String loc = "javascript:history.back()";
+			request.setAttribute("message", msg);
+			request.setAttribute("loc", loc);
+			super.setViewPage("/WEB-INF/views/msg.jsp");
+		}
 
+	}
 }
