@@ -209,6 +209,8 @@
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/member/memberEditInfo.dak">내정보수정</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/infoedit.dak">내정보수정</a>
+
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>

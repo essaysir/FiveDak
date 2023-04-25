@@ -7,14 +7,13 @@
     
 <style type="text/css"> 
 
-	.box_pwdChange { border:1px solid #e4e4e4; width:930px; margin:0 auto; background:#fbfbfb; padding: 65px 0 85px 0; box-sizing: border-box; font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif; }
+	.box_pwdChange { border:1px solid #e4e4e4; width:930px; margin:20px auto; background:#fbfbfb; padding: 65px 0 85px 0; box-sizing: border-box; font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif; }
 	.box_pwdChange .password_title {width:667px; height:128px; margin:80px auto 30px auto;}        
     .box_pwdChange .password_txt {font-size:13px; color:#666; width:360px; padding:5px 0 45px 0px; margin:0 auto;}
 
 
     .box_pwdChange .password_title1 {font-size: 36px; color:#333; line-height: 160%; font-weight: 600; padding-bottom: 13px; letter-spacing: -0.05em; text-align: center;}
     .box_pwdChange .password_title1 span {color:#ff7E32;}
-    .box_pwdChange .password_title2 {font-size: 14px; color:#333; line-height: 140%; padding-bottom: 10px; text-align: center; font-weight: 500;}
     .box_pwdChange .password_box {width:384px; margin:35px auto 10px auto;}
 
 
@@ -28,16 +27,16 @@
     .box_pwdChange .input-box > input:focus, input:not(:placeholder-shown){ border-bottom: solid 1px #ccc; outline:none; }
 
 
-    .wrap_button {width:384px; margin:0 auto; display: list-item; align-items: cen;}
-    .box_pwdChange .password_button1 {width:187px; margin-right:2px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #999; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #fff;}
-    .box_pwdChange  span.password_button_gray {color:#555; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
-
-    .password_button1 span:hover {text-decoration: none!important; background: #fafafa!important; width:187px; padding:13px 20px 14px 20px; }
+    .wrap_button {width:187px; margin:0 auto; display: list-item; align-items: center;}
 
     .box_pwdChange .password_button2 {width:187px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #c82370; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #ff7E32;}
     .box_pwdChange  span.password_button_orange {color:#fff; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
 
 	.password_button2 span:hover {text-decoration: none!important; background: #ff7232!important; width:187px; padding:13px 20px 14px 20px; }
+	
+	div.updateResult {
+		width:187px; margin:0 auto; display: list-item; align-items: center;
+	}
 </style>
 
 <script type="text/javascript">
@@ -64,7 +63,7 @@ $(document).ready(function(){
 		else {
 			const frm = document.pwdChangeForm;
 				
-			frm.action = "<%= ctxPath%>/pwdChange.jsp";
+			frm.action = "<%= ctxPath%>/pwdUpdate.dak";
 			frm.method = "POST";
 			frm.submit();
 		}
@@ -76,12 +75,11 @@ $(document).ready(function(){
 </script>
 
 <form id="pwdChangeForm" method="post">
-    <input type="hidden" name="">
+    <input type="hidden" name="userid" value="${requestScope.userid}" />
     
         <!-- PC 비밀 번호 변경 -->    
         <div class="box_pwdChange">
-            <div class="password_title1">이용자의 <span>비밀번호</span>를 변경해주세요.</div>
-            <div class="password_title2">이용자의 소중한 개인정보를 보호하기 위해 비밀번호 변경을 주기적으로 안내 드리고 있습니다.<br>안전한 서비스 이용을 위해 새로운 비밀번호로 변경해주세요.</div>   
+            <div class="password_title1">회원님의 <span>비밀번호</span>를 변경해주세요.</div> 
 
             <div class="password_box">
                 <div class="input-box"> <input type="password" id="newpassword" name="newpassword" placeholder="새 비밀번호를 입력하세요"> <label for="newpassword">새 비밀번호</label> <span id="duplicate_pwd" style="color: red"></span></div>
@@ -91,13 +89,19 @@ $(document).ready(function(){
     
             <div class="password_txt">비밀번호는 영문자, 숫자, 특수문자를 3가지 이상 사용하여 <br> 8자 이상, 16자 이하로 설정해주세요.</div>
 
-            <div class="wrap_button" style="list-style: none">
-                <button type="button" class="password_button1" onclick="location.href='<%= ctxPath%>/index.dak'"><span class="password_button_gray">3개월 후 변경하기</span></button>
-                <button type="button" class="password_button2" name="password_button2"><span class="password_button_orange">비밀번호 변경하기</span></button>
-            </div>    
+			<c:if test="${requestScope.method == 'GET'}">
+	            <div class="wrap_button" style="list-style: none">
+	                <button type="button" class="password_button2" name="password_button2"><span class="password_button_orange">비밀번호 변경하기</span></button>
+	            </div>  
+            </c:if>  
+
         </div>
         <!-- PC 비밀 번호 변경 end --> 
 </form>
-
+	<c:if test="${requestScope.method == 'POST' && requestScope.n == 1}">
+	   	<div id="updateResult" align="center">
+	           사용자 ID ${requestScope.userid}님의 암호가 새로이 변경되었습니다.
+	    </div> 
+	</c:if>
 
 <jsp:include page="../footer.jsp" />
