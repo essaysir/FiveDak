@@ -21,7 +21,31 @@
 		<select style="float:right;">
 			<option>오름차순</option>
 			<option>내림차순</option>
-		</select>		
+		</select>
+		<select style="float:right;">
+			<option>10개</option>
+			<option>20개</option>
+			<option>40개</option>
+		</select>
+		
+	  <div class="card-deck mb-5" style="clear:both;">
+	  		<c:forEach var="pdo" items="${requestScope.prodList}">
+			  <div class="card">
+			    <img src="<%=ctxPath %>/images/${pdo.prodImage1}" class="card-img-top" alt="...">
+			    <div class="card-body">
+			      <img src="<%=ctxPath %>/images/특급배송.png" style="flaot:left">
+			      <p class="card-text" style="float:right;"><small class="text-muted"><i class="fa-solid fa-star" style="color:#FFA751;"></i>&nbsp;${pdo.prodAvgRating }</small></p>
+			      <p class="card-text" style="clear:both;">[${pdo.brandDTO.brandName}] ${pdo.prodName}</p>
+			      <h5><span style=color:#f15220;>${pdo.discountPercent}%</span> ${pdo.prodPrice}원 <span class="text-muted" style="text-decoration: line-through;">${pdo.prodDiscount }원</span></h5>
+			      <img src="<%=ctxPath %>/images/성분체크.png">
+			      <img src="<%=ctxPath %>/images/신상품.png">
+			    </div>
+			  </div>
+			</c:forEach>  
+
+		  
+	</div>
+				
 	</c:if>
 
 	<c:if test="${requestScope.searchWord == ''}">

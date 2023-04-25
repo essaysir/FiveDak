@@ -41,7 +41,7 @@ public class SearchProdAction extends AbstractController {
 		String sizePerPage = request.getParameter("sizePerPage");
 		
 		if ( sizePerPage == null || !("10".equals(sizePerPage) || "20".equals(sizePerPage) || "40".equals(sizePerPage)) ) {
-			sizePerPage = "10" ;
+			sizePerPage = "6" ;
 		}
 		
 		 // 조회하고자하는 페이지번호
@@ -75,6 +75,9 @@ public class SearchProdAction extends AbstractController {
 		// 총 페이지를 알아오는 메소드 
 		int totalPage = pdao.getTotalPage(paraMap);
 		
+		// 검색된 상품의 총 개수를 알아오는 메소드 
+		// int totalProduct = pdao.getTotalProduct(paraMap);
+		
 		//
 		List<ProductDTO> prodList = pdao.selectPagingProduct(paraMap);
 		
@@ -98,14 +101,14 @@ public class SearchProdAction extends AbstractController {
 		
 		// **** [맨처음][이전] 만들기 ***** //
 		
-		pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+		pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 				+ "searchWord="+searchWord+"&currentShowPageNo="
 				+1+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 				+"'>맨처음</a></li>" ;
 				
 		
 		if( pageNo != 1) {
-				pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+				pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 				+ "searchWord="+searchWord+"&currentShowPageNo="
 				+(pageNo-1)+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 				+"'>이전</a></li>" ;
@@ -118,7 +121,7 @@ public class SearchProdAction extends AbstractController {
 			}
 			
 			else {
-				pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+				pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 						+ "searchWord="+searchWord+"&currentShowPageNo="
 						+pageNo+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 						+"'>"+pageNo+"</a></li>" ;
@@ -131,13 +134,13 @@ public class SearchProdAction extends AbstractController {
 		
 		// **** [다음][마지막] 만들기 ***** //
 		if( pageNo <= totalPage) {
-			pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+			pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 					+ "searchWord="+searchWord+"&currentShowPageNo="
 					+pageNo+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 					+"'>다음</a></li>" ;
 		}
 		
-		pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+		pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 				+"searchWord="+searchWord+"&currentShowPageNo="
 				+totalPage+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 				+"'>마지막</a></li>" ;

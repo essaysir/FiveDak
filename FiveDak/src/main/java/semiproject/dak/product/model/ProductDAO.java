@@ -98,33 +98,41 @@ public class ProductDAO implements InterProductDAO {
 			if ( "asc".equalsIgnoreCase(paraMap.get("orderWay"))) {
 				
 		
-				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME "+
-						" FROM "+
-						" (\n"+
-						" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
-						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME "+
-						" from tbl_product P "+
-						" JOIN tbl_category C  "+
-						" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
-						" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
-						" )V "+
-						" WHERE RNO BETWEEN ? AND ?  "+
-						" ORDER BY ? asc ";
+				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_DISCOUNT "+
+						  " , AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME , BRAND_NAME "+
+							" FROM "+
+							" ( "+
+							" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
+							" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_DISCOUNT, AVERAGE_RATING, PRODUCT_IMAGE_URL  "+
+							" , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME , B.BRAND_NAME  "+
+							" from tbl_product P "+
+							" JOIN tbl_category C  "+
+							" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
+							" JOIN tbl_brand B  "+
+							" ON P.PRODUCT_BRAND_ID = B.brand_id "+
+							" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
+							" )V "+
+							" WHERE RNO BETWEEN ?  AND ?  "+
+							" ORDER BY ? DESC ";
 				}
 			
 			else {
-				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME "+
+				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_DISCOUNT "+
+					  " , AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME , BRAND_NAME "+
 						" FROM "+
-						" (\n"+
+						" ( "+
 						" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
-						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME "+
+						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_DISCOUNT, AVERAGE_RATING, PRODUCT_IMAGE_URL  "+
+						" , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME , B.BRAND_NAME  "+
 						" from tbl_product P "+
 						" JOIN tbl_category C  "+
 						" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
+						" JOIN tbl_brand B  "+
+						" ON P.PRODUCT_BRAND_ID = B.brand_id "+
 						" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
 						" )V "+
-						" WHERE RNO BETWEEN ? AND ?  "+
-						" ORDER BY ? desc ";
+						" WHERE RNO BETWEEN ?  AND ?  "+
+						" ORDER BY ? ASC ";
 			}
 			
 			pstmt = conn.prepareStatement(sql);
@@ -144,13 +152,17 @@ public class ProductDAO implements InterProductDAO {
 				pdto.setProdName(rs.getString("PRODUCT_NAME"));
 				pdto.setFk_prodCateNum(rs.getInt("PRODUCT_CATEGORY_ID"));
 				pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
-				pdto.setProdDiscount(rs.getInt("PRODUCT_SALES"));
-				pdto.setProdAvgRating(rs.getInt("AVERAGE_RATING"));
+				pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+				pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
 				pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
 				
 				CategoryDTO cdto = new CategoryDTO();
 				cdto.setCateName(rs.getString("CATEGORY_NAME"));
 				pdto.setCateDTO(cdto);
+				
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("BRAND_NAME"));
+				pdto.setBrandDTO(bdto);
 				
 				prodList.add(pdto);
 				
