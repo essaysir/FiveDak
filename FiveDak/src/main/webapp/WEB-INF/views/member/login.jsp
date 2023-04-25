@@ -15,7 +15,7 @@
    .login_Box {
        width: 80%;
        margin: auto auto;
-       padding: 150px 150px;
+       padding: 70px 200px;
        margin-left: 500px;
        background:#f7f7f7; 
    }
@@ -269,9 +269,9 @@
 <body>
 
 
-<section class="container-login">
+<section class="container-login" style="margin-bottom : 50px ;">
 
-    <div class="login_Box">
+    <div class="login_Box container">
         <div class="login_Intro">
             <span id="hello" style="font-size:32pt;">안녕하세요 :)</span>
             <img id="logo_img" src="<%=ctxPath %>/images/5조닭조투명이미지.png">
@@ -312,12 +312,12 @@
    
    
       <div >
-         <button class="joinbtn position-relative" style="left:-20px;" href="<%=ctxPath%>/register.dak"><span>회원가입</span></button>
+         <button class="joinbtn position-relative" style="left:-20px; margin-left:20px;" href="<%=ctxPath%>/register.dak"><span>회원가입</span></button>
       </div>
       
 
       
-      <img id="benefit" alt="회원가입 혜택 이미지" src="<%=ctxPath %>/images/로그인페이지사진.png">
+      <img style="width:410px; margin-top:30px;"id="benefit" alt="회원가입 혜택 이미지" src="<%=ctxPath %>/images/로그인페이지사진.png">
 
 
    </div>

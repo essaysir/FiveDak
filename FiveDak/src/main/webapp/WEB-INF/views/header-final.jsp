@@ -22,8 +22,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 <!-- 글꼴 적용하기 -->
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
-
-
+<link rel="icon" href="<%=ctxPath%>/images/파비콘.svg">
+<title>랭킹닭컴</title>
 <script type="text/javascript">
 	$(document).ready(function(){
 		randomInput()
