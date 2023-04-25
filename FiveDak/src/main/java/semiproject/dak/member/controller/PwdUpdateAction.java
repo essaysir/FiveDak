@@ -23,11 +23,11 @@ public class PwdUpdateAction extends AbstractController {
 		if("POST".equalsIgnoreCase(method)) {
 			// 암호변경하기 버튼을 클릭한 경우
 			
-			String pwd = request.getParameter("pwd");
+			String password = request.getParameter("password");
 			
 			Map<String, String> paraMap = new HashMap<>();
 			
-			paraMap.put("pwd", pwd);
+			paraMap.put("password", password);
 			paraMap.put("userid", userid);
 			
 			InterMemberDAO mdao = new MemberDAO();

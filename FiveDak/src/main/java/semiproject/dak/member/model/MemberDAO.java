@@ -432,13 +432,13 @@ public class MemberDAO implements InterMemberDAO {
 		try {
 			conn = ds.getConnection();
 			
-			String sql = " update tbl_member set pwd = ? "
+			String sql = " update TBL_MEMBER set MEMBER_PWD = ? "
 					   + " 		 , LAST_PWD_CHANGED = sysdate "
-					   + " where userid = ? ";
+					   + " where MEMBER_ID = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, Sha256.encrypt(paraMap.get("pwd"))); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(1, Sha256.encrypt(paraMap.get("password"))); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
 			pstmt.setString(2, paraMap.get("userid"));
 			
 			result = pstmt.executeUpdate();

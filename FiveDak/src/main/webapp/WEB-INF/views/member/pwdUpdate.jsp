@@ -74,7 +74,7 @@ $(document).ready(function(){
 }); // end of $(document).ready(function(){})
 </script>
 
-<form id="pwdChangeForm" method="post">
+<form name="pwdChangeForm" method="post">
     <input type="hidden" name="userid" value="${requestScope.userid}" />
     
         <!-- PC 비밀 번호 변경 -->    
