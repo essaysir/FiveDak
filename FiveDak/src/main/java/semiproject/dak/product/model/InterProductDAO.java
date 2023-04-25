@@ -10,6 +10,6 @@ public interface InterProductDAO {
 	int getTotalPage(Map<String, String> paraMap)  throws SQLException;
 
 	// 검색을 하였을 때 검색리스트를 가져오는 메소드 
-	List<ProductDAO> selectPagingProduct(Map<String, String> paraMap)  throws SQLException;
+	List<ProductDTO> selectPagingProduct(Map<String, String> paraMap)  throws SQLException;
 
 }
