@@ -90,7 +90,7 @@
 		$('img#header-banner').hide();
 	}
 	
-	
+
 	
 		
 	
@@ -205,7 +205,7 @@
 		<c:if test="${sessionScope.loginuser != null }">
 			<ul class="nav" id="login_menu" >
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그아웃</a>
+				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/logout.dak">로그아웃</a>
 				  </li>
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/main.dak">내정보수정</a>
