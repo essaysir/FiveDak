@@ -1,5 +1,6 @@
 package semiproject.dak.member.controller;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,10 +27,12 @@ public class VerifyCertificationAction extends AbstractController {
 		
 		// certificationCode 와 userCertificationCode 가 같다면 
 		if(certificationCode.equals(userCertificationCode)) {
-			message="인증 성공 되었습니다.";
-			loc = request.getContextPath() + "/pwdUpdateEnd.dak?userid="+userid;				// 새 암호를 바꾸기 위한 페이지로 넘긴다.   // 페이지만 띄울때는 get 방식으로 띄운다.
-																								// 주소창 변경해야함 
-			
+
+			session.setAttribute("userid", userid);
+			 
+		    super.setRedirect(false);
+		    response.sendRedirect(request.getContextPath() + "/memberPwdUpdate.dak");
+		    return;
 		}
 		else {
 			message="발급된 인증코드가 아닙니다. \\n 인증코드를 다시 발급받으세요!!";
@@ -50,6 +53,11 @@ public class VerifyCertificationAction extends AbstractController {
 		session.removeAttribute("certificationCode");   /// 삭제하자 (인증코드 삭제) 꼭 하기 
 		
 
+	}
+
+	private void alert(String string) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
