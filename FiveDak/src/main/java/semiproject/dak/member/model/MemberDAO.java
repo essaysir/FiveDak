@@ -384,11 +384,45 @@ public class MemberDAO implements InterMemberDAO {
 		return result;
 	}// end of public int updateMember(MemberVO member) throws SQLException{} -----------------------------
 
+	// 비밀번호 찾기 부분 
+	@Override
+	public boolean isUserExist(Map<String, String> paraMap) throws SQLException {
 
+		boolean isUserExist = false;
+		
+		try {
+			
+			conn = ds.getConnection();   // date source 에서 가져옴
+			
+			String sql = " select member_id "
+					   + " from tbl_member "
+					   + " where member_status = 1 and member_id = ?  and member_name = ? and member_email = ? ";
+			
+			
+			// 우편배달부
+			pstmt = conn.prepareStatement(sql);
+						
+			// 위치 홀더
+			pstmt.setString(1, paraMap.get("memberFindPwdId"));
+			pstmt.setString(2, paraMap.get("memberFindPwdName"));   //name 키값을써서 name 을 가져오자	
+			pstmt.setString(3, aes.encrypt(paraMap.get("memberFindPwdEmail")) );  // email 키 값을 써서 email 을 가져올껀데 암호화가 되어 있으므로 암호화 하여 비교한다.
+			
+			rs = pstmt.executeQuery();
+			
+			
+			isUserExist = rs.next();    // 다음 행이 있느냐 ? 있으면 true 없으면 false
+			
+					
+		} catch ( GeneralSecurityException | UnsupportedEncodingException e) {			// 오류 두개를 같이 잡을때 | 는 or를 뜻한다.
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		
+		return isUserExist;
+	}
 
-
-
-	
 
 
 }
