@@ -33,6 +33,10 @@
     .box_pwdChange  span.password_button_orange {color:#fff; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
 
 	.password_button2 span:hover {text-decoration: none!important; background: #ff7232!important; width:187px; padding:13px 20px 14px 20px; }
+	
+	div.updateResult {
+		width:187px; margin:0 auto; display: list-item; align-items: center;
+	}
 </style>
 
 <script type="text/javascript">
@@ -71,7 +75,7 @@ $(document).ready(function(){
 </script>
 
 <form id="pwdChangeForm" method="post">
-    <input type="hidden" name="">
+    <input type="hidden" name="userid" value="${requestScope.userid}" />
     
         <!-- PC 비밀 번호 변경 -->    
         <div class="box_pwdChange">
@@ -85,12 +89,19 @@ $(document).ready(function(){
     
             <div class="password_txt">비밀번호는 영문자, 숫자, 특수문자를 3가지 이상 사용하여 <br> 8자 이상, 16자 이하로 설정해주세요.</div>
 
-            <div class="wrap_button" style="list-style: none">
-                <button type="button" class="password_button2" name="password_button2"><span class="password_button_orange">비밀번호 변경하기</span></button>
-            </div>    
+			<c:if test="${requestScope.method == 'GET'}">
+	            <div class="wrap_button" style="list-style: none">
+	                <button type="button" class="password_button2" name="password_button2"><span class="password_button_orange">비밀번호 변경하기</span></button>
+	            </div>  
+            </c:if>  
+
         </div>
         <!-- PC 비밀 번호 변경 end --> 
 </form>
-
+	<c:if test="${requestScope.method == 'POST' && requestScope.n == 1}">
+	   	<div id="updateResult" align="center">
+	           사용자 ID ${requestScope.userid}님의 암호가 새로이 변경되었습니다.
+	    </div> 
+	</c:if>
 
 <jsp:include page="../footer.jsp" />
