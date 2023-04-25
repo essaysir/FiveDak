@@ -26,9 +26,10 @@
 <title>오조닭조</title>
 <script type="text/javascript">
 	$(document).ready(function(){
-		randomInput()
+		randomInput() ; // INPUT에 PLACEHOLDER 가 랜덤하게 들어가게 하는 방법
 		setHeaderEvent();
-				
+		putSearchWord(); // INPUT 검색시에 검색값이 그대로 있도록 하는 메소드
+		
 	}); // END OF $(DOCUMENT).READY(FUNCTION(){
 		
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +49,7 @@
 
 		  $('div.div-input').empty().append(input).append(button);
 		}
-	
+		
 	function setHeaderEvent(){
 		// 헤더 로고 클릭시 indexPage로 돌아올 수 있게 하기 
 		
@@ -72,7 +73,12 @@
 	} // END OF FUNCTION SETHEADEREVENT(){
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	 
+	function putSearchWord(){
+		const searchWord = '${requestScope.searchWord}';
+		$("input#search-header").val(searchWord);
+	
+	}// END OF D function putSearchWord
+	
 	function goSearch(){
 		// console.log( '확인용 ~~')
 		const searchText = $('input#search-header').val();
@@ -409,7 +415,7 @@
 				    </li>
 				 
 				    <li class="col-2 offset-2">
-				      <a class="header-category" href="#" style="color: black;">랭킹</a>
+				      <a class="header-category" href="<%= ctxPath %>/rankingList.dak" style="color: black;">랭킹</a>
 				    </li>
 				    <li class="col-2">
 				      <a class="header-category" href="#" style="color: black;">신제품</a>
