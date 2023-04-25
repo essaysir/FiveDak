@@ -42,7 +42,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$("button#password_button2").click(function(){
+	$("span.password_button_orange").click(function(){
 		const pwd = $("input#newpassword").val();
 		const pwd2 = $("input#chknewpassword").val();
 			
