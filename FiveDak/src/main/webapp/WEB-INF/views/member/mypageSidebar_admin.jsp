@@ -92,8 +92,8 @@
       <div class="col-md-2">
         <div class="card my-page-card">
           <div class="card-body">
-            <p class="card-title">주문/배송</p>
-            <p class="card-text font-weight-bold"><span class="h3">4</span>건</p>
+            <p class="card-title">미배송건</p>
+            <p class="card-text font-weight-bold"><span class="h3">45</span>건</p>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
       <div class="col-md-2">
         <div class="card my-page-card">
           <div class="card-body">
-            <p class="card-title">누적구매금액</p>
+            <p class="card-title">이번달<br>누적판매금액</p>
             <p class="card-text font-weight-bold"><span class="h5">${sessionScope.loginuser.mbrPurchaseAmount }</span>원</p>
           </div>
         </div>
@@ -110,8 +110,8 @@
       <div class="col-md-2">
         <div class="card my-page-card">
           <div class="card-body">
-            <p class="card-title">포인트</p>
-            <p class="card-text orange-text font-weight-bold"><span class="h3">${sessionScope.loginuser.mbrPoint }</span>p</p>
+            <p class="card-title">문의사항 요청</p>
+            <p class="card-text orange-text font-weight-bold"><span class="h3">100</span>건</p>
           </div>
         </div>
       </div>
