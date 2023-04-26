@@ -174,7 +174,7 @@
       <!-- 오른쪽에 들어갈 내용 -->
       
       
-      
+      <jsp:include page="/WEB-INF/views/InformBoard/list.html" />
       
       
       <!-- 오른쪽에 들어갈 내용 -->
