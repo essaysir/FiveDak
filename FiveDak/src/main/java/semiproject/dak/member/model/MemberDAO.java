@@ -353,13 +353,38 @@ public class MemberDAO implements InterMemberDAO {
 		return isUserExist;
 	}
 
+	// 암호변경하기
 	@Override
-	public int pwdUpdate(Map<String, String> paraMap) {
+	public boolean pwdUpdate(MemberDTO dto) throws SQLException {
 		
+		boolean result = false;
 		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set member_pwd = ? "
+					   + " 		 , last_pwd_changed = sysdate "
+					   + " where member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, Sha256.encrypt(dto.getMbrPwd())); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(2, dto.getMbrId());
+			
+			int n = pstmt.executeUpdate();
+			
+			if(n == 1) {
+				result = true;
+			}
+			
+		}  catch (NullPointerException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
 		
+		return result;
 		
-		return 0;
 	}
 
 

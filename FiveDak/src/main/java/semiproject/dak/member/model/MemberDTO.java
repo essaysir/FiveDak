@@ -49,7 +49,10 @@ public class MemberDTO {
 		
 	}
 
-
+	public MemberDTO(String userid, String pwd) {
+		this.mbrId = userid;
+		this.mbrPwd = pwd;
+	}
 
 
 	public int getMbrNum() {
