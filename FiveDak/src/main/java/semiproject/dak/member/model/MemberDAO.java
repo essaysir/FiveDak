@@ -349,8 +349,7 @@ public class MemberDAO implements InterMemberDAO {
 		try {
 			conn = ds.getConnection();
 			
-			String sql = " update tbl_member set member_name = ? "
-										 		 + " , member_pwd = ? "
+			String sql = " update tbl_member set member_pwd = ? "
 												 + " , member_email = ? "
 												 + " , member_mobile = ? "
 												 + " , member_postcode = ? "
@@ -358,22 +357,22 @@ public class MemberDAO implements InterMemberDAO {
 												 + " , member_detail_address = ? "
 												 + " , member_gender = ? "
 												 + " , member_birth = ? "
-												 + " , lastpwdchangedate = sysdate "
+												 + " , LAST_PWD_CHANGED = sysdate "
 					   + " where member_id = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, member.getMbrName());
-			pstmt.setString(2, Sha256.encrypt(member.getMbrPwd()) );  // 암호를 SHA256 알고리즘으로 단방향 암호화 시킨다. 비밀번호는 "qwer1234$" 가 아닌 암호화 시키는 작업을 해야한다.
-			pstmt.setString(3, aes.encrypt(member.getMbrEmail()) );   // 이메일을 AES256 알고리즘으로 양방향 암호화 시킨다.
-			pstmt.setString(4, aes.encrypt(member.getMbrMobile()) );  // 휴대폰 번호를 AES256 알고리즘으로 양방향 암호화 시킨다.
-			pstmt.setString(5, member.getMbrPostcode());	
-			pstmt.setString(6, member.getMbrAddress());
-			pstmt.setString(7, member.getMbrDetailAddress());
-			pstmt.setString(8, member.getMbrGender());
-			pstmt.setString(9, member.getMbrBirth());
-			pstmt.setString(10, member.getMbrId());
 			
-			result = pstmt.executeUpdate();	// dml문 insert여서 리턴 int
+			pstmt.setString(1, Sha256.encrypt(member.getMbrPwd()) );  
+			pstmt.setString(2, aes.encrypt(member.getMbrEmail()) );   
+			pstmt.setString(3, aes.encrypt(member.getMbrMobile()) );  
+			pstmt.setString(4, member.getMbrPostcode());	
+			pstmt.setString(5, member.getMbrAddress());
+			pstmt.setString(6, member.getMbrDetailAddress());
+			pstmt.setString(7, member.getMbrGender());
+			pstmt.setString(8, member.getMbrBirth());
+			pstmt.setString(9, member.getMbrId());
+			
+			result = pstmt.executeUpdate();	
 			
 		} catch(GeneralSecurityException | UnsupportedEncodingException e) {
 			e.printStackTrace();

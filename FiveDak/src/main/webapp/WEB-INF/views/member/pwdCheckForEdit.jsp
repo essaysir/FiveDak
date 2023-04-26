@@ -127,6 +127,7 @@ input#MPE11password {
 
 	$(document).ready(function(){
 		$("button#checkPwdBtn").on('click',passwdCheck); 
+		
 	});
 	
 	function passwdCheck() {
@@ -134,14 +135,14 @@ input#MPE11password {
 	     	   url:"<%=ctxPath %>/mypage/infoedit.dak" , 
 	     	   data:{"password":$("input#password").val() , "userid":"${sessionScope.loginuser.mbrId}"} , 
 	     	   type:"post" , 
-	     	   dataType: "json" , 
 	             async:true ,
-	             success:function(json){
-	             	if(json["passwdCheck"]){ // 로그인유저아이디의 비밀번호가 입력한 passwd랑 데이터 베이스에있는 비번과 일치한다면 
-	             		 $("div#editInfoBox").load("/mypage/modifypage.dak");
-	             	}
-	             	else {
-	             		alert("비밀번호가 일치하지 않습니다!!");
+	             success:function(result){
+	            	 
+	            	 
+	             	if(result.trim() == 'false') {
+	             		alert("비밀번호가 일치하지 않습니다.");
+	             	} else {
+	             		$("div#editInfoBox").html(result);
 	             	}
 	            							
 	             },
@@ -154,7 +155,7 @@ input#MPE11password {
 </script>
 
 <div id="editInfoBox">
-<form name="pwdCheckForEdit">
+<form name="pwdCheckForEdit" onsubmit="return false;">
 	<div class="MPE1" id="memberInfoContents">
 	    <div class="MPE2">
 	        <div class="MPE3">

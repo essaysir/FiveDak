@@ -22,7 +22,6 @@ public class MemberEditInfoEndAction extends AbstractController {
 		if("POST".equalsIgnoreCase(method)) { // POST방식으로 넘어온것이라면 
 			
 			String userid = request.getParameter("userid");
-			String name = request.getParameter("name");			
 			String password = request.getParameter("password");
 			String email = request.getParameter("email");
 			String hp1 = request.getParameter("hp1");
@@ -31,15 +30,15 @@ public class MemberEditInfoEndAction extends AbstractController {
 			String postcode = request.getParameter("postcode");
 			String address = request.getParameter("address");
 			String detailAddress = request.getParameter("detailAddress");
-			String gedner = request.getParameter("gender");
+			String gender = request.getParameter("gender");
 			String birthyy = request.getParameter("birthyy");
 			String birthmm = request.getParameter("birthmm");
 			String birthdd = request.getParameter("birthdd");
 			
 			String mobile = hp1+hp2+hp3;
-			String birthday = birthyy+"-"+birthmm+"-"+birthdd;	// 1993-04-25
+			String birthday = birthyy+birthmm+birthdd;
 			
-			MemberDTO member = new MemberDTO(userid, name, password, email, mobile, postcode, address, detailAddress, gedner, birthday );
+			MemberDTO member = new MemberDTO(userid, password, email, mobile, postcode, address, detailAddress, gender, birthday );
 			
 			
 			try {
@@ -52,18 +51,17 @@ public class MemberEditInfoEndAction extends AbstractController {
 					HttpSession session = request.getSession();
 					MemberDTO loginuser= (MemberDTO) session.getAttribute("loginuser");
 					
-					loginuser.setMbrName(name);
-					loginuser.setMbrPwd(password);
 					loginuser.setMbrEmail(email);
 					loginuser.setMbrMobile(mobile);
 					loginuser.setMbrPostcode(postcode);
 					loginuser.setMbrAddress(address);
 					loginuser.setMbrDetailAddress(detailAddress);
-					loginuser.setMbrGender(gedner);
-					loginuser.setMbrBirth(birthyy+birthmm+birthdd);
+					loginuser.setMbrGender(gender);
+					loginuser.setMbrBirth(birthday);
 					
 					
-					message = "회원정보 수정 성공!!";
+					message = "회원정보가 정상적으로 변경되었습니다.";
+					loc = request.getContextPath() + "/index.dak";
 				}
 
 			} catch(SQLException e) {
@@ -75,15 +73,15 @@ public class MemberEditInfoEndAction extends AbstractController {
 		else {
 			// POST 방식으로 넘어온 것이 아니라면 //
 			message = "비정상적인 경로를 통해 들어왔습니다.!!";
+			loc = "javascript:history.back()";
 		}
 		
-		loc = "javascript:history.back()";	// 자바스크립트를 이용한 이전페이지로 이동한다.
 		
 		request.setAttribute("message", message);
 		request.setAttribute("loc", loc);
 		
 		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/msg.jsp");
+		super.setViewPage("/WEB-INF/views/msg.jsp");
 		
 	}
 

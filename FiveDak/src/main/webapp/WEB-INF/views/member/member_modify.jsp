@@ -1,18 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
     
 <%
     String ctxPath = request.getContextPath();
     //    /Fivedak
 %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>회원정보수정</title>
 <style type="text/css">
 	
-	* { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif; }
+	
 	
 	span.star {
 		color: #ff471a;
@@ -78,61 +75,41 @@
 	button.check{
 		color:#ffffff !important; 
 		border: solid 1px #cccccc; 
-		font-weight:bold; 
 		background-color:#FFA751;
-		width:140px;
+		width:100px;
+		font-size: 10pt;
 	}
 	button.check_success{
-		color:red !important; 
+		color:#ccc !important; 
 		border: solid 1px #cccccc; 
-		font-weight:bold; 
-		background-color:#cccccc;
-		width:140px;
+		font-size: 10pt;
+		background-color:##ffffff;
+		width:100px;
 	}
 	
 	button#find_address{
 		color:#ffffff !important; 
-		font-weight:bold; 
+		font-size: 10pt;
 		background-color:#FFA751;
 	}	
 		
 </style>
 
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/bootstrap-4.6.0-dist/css/bootstrap.min.css" > 
-
-<!-- Font Awesome 6 Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-
-<!-- Optional JavaScript -->
-<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.6.4.min.js"></script>
-<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.0-dist/js/bootstrap.bundle.min.js" ></script>
-
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 <script type="text/javascript">
 	
-let email_flag = false ; // 중복확인을 통과하면 true
-let pwd_flag = false ;
-let id_flag = false ;
+let email_flag = true; // 중복확인을 통과하면 true
+let pwd_flag = false;
+let birth_flag = true;
 
 $(document).ready(function(){
-	setEventHandling();
-	
-	
-	
-	
-      
+	setEventHandling();  
 });
 
 function setEventHandling(){
 	// 회원 가입 페이지 로드시 조건들
 	loadPage();
-	
 	// PWD 유효성 검사 및 비밀번호 일치 검사
 	$('input#inputPwd1').on('input',pwdCheck);
 	$('input#inputPwd2').on('input',pwdSame);
@@ -144,21 +121,20 @@ function setEventHandling(){
 	$('button.emailcheck').click(emailDuplicateCheck);
 	
 	// 휴대폰 번호에 숫자만 입력가능
-	$('input.mobile1').on('keyup',mobileCheck);
-	$('input.mobile1').on('keydown',mobileCheck);
-	
-	$('input.mobile2').on('keyup',mobileCheck);
-	$('input.mobile2').on('keydown',mobileCheck);
+	$('input.mobile1, input.mobile2').on({
+			'keyup':mobileCheck,
+			'blur':mobileCheck
+		});
 	
 	$("button#find_address").click(addressDaum);
 	
-	$('#birthyy, #birthmm, #birthdd').on('change', valiDate);
+	$('#birthyy, #birthmm, #birthdd').on('change', validDate);
  	
 
 } // END OF FUNCTION SETEVENTHANDLING()
 function loadPage(){
 		
-
+	btnFlag(email_flag,'emailcheck');
 	createMonth();
 	createDay();
 	createYear();
@@ -166,45 +142,69 @@ function loadPage(){
 }// END OF FUNCTION LOADPAGE()
 
 //날짜 유효성 func 만들기 
-function valiDate() {
+function validDate() {
 
-    const year = $('#birthyy').val();
-    const month = $('#birthmm').val();
-    const day = $('#birthdd').val();
+	const year = parseInt($('#birthyy').val());
+    const month = parseInt($('#birthmm').val());
+    const day = parseInt($('#birthdd').val());
     
+    if (isNaN(year) || isNaN(month) || isNaN(day)) {
+        return;
+      }
     const date = new Date(year, month - 1, day);
     
-
-    if (isNaN(date.getTime())) {
-   const warningMsg = year + "년 " + month + "월은 " + day + " 까지 입니다."
-      $('#dateWarning').text(warningMsg);
-    } else {
-      $('#dateWarning').text('');
-    }
+    
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+        const lastDayOfMonth = new Date(year, month, 0).getDate();
+        $('#dateWarning').text(` \${year}년 \${month}월은 \${lastDayOfMonth}일 까지입니다.`);
+        birth_flag = false;
+      } else {
+        $('#dateWarning').text('');
+        birth_flag = true;
+      }
 }// end of valiDate
 
 function createYear(){
 	const date = new Date();
 	   const year = date.getFullYear();
-	   $('select#birthyy').append("<option selected disabled value=''>선택</option>")
+	   $('select#birthyy').append("<option disabled value=''>선택</option>")
 	     for (let i = year; i >= year - 100; i--) {
-	       $('select#birthyy').append($('<option>', {
-	         value: i,
-	         text: i
-	       }));
+	    	 
+	    	 if(i == "${fn:substring(loginuser.mbrBirth, 0, 4)}") {
+	    		 $('select#birthyy').append($('<option>', {
+	    	         value: i,
+	    	         text: i,
+	    	         selected: true
+	    	       }));
+	    	 } else {
+	    		 $('select#birthyy').append($('<option>', {
+	    	         value: i,
+	    	         text: i
+	    	       }));	 
+	    	 }
+	    	 
+	       
 	     }
 }// END OF FUNCTION CREATEYEAR(){
 
 function createMonth(){
 	let html = "";
-		html += "<option selected disabled value=''>선택</option>";
-	for(let i=1; i<=12; i++) {		
+	let input = "";
+	
+	html += "<option disabled value=''>선택</option>";
+	for(let i=1; i<=12; i++) {
 		if(i<10){
-			html += "<option>0"+i+"</option>";
+			input = "0" + i;
 		}
 		else{
-			html += "<option>"+i+"</option>";
+			input = i;
 		}
+		if (${fn:substring(loginuser.mbrBirth, 4, 6)} == i) {
+			html += "<option selected>"+input+"</option>";
+		} else {
+			html += "<option>"+input+"</option>";	
+		}
+		
 	} //end of for ----------------------------------------------
 	
 	$("select#birthmm").html(html);
@@ -212,17 +212,29 @@ function createMonth(){
 	
 }; // 
 
+
+
+
+
 function createDay(){
 	let html = ``;
-    	html += "<option selected disabled value=''>선택</option>";
-      for(let i=1; i<=31; i++) {	    	
-         if(i<10) {
-            html += `<option>0\${i}</option>`;
-         }
-         else {
-            html += `<option>\${i}</option>`;
-         }
-      }
+    let input ="";
+	
+	html += "<option value=''>선택</option>";
+	for(let i=1; i<=31; i++) {
+		if(i<10){
+			input = "0" + i;
+		}
+		else{
+			input = i;
+		}
+		if (${fn:substring(loginuser.mbrBirth, 6, 8)} == i) {
+			html += "<option selected>"+input+"</option>";
+		} else {
+			html += "<option>"+input+"</option>";	
+		}
+		
+	}
       $("select#birthdd").html(html);
 
 } // 
@@ -231,10 +243,12 @@ function btnFlag(flag,id){
 	if( flag ){ // 중복확인이 된 경우
 		$('button.'+id).removeClass("check");
 		$('button.'+id).addClass("check_success");
+		$('button.'+id).text("확인완료");
 	}
 	else{
 		$('button.'+id).removeClass("check_success");
-		$('button.'+id).addClass("check");	
+		$('button.'+id).addClass("check");
+		$('button.'+id).text("중복확인");
 	}	
 	
 } // END OF FUNCTION BTNFLAG 
@@ -273,7 +287,17 @@ function pwdSame(e){
 }// END OF FUNCTION PWDSAME()
 
 function EmailCheck(e){
-	email_flag = false ;
+	
+	const userEmail = "${sessionScope.loginuser.mbrEmail}";
+	const inputEmail = $("input#inputEmail1").val() + ( ($('#emailSelector').val()=='other')?'':$('#emailSelector').val());
+	console.log(inputEmail);
+	console.log(userEmail);
+	if(inputEmail == userEmail) {
+		email_flag = true;		
+	} else {
+		email_flag = false;
+	}
+	
 	btnFlag(email_flag,'emailcheck');
 
 	if(  $('select.email_sel').val() == 'other' ){
@@ -282,8 +306,7 @@ function EmailCheck(e){
 		
 		if( !bool ){ // 이메일이 정규표현식에 위배된 경우
 			$('span#error_email').text("이메일이 적합한 형식이 아닙니다.");
-		}
-		else{ // 이메일이 정규표현식에 위배되지않은경우
+		} else{ // 이메일이 정규표현식에 위배되지않은경우
 			$('span#error_email').text("");		
 		}
 		
@@ -294,11 +317,9 @@ function EmailCheck(e){
 		
 		if ( !bool ){
 			$('span#error_email').text("도메인을 제외한 이메일 아이디를 정확하게 입력해주세요.");
-		}
-		else{
+		} else{
 			$('span#error_email').text("");
 		}
-		
 	}// end of else 
 
 
@@ -306,13 +327,40 @@ function EmailCheck(e){
 }// END OF FUNCTION EMAILCHECK
 
 function emailDuplicateCheck(){
-	if ($('span#error_email').text() != ""){
-		alert('이메일 조건을 만족해야 중복확인이 가능합니다');
+	if ($('span#error_email').text() != "" || $("input#inputEmail1").val() == ""){
+		alert('이메일을 정확하게 입력해주세요.');
 		return ;
 	}
-
-	email_flag = true ;
-	btnFlag(email_flag,'emailcheck');
+	
+	const inputEmail = $("input#inputEmail1").val();
+	const emailSelected = $("select#emailSelector").val();
+	let email = "";
+	if(emailSelected == "other") {
+		email = inputEmail;	
+	} else {
+		email = inputEmail + emailSelected;
+	}
+	
+	
+	$.ajax({
+      	url:"<%=ctxPath%>/register/checkDuplicateEmail.dak",
+      	data:{"email":email},
+      	type:"post", // 생략시 get
+      	dataType:"json",
+      	async:false,
+      	success:function(json) {
+      		console.log(json);
+      		if(json["isExists"]) {
+      			alert("이미 존재하는 이메일입니다.\n다른 이메일 주소를 입력해주세요.");
+      		} else {
+      			email_flag = true ;
+      			btnFlag(email_flag,'emailcheck');
+      		}
+      	},
+      	error: function(request, status, error){
+              alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+      });
 	
 }// END OF EMAILDUPLICATECHECK
 
@@ -324,15 +372,16 @@ function mobileCheck(e){
       $(e.target).val('');
     }
     
-    const regExp = /^[0-9]{4}$/g; 
-	const bool = regExp.test(val);
-	
-	if ( !bool ){
-		$('span#error_mobile').text("4자리 숫자만 입력이 가능합니다.");  
+    const regExp = /^[0-9]{4}$/g;
+	const regExp2 = /^[0-9]{4}$/g;
+    const bool1 = regExp.test($('input.mobile1').val());
+    const bool2 = regExp2.test($('input.mobile2').val());
+	if ( !bool1 || !bool2 ){
+		$('span#error_mobile').text("4자리 숫자만 입력이 가능합니다."); 
 	}
 	else{
 		$('span#error_mobile').text("");
-	}
+	}	
 	
 }// END OF MOBILECHECK
 
@@ -389,60 +438,73 @@ function memberEditInfo(){
 	// 비밀번호 
 	if( $('input#inputPwd1').val() == "" || $('input#inputPwd2').val() == ""){
 		alert('비밀번호와 비밀번호 확인은 필수 입력사항입니다.');	
-		return ;
+		return;
 	}
 	
 	if ( $('span#error_pwd').text() != "" || $('span#error_pwd_check').text() != ""  ){
 		alert('비밀번호와 비밀번호확인은 조건에 따라 입력하셔야 합니다.');
-		return ;
+		return;
 	}
 	
 	// 이메일 	
 	if( $('input#inputEmail1').val() == "" ) {
 		alert('이메일은 필수 입력사항입니다.');	
-		return ;
+		return;
 	}
 	
 	if( !email_flag ){
 		alert('이메일 중복확인을 클릭해주세요');
-		return ;
+		return;
 	}
 	
 	// 주소
 	// console.log($('input#postcode').val());
 	if ($('input#postcode').val() == ""){
 		alert('우편번호는 필수입력사항입니다.');
-		return ;
+		return;
 	}
 
 	// 성별 
 	const genderSelect = $("#gender");
 	if (!genderSelect.val()) {
 		 alert("성별을 선택해주세요.");
-		 return ;
+		 return;
 	}
 	// 생년월일
 	const birthyySelect = $("#birthyy");
 	if (!birthyySelect.val()) {
 		 alert("년도를 선택해주세요.");
-		 return ;
+		 return;
 	}
 	
 	const birthmmSelect = $("#birthmm");
 	if (!birthmmSelect.val()) {
 		 alert("월을 선택해주세요.");
-		 return ;
+		 return;
 	}
 	const birthddSelect = $("#birthdd");
 	if (!birthddSelect.val()) {
 		 alert("일을 선택해주세요.");
-		 return ;
+		 return;
+	}
+	
+	if(!birth_flag) {
+		alert("올바른 생년월일을 선택해주세요.");
+		return;
 	}
 	//////////////////////////////////////
 	
 	
 	const myfrm = document.myfrm;
-	myfrm.action = "MemberEditInfoEnd.dak"
+	
+	let inputEmail = $("input#inputEmail1").val();
+	const emailSelected = $("select#emailSelector").val();
+	if(emailSelected != "other") {
+		inputEmail += emailSelected;
+	}
+	myfrm.email.value = inputEmail;
+	
+	myfrm.action = "memberEditInfoEnd.dak"
 	myfrm.method = "post";
 	myfrm.submit();
 	
@@ -453,14 +515,14 @@ function memberEditInfo(){
 
 
 	
-	<div class="col-md-9">
+	<form name="myfrm">
 		<div style="margin-left:40px;">
 			<h2 style="padding-bottom: 10px; margin: 20px 0px 60px 0px; color:#333; border-bottom : solid 1px #333;">회원정보수정</h2>
 			  <div class="form_modify">
 			  	<fieldset class="form-group-area">
 					  <div class="form-group row" >
 					  	  <label class="col-3">아이디<span class="star">*</span></label>
-					 	  <input type="text" class="col-9" name="userid" value="${sessionScope.loginuser.mbrId}" readonly />
+					 	  <input type="text" class="col-9 form-control" name="userid" value="${sessionScope.loginuser.mbrId}" readonly />
 					  </div>
 					  <div class="form-group row" style="margin-bottom:0px;">
 					  	   <label for="inputPwd1" class="col-3">비밀번호<span class="star">*</span></label>
@@ -483,44 +545,45 @@ function memberEditInfo(){
 					  </div>
 					  <div class="form-group row" >
 					  	  <label class="col-3">이름<span class="star">*</span></label>
-					 	  <input type="text" name="name" class="col-9" value="${sessionScope.loginuser.mbrName}" readonly/>
+					 	  <input type="text" name="name" class="col-9 form-control" value="${sessionScope.loginuser.mbrName}" readonly/>
 					 	  <div>
 					  	   		<p class="text-guide-sm2"style="margin-bottom: 0px;">※ 이름은 변경이 불가합니다.</p>
 					  	  </div>
 					  </div>
 					  <div class="form-group row">
 					  	   <label class="col-3">우편번호<span class="star">*</span></label>
-					  	   <input type="text" id="postcode" name="postcode" size="6" maxlength="5" class="form-control col-2" readonly style="width:100px;height:50px;border-radius: 6px;"/>
+					  	   <input type="text" id="postcode" name="postcode" value="${loginuser.mbrPostcode}" size="6" maxlength="5" class="form-control col-2" readonly style="width:100px;height:50px;border-radius: 6px;"/>
 						   <%-- 우편번호 찾기 --%>
 				           <button type="button" class="btn mx-3" id="find_address">우편주소 찾기</button> 
 					  </div>
 					  <div class="form-group row">
 					  	   <label class="col-3" for="address">주소</label>
-					  	   <input id="address" type="text" class="form-control col-4 postaddress" name="address" placeholder="주소" readonly /><br/>
-				           <input id="detailAddress" type="text" class="form-control col-4 postaddress" name="detailAddress"  placeholder="상세주소" />	
+					  	   <input id="address" type="text" class="form-control col-4 postaddress" name="address" value="${loginuser.mbrAddress}" placeholder="주소" readonly /><br/>
+				           <input id="detailAddress" type="text" class="form-control col-4 postaddress" name="detailAddress" value="${loginuser.mbrDetailAddress}" placeholder="상세주소" />	
 					  </div>
 					  
 					  <div class="form-group row">
 						  <label class="col-3" for="exampleInputphonenum1">연락처<span class="star">*</span></label>
 						  <div class="form-group phonenum" style="display:flex; margin-bottom:0px;"> 
 						    <input name="hp1" type="text" class="form-control col-3 exampleInputphonenum" id="exampleInputphonenum1" maxlength="3" value="010" readonly />&nbsp;-&nbsp;
-						    <input name="hp2" type="text" class="form-control col-3 exampleInputphonenum mobile1" maxlength="4" />&nbsp;-&nbsp;
-						    <input name="hp3" type="text" class="form-control col-3 exampleInputphonenum mobile2" maxlength="4" />
+						    <input name="hp2" type="text" class="form-control col-3 exampleInputphonenum mobile1" value="${fn:substring(loginuser.mbrMobile, 3, 7)}" maxlength="4" />&nbsp;-&nbsp;
+						    <input name="hp3" type="text" class="form-control col-3 exampleInputphonenum mobile2" value="${fn:substring(loginuser.mbrMobile, 7, 11)}" maxlength="4" />
 						  </div>
 						  <div><span id="error_mobile" class="error" style="font-size: 13px;"></span></div>
 					  </div>
 					  
 					  <div class="form-group row" style="margin-bottom:0px;">
 					  	  <label for="inputEmail1" class="col-3">이메일<span class="star">*</span></label>
-					  	  <input name="email" type="text" class="form-control col-4 email" id="inputEmail1" aria-describedby="emailHelp" placeholder="이메일 주소">
+					  	  <input type="text" class="form-control col-4 email" id="inputEmail1" aria-describedby="emailHelp" placeholder="이메일 주소" value="${sessionScope.loginuser.mbrEmail}">
+					  	  <input type="hidden" name="email">
 						  	<div class="form-group col-md-3" style="margin-bottom: 0px;">
-						      <select class="style_basic email_sel" onchange="EmailCheck()">
+						      <select class="style_basic email_sel" id="emailSelector" onchange="EmailCheck()">
 						        <option value="other" selected>직접입력</option>
-						        <option value="1">naver.com</option>
-						        <option value="2">hanmail.com</option>
-						        <option value="3">daum.net</option>
-						        <option value="4">google.com</option>
-						        <option value="5">gamil.com</option>
+						        <option value="@naver.com">naver.com</option>
+						        <option value="@hanmail.com">hanmail.com</option>
+						        <option value="@daum.net">daum.net</option>
+						        <option value="@google.com">google.com</option>
+						        <option value="@gamil.com">gamil.com</option>
 						      </select>
 						    </div>
 						    <div class="form-group col-md-1" style="padding-left:0px;">
@@ -541,14 +604,14 @@ function memberEditInfo(){
 					  <div style="margin: 0px 0px 0px 180px;">
 					  	<span id="dateWarning" class="error" style="font-size: 13px;"></span>
 					  </div>
-					  
+					  	
 					  <div class="form-group row" style="margin-top:10px">
 					  	  <label  class="col-3">성별</label>
 					  	  <div >
 						      <select name="gender" id="gender" class="style_basic">
-						        <option value="" selected disabled>성별선택</option>
-						        <option value="1">남자</option>
-						        <option value="2">여자</option>
+						        <option value="" disabled>성별선택</option>
+						        <option value="1" ${loginuser.mbrGender == '1' ? "selected" : ''}>남자</option>
+						        <option value="2" ${loginuser.mbrGender == '2' ? "selected" : ''}>여자</option>
 						      </select>
 						 </div>
 					  </div>
@@ -560,4 +623,4 @@ function memberEditInfo(){
 				</div>
 			</div>
 		</div>
-	</div>
+		</form>

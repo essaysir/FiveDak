@@ -28,15 +28,23 @@ public class PasswdCheckAction extends AbstractController {
 			
 			
 			boolean passwdCheck = dao.passwdCheck(paraMap);
-			JSONObject jsonObj = new JSONObject();
-			jsonObj.put("passwdCheck", passwdCheck);
 			
 			
-			String json = jsonObj.toString();
-			request.setAttribute("json", json);
+			if(passwdCheck) {
+				super.setViewPage("/WEB-INF/views/member/member_modify.jsp");
+			} else {
+//				JSONObject jsonObj = new JSONObject();
+//				jsonObj.put("passwdCheck", passwdCheck);
+//				String json = jsonObj.toString();
+				request.setAttribute("json", "false");
+				super.setViewPage("/WEB-INF/views/jsonview.jsp");
+			}
 			
 			
-			super.setViewPage("/WEB-INF/views/jsonview.jsp");
+			
+
+			
+			
 		} else {
 			super.setRedirect(false);
 			super.setViewPage("/WEB-INF/views/member/pwdCheckForEdit.jsp");
