@@ -25,14 +25,14 @@ public class SearchProdAction extends AbstractController {
 		// 어떤 순서로 상품들을 보여줄 것인가 ?
 		// 예 >> 평균별점 , 가격순 , 이름순대로 
 		String orderBy = request.getParameter("orderBy");
-		if ( orderBy == null || !("AVERAGE_RATING".equalsIgnoreCase(orderBy) || "PRODUCT_PRICE".equalsIgnoreCase(orderBy)) ) {
+		if ( orderBy == null || !("AVERAGE_RATING".equalsIgnoreCase(orderBy) || "PRODUCT_DISCOUNT".equalsIgnoreCase(orderBy)) ) {
 			orderBy = "AVERAGE_RATING"; 
 		}
 		
 		// 내림차순으로 보여줄 것인가 ? 오름차순으로 보여줄 것인가 ?
 		String orderWay = request.getParameter("orderWay");
 		if ( orderWay == null || !("asc".equalsIgnoreCase(orderWay) || "desc".equalsIgnoreCase(orderWay))) {
-			orderWay = "asc";
+			orderWay = "desc";
 		}
 			
 		
@@ -40,8 +40,8 @@ public class SearchProdAction extends AbstractController {
 		// 한 페이지에 보여주고자 하는 
 		String sizePerPage = request.getParameter("sizePerPage");
 		
-		if ( sizePerPage == null || !("10".equals(sizePerPage) || "20".equals(sizePerPage) || "40".equals(sizePerPage)) ) {
-			sizePerPage = "10" ;
+		if ( sizePerPage == null || !("6".equals(sizePerPage) || "12".equals(sizePerPage) || "24".equals(sizePerPage)) ) {
+			sizePerPage = "6" ;
 		}
 		
 		 // 조회하고자하는 페이지번호
@@ -75,6 +75,9 @@ public class SearchProdAction extends AbstractController {
 		// 총 페이지를 알아오는 메소드 
 		int totalPage = pdao.getTotalPage(paraMap);
 		
+		// 검색된 상품의 총 개수를 알아오는 메소드 
+		int totalProduct = pdao.getTotalProduct(paraMap);
+		
 		//
 		List<ProductDTO> prodList = pdao.selectPagingProduct(paraMap);
 		
@@ -83,6 +86,7 @@ public class SearchProdAction extends AbstractController {
 		request.setAttribute("orderWay", orderWay);
 		request.setAttribute("sizePerPage", sizePerPage);
 		request.setAttribute("currentShowPageNo", currentShowPageNo);
+		request.setAttribute("totalProduct", totalProduct);
 		request.setAttribute("prodList", prodList);
 		
 		String pageBar = "";
@@ -98,14 +102,14 @@ public class SearchProdAction extends AbstractController {
 		
 		// **** [맨처음][이전] 만들기 ***** //
 		
-		pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+		pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 				+ "searchWord="+searchWord+"&currentShowPageNo="
 				+1+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 				+"'>맨처음</a></li>" ;
 				
 		
 		if( pageNo != 1) {
-				pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+				pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 				+ "searchWord="+searchWord+"&currentShowPageNo="
 				+(pageNo-1)+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 				+"'>이전</a></li>" ;
@@ -114,11 +118,11 @@ public class SearchProdAction extends AbstractController {
 		while(!(loop > blockSize || pageNo > totalPage)  ) {
 			// 현재 있는 페이지는 href 를 안 준 것이다. 굳이 필요하지 않기 때문에
 			if (pageNo == Integer.parseInt(currentShowPageNo) ) {
-				pageBar += "<li class='page-item active'><a class='page-link'>"+pageNo+"</a></li>" ;					
+				pageBar += "<li class='page-item active'><a class='page-link activeNo'>"+pageNo+"</a></li>" ;					
 			}
 			
 			else {
-				pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+				pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 						+ "searchWord="+searchWord+"&currentShowPageNo="
 						+pageNo+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 						+"'>"+pageNo+"</a></li>" ;
@@ -131,13 +135,13 @@ public class SearchProdAction extends AbstractController {
 		
 		// **** [다음][마지막] 만들기 ***** //
 		if( pageNo <= totalPage) {
-			pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+			pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 					+ "searchWord="+searchWord+"&currentShowPageNo="
 					+pageNo+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 					+"'>다음</a></li>" ;
 		}
 		
-		pageBar += "<li class='page-item'><a class='page-link' href='prodList.up?"
+		pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
 				+"searchWord="+searchWord+"&currentShowPageNo="
 				+totalPage+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 				+"'>마지막</a></li>" ;
