@@ -353,6 +353,15 @@ public class MemberDAO implements InterMemberDAO {
 		return isUserExist;
 	}
 
+	@Override
+	public int pwdUpdate(Map<String, String> paraMap) {
+		
+		
+		
+		
+		return 0;
+	}
+
 
 
 }
