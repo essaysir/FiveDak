@@ -34,9 +34,9 @@
 	}
 	
 	function showDetail(e){
-		const prodName = $(e.target).parent().find('span#prodName').text();
-		// console.log(prodName);
-	
+		const prodNum = $(e.target).parent().find('input#prodNum').text();
+		console.log(prodName);
+		location.href ="<%= ctxPath%>/product/productDetail.dak";
 	}
 	
 </script>
@@ -98,10 +98,11 @@
 			      <span class="text-muted" style="text-decoration: line-through;"><fmt:formatNumber value="${pdo.prodPrice}" pattern="#,###"/>원</span></h5>
 			      <img src="<%=ctxPath %>/images/성분체크.png">
 			      <img src="<%=ctxPath %>/images/신상품.png">
+			      <input type="hidden" id="prodNum" name="prodNum" value="${pdo.prodNum}" />
 			    </div>
 			  </div>
 			  <c:choose>
-			  	<c:when test="${status.count eq 3}">
+			  	<c:when test="${status.count%3 eq 0}">
 			  		</div>
 			  	</c:when>
 			  </c:choose>

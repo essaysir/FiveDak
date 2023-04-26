@@ -84,7 +84,7 @@
 		const searchText = $('input#search-header').val();
 		
 		const searchFrm = document.searchFrm;
-		searchFrm.action="searchProd.dak";
+		searchFrm.action="<%=ctxPath%>/product/searchProd.dak";
 		searchFrm.method="get";
 
 		searchFrm.submit();	
