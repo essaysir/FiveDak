@@ -313,6 +313,75 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return userid;
 	}
+	
+	@Override
+	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
+		boolean result = false;
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select * "
+					+    " from tbl_member "
+					+    " where member_id = ? and member_pwd = ? ";
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, Sha256.encrypt(paraMap.get("password")));	
+			
+			rs = pstmt.executeQuery();
+			result = rs.next();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+	}
+	
+
+	// 회원의 개인 정보 변경하기
+	@Override
+	public int updateMember(MemberDTO member) throws SQLException {
+		int result = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set member_pwd = ? "
+												 + " , member_email = ? "
+												 + " , member_mobile = ? "
+												 + " , member_postcode = ? "
+												 + " , member_address = ? "
+												 + " , member_detail_address = ? "
+												 + " , member_gender = ? "
+												 + " , member_birth = ? "
+												 + " , LAST_PWD_CHANGED = sysdate "
+					   + " where member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, Sha256.encrypt(member.getMbrPwd()) );  
+			pstmt.setString(2, aes.encrypt(member.getMbrEmail()) );   
+			pstmt.setString(3, aes.encrypt(member.getMbrMobile()) );  
+			pstmt.setString(4, member.getMbrPostcode());	
+			pstmt.setString(5, member.getMbrAddress());
+			pstmt.setString(6, member.getMbrDetailAddress());
+			pstmt.setString(7, member.getMbrGender());
+			pstmt.setString(8, member.getMbrBirth());
+			pstmt.setString(9, member.getMbrId());
+			
+			result = pstmt.executeUpdate();	
+			
+		} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		} 
+		
+		return result;
+	}// end of public int updateMember(MemberVO member) throws SQLException{} -----------------------------
+
 
 	// 비밀번호 찾기 부분 
 	@Override
@@ -351,6 +420,15 @@ public class MemberDAO implements InterMemberDAO {
 		
 		
 		return isUserExist;
+	}
+
+	@Override
+	public int pwdUpdate(Map<String, String> paraMap) {
+		
+		
+		
+		
+		return 0;
 	}
 
 

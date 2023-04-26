@@ -2,7 +2,6 @@
     pageEncoding="UTF-8"%>
 
 
-<jsp:include page="/WEB-INF/views/header-final.jsp"/>
 
 
   <style type="text/css">
@@ -132,7 +131,7 @@
 	                    <a href="" class="menu">주문관리</a>
 	                    <ul class="menu-list">
 	                        <li class="check">
-	                        	<a class="list" href="">주문내역</a>
+	                        	<a class="list" href="">전체주문내역</a>
 	                        </li>
 	                        <li class="check">
 	                        	<a class="list" href="">취소/반품 내역</a>
@@ -170,11 +169,15 @@
 	</div>
     </div><!-- 사이드바 -->
     
-    <div class="col-md-9">
-      <!-- 오른쪽에 들어갈 내용 -->
-      
-      
-      
-      
-      
+    
+
+
+
+
+<!-- 마이페이지 -->
+
+
+
+
+
 	
