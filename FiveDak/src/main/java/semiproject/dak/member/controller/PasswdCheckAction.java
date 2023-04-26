@@ -21,7 +21,7 @@ public class PasswdCheckAction extends AbstractController {
 			String userid = request.getParameter("userid");
 			String password = request.getParameter("password");
 			InterMemberDAO dao = new MemberDAO();
-		//	System.out.println(userid);
+
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("userid", userid);
 			paraMap.put("password", password);

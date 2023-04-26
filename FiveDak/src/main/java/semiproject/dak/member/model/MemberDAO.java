@@ -314,7 +314,6 @@ public class MemberDAO implements InterMemberDAO {
 		return userid;
 	}
 	
-	// 로그인한 유저의 비밀번호와 내정보 수정에서 입력한 비밀번호가 일치하는지 확인
 	@Override
 	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
 		boolean result = false;
@@ -340,7 +339,7 @@ public class MemberDAO implements InterMemberDAO {
 		return result;
 	}
 	
-	
+
 	// 회원의 개인 정보 변경하기
 	@Override
 	public int updateMember(MemberDTO member) throws SQLException {
@@ -383,6 +382,7 @@ public class MemberDAO implements InterMemberDAO {
 		return result;
 	}// end of public int updateMember(MemberVO member) throws SQLException{} -----------------------------
 
+
 	// 비밀번호 찾기 부분 
 	@Override
 	public boolean isUserExist(Map<String, String> paraMap) throws SQLException {
@@ -420,6 +420,15 @@ public class MemberDAO implements InterMemberDAO {
 		
 		
 		return isUserExist;
+	}
+
+	@Override
+	public int pwdUpdate(Map<String, String> paraMap) {
+		
+		
+		
+		
+		return 0;
 	}
 
 

@@ -95,46 +95,34 @@ public class ProductDAO implements InterProductDAO {
 		try {
 			conn = ds.getConnection();
 			String sql = "";
-			if ( "asc".equalsIgnoreCase(paraMap.get("orderWay"))) {
+				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_DISCOUNT "+
+						  " , AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME , BRAND_NAME "+
+							" FROM "+
+							" ( "+
+							" select row_number() over (order by "+ paraMap.get("orderBy")+"  "+paraMap.get("orderWay") +" ) AS RNO  "+
+							" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_DISCOUNT, AVERAGE_RATING, PRODUCT_IMAGE_URL  "+
+							" , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME , B.BRAND_NAME  "+
+							" from tbl_product P "+
+							" JOIN tbl_category C  "+
+							" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
+							" JOIN tbl_brand B  "+
+							" ON P.PRODUCT_BRAND_ID = B.brand_id "+
+							" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
+							" )V "+
+							" WHERE RNO BETWEEN ?  AND ?  "
+							+  "ORDER BY RNO ASC ";
 				
-		
-				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME "+
-						" FROM "+
-						" (\n"+
-						" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
-						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME "+
-						" from tbl_product P "+
-						" JOIN tbl_category C  "+
-						" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
-						" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
-						" )V "+
-						" WHERE RNO BETWEEN ? AND ?  "+
-						" ORDER BY ? asc ";
-				}
 			
-			else {
-				sql = " SELECT RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME "+
-						" FROM "+
-						" (\n"+
-						" select row_number() over (order by PRODUCT_ID desc ) AS RNO  "+
-						" , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME "+
-						" from tbl_product P "+
-						" JOIN tbl_category C  "+
-						" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
-						" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
-						" )V "+
-						" WHERE RNO BETWEEN ? AND ?  "+
-						" ORDER BY ? desc ";
-			}
+
 			
 			pstmt = conn.prepareStatement(sql);
 			int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));
 			int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
-
+			
+			// pstmt.setString(1, paraMap.get("orderBy"));
 			pstmt.setString(1, paraMap.get("searchWord"));
 			pstmt.setInt(2, (sizePerPage*currentShowPageNo)-(sizePerPage-1));
 			pstmt.setInt(3, sizePerPage*currentShowPageNo);
-			pstmt.setString(4, paraMap.get("orderBy"));
 			
 			rs = pstmt.executeQuery();
 			
@@ -144,13 +132,17 @@ public class ProductDAO implements InterProductDAO {
 				pdto.setProdName(rs.getString("PRODUCT_NAME"));
 				pdto.setFk_prodCateNum(rs.getInt("PRODUCT_CATEGORY_ID"));
 				pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
-				pdto.setProdDiscount(rs.getInt("PRODUCT_SALES"));
-				pdto.setProdAvgRating(rs.getInt("AVERAGE_RATING"));
+				pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+				pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
 				pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
 				
 				CategoryDTO cdto = new CategoryDTO();
 				cdto.setCateName(rs.getString("CATEGORY_NAME"));
 				pdto.setCateDTO(cdto);
+				
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("BRAND_NAME"));
+				pdto.setBrandDTO(bdto);
 				
 				prodList.add(pdto);
 				
@@ -163,6 +155,31 @@ public class ProductDAO implements InterProductDAO {
 		}
 		
 		return prodList;
+	} // END OF PUBLIC LIST<PRODUCTDTO> SELECTPAGINGPRODUCT(MAP<STRING, STRING> PARAMAP)  THROWS SQLEXCEPTION {
+
+	// 검색을 하였을 때 검색에 해당하는 총 제품 갯수 알아오기  
+	@Override
+	public int getTotalProduct(Map<String, String> paraMap)   throws SQLException {
+		int totalProduct = 0 ;
+		try {
+			conn = ds.getConnection();
+			String sql = " SELECT COUNT(*) "
+					   + " FROM TBL_PRODUCT "
+					   + " WHERE PRODUCT_NAME like '%' || ? || '%'  ";
+				
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, paraMap.get("searchWord"));
+
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			totalProduct = rs.getInt(1);
+			
+		}finally {
+			close();
+		}
+		return totalProduct;
 	}
 	
 }
