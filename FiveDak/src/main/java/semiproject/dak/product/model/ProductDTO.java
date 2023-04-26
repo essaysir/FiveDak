@@ -17,6 +17,7 @@ public class ProductDTO {
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	// private BrandDTO brandDTO ; // 브랜드 DTO 
 	
+	
 	// 기본 생성자 
 	public ProductDTO () {}
 
@@ -136,5 +137,7 @@ public class ProductDTO {
 		// 할인률 = 100 - (판매가 * 100) / 정가
 		return 100 - (prodDiscount * 100)/prodPrice;
 	}
+	
+		
 	
 }
