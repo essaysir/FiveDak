@@ -355,7 +355,7 @@ public class MemberDAO implements InterMemberDAO {
 
 	// 암호변경하기
 	@Override
-	public int pwdUpdate(String userid, String newPwd) throws SQLException {
+	public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
 
 		int n = 0;
 		
@@ -368,8 +368,8 @@ public class MemberDAO implements InterMemberDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, Sha256.encrypt(newPwd)); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
-			pstmt.setString(2, userid);
+			pstmt.setString(1, Sha256.encrypt(paraMap.get("pwd"))); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(2, paraMap.get("userid"));
 			
 			n = pstmt.executeUpdate();
 			
@@ -380,6 +380,26 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return n;
 	}
+
+	@Override
+	public int updateMember(MemberDTO member) throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int pwdUpdate(String userid, String newPwd) throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 
 
 
