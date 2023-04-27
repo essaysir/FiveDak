@@ -15,13 +15,16 @@ public class OrderDTO {
 	private String orderTrackNo ; // 운송장 번호
 	private int orderStatus ;  // 배송 상태 여부
 	private int reviewStatus ; // 리뷰 여부
+	private String orderStatus_name ; // 배송 상태 여부 이름 ( 원래는 dto 가 필요하지만 굳이 안만들고 여기에다가 함) 
 	
+
+
 	// 기본 생성자 
 	public OrderDTO () {}
 	
 	public OrderDTO(int orderId, String fk_orderMbrId, String orderDate, int orderTotalPrice, int orderPoint,
 			String orderPostcode, String orderAddress, String orderDetailAddress, String recipName, String recipMobile,
-			String orderMessage, String orderTrackNo, int orderStatus, int reviewStatus) {
+			String orderMessage, String orderTrackNo, int orderStatus, int reviewStatus,String orderStatus_name) {
 		super();
 		this.orderId = orderId;
 		this.fk_orderMbrId = fk_orderMbrId;
@@ -37,8 +40,16 @@ public class OrderDTO {
 		this.orderTrackNo = orderTrackNo;
 		this.orderStatus = orderStatus;
 		this.reviewStatus = reviewStatus;
+		this.orderStatus_name = orderStatus_name;
+		
 	}
-	
+	public String getOrderStatus_name() {
+		return orderStatus_name;
+	}
+
+	public void setOrderStatus_name(String orderStatus_name) {
+		this.orderStatus_name = orderStatus_name;
+	}
 	public int getOrderId() {
 		return orderId;
 	}
