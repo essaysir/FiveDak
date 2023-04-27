@@ -23,5 +23,10 @@ public interface InterMemberDAO {
 	// 비밀번호 변경
 	int pwdUpdate(Map<String, String> paraMap) throws SQLException;
 
+	int updateMember(MemberDTO member) throws SQLException;
+
+	boolean passwdCheck(Map<String, String> paraMap) throws SQLException;
+
+
 
 }
