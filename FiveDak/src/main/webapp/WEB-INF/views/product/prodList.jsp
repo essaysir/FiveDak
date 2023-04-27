@@ -22,7 +22,14 @@
 			$("select#sizePerPage").val('${requestScope.sizePerPage}');
 			$("select#orderWay").val('${requestScope.orderWay}');
 		
-			$('div.card_prod').on('click',showDetail);
+			$('div.card_prod').on('click', function(){
+				const index = $('div.card_prod').index(this) ;
+				// console.log(index);
+				const prodNum = $("input.prodNum").eq(index).val();
+				// console.log(prodNum);
+				
+				location.href ="<%= ctxPath%>/product/productDetail.dak?prodNum="+prodNum; 
+			});
 	};
 	
 	function sel_goSearch(){
@@ -33,11 +40,7 @@
 		
 	}
 	
-	function showDetail(e){
-		const prodName = $(e.target).parent().find('span#prodName').text();
-		// console.log(prodName);
-	
-	}
+
 	
 </script>
 
@@ -56,24 +59,24 @@
 	
 </style>
 <div class="container" style="margin-top: 50px;">
-	<c:if test="${requestScope.searchWord != ''}">
 		<h2 style="float:left;">${requestScope.searchWord} 검색결과</h2>
 		<p style="float:right;">전체 <span style="color:red;">${requestScope.totalProduct }</span></p>
 		<hr style="border: 1px solid; clear:both;"/>
 		<p style="float:left;">전체 <span style="color:red;">${requestScope.totalProduct }</span></p>
 		
+	<c:if test="${not empty requestScope.prodList}">
 		<form name="prodListFrm">
-			<select id="orderBy" name="orderBy" class="mx-3"style="float:right;">
+			<select id="orderBy" name="orderBy" class="mx-3 form-select"style="float:right;">
 				<option value="AVERAGE_RATING">평균별점순</option>
 				<option value="">신상품순</option>
 				<option value="PRODUCT_SALES">판매량순</option>
 				<option value="PRODUCT_DISCOUNT">가격순</option>
 			</select>
-			<select id="orderWay" name="orderWay" class="mx-3" style="float:right;">
+			<select id="orderWay" name="orderWay" class="mx-3 form-select" style="float:right;">
 				<option value="desc">내림차순</option>
 				<option value="asc">오름차순</option>
 			</select>
-			<select id="sizePerPage" name="sizePerPage" class="mx-3" style="float:right;">
+			<select id="sizePerPage" name="sizePerPage" class="mx-3 form-select" style="float:right;">
 				<option value="6">6개</option>
 				<option value="12">12개</option>
 				<option value="24">24개</option>
@@ -98,10 +101,11 @@
 			      <span class="text-muted" style="text-decoration: line-through;"><fmt:formatNumber value="${pdo.prodPrice}" pattern="#,###"/>원</span></h5>
 			      <img src="<%=ctxPath %>/images/성분체크.png">
 			      <img src="<%=ctxPath %>/images/신상품.png">
+			      <input type="hidden" id="prodNum" class="prodNum" value="${pdo.prodNum}" />
 			    </div>
 			  </div>
 			  <c:choose>
-			  	<c:when test="${status.count eq 3}">
+			  	<c:when test="${status.count%3 eq 0}">
 			  		</div>
 			  	</c:when>
 			  </c:choose>
@@ -113,8 +117,11 @@
 				
 	</c:if>
 
-
-
+	<c:if test="${empty requestScope.prodList}">
+	
+	
+	
+	</c:if>
 
 
 
