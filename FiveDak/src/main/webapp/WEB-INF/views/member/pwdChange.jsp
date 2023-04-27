@@ -1,8 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
-<jsp:include page="../header-final.jsp" /> 
-   
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,7 +51,7 @@
 <form id="pwdChangeForm" method="post">
     <input type="hidden" name="">
     
-        <!-- PC 비밀 번호 변경 -->
+        <!-- PC 비밀 번호 변경 -->    
         <div class="box_pwdChange">
             <div class="password_title1">이용자의 <span>비밀번호</span>를 변경해주세요.</div>
             <div class="password_title2">이용자의 소중한 개인정보를 보호하기 위해 비밀번호 변경을 주기적으로 안내 드리고 있습니다.<br>안전한 서비스 이용을 위해 새로운 비밀번호로 변경해주세요.</div>   
@@ -68,17 +65,11 @@
             <div class="password_txt">비밀번호는 영문자, 숫자, 특수문자를 3가지 이상 사용하여 <br> 8자 이상, 20자 이하로 설정해주세요.</div>
 
             <div class="wrap_button">
-                <div class="password_button1"><button class="gray" onclick=""><span class="">3개월 후 변경하기</span></button>
-                <%--<a href="" class="password_button_gray" onclick="">3개월 후 변경하기</a>--%>                
-                </div>
-                <div class="password_button2"><button class="orange" onclick=""><span class="">비밀번호 변경하기</span></button>
-                <%--<a href="" class="password_button_orange" onclick="">비밀번호 변경하기</a>--%>   
-                </div>
-            </div>
+                <div class="password_button1"><a href="" class="password_button_gray" onclick="">3개월 후 변경하기</a></div>
+                <div class="password_button2"><a href="" class="password_button_orange" onclick="">비밀번호 변경하기</a></div>
+            </div>    
         </div>
         <!-- PC 비밀 번호 변경 end --> 
 </form>
 </body>
 </html>
-
-<jsp:include page="../footer.jsp" /> 

@@ -92,10 +92,14 @@
 	let email_flag = false ; // 중복확인을 통과하면 true
 	let id_flag = false ;
 	let pwd_flag = false ;
-	let birth_Flag = false;
+	
 	$(document).ready(function(){
 		setEventHandling();
 		
+		
+		
+		
+	      
 	});
 	
 	function setEventHandling(){
@@ -161,10 +165,8 @@
 	    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
 	        const lastDayOfMonth = new Date(year, month, 0).getDate();
 	        $('#dateWarning').text(` \${year}년 \${month}월은 \${lastDayOfMonth}일 까지입니다.`);
-	        birth_Flag = false;
 	      } else {
 	        $('#dateWarning').text('');
-	        birth_Flag = true;
 	      }
 	}// end of valiDate
 
@@ -385,11 +387,13 @@
 	      	success:function(json) {
 	      		
 	      		if(json["isExists"]) {
-	      			alert("이미 존재하는 이메일입니다.\n다른 이메일 주소를 입력해주세요.");
+	      			$("span#emailCheckResult").html($("input#email").val() + "은 동일한 사용자가 존재합니다.").css("color","red");
+	      			$("input#email").val("");
+	      			b_flag_emailDuplicate_click = false;
 	      		} else {
-
-	      			email_flag = true ;
-	      			btnFlag(email_flag,'emailcheck');
+	      			$("input#email").attr("readonly",true);
+	      			$("span#emailCheckResult").html($("input#email").val() + "은 사용가능한 이메일입니다.").css("color","navy");
+	      			$("input#hp2").focus();
 	      			
 	      		}
 	      	},
@@ -399,6 +403,8 @@
 	      });
 		
 		
+		email_flag = true ;
+		btnFlag(email_flag,'emailcheck');
 		
 	}// END OF EMAILDUPLICATECHECK
 	
@@ -538,10 +544,6 @@
 			 alert("일을 선택해주세요.");
 			 return ;
 		}
-		if(!birth_Flag) {
-			alert("올바른 생년월일을 선택해주세요.");
-			return;
-		}
 		//////////////////////////////////////
 		const myfrm = document.myfrm;
 		
@@ -553,6 +555,7 @@
 			myfrm.email.value = inputEmail + emailSelected;
 		}
 		
+		console.log(myfrm.email.value);
 		
 		myfrm.action = "register.dak"
 		myfrm.method = "post";
