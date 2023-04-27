@@ -31,7 +31,10 @@ public class MemberDTO {
 		
 	}
 	
-	
+	public MemberDTO(String userid, String pwd) {
+		this.mbrId = userid;
+		this.mbrPwd = pwd;
+	}
 	
 	
 	public MemberDTO(String userid, String pwd, String name, String email, String mobile, String postcode,
@@ -48,12 +51,6 @@ public class MemberDTO {
 		this.mbrBirth = birth;
 		
 	}
-
-	public MemberDTO(String userid, String pwd) {
-		this.mbrId = userid;
-		this.mbrPwd = pwd;
-	}
-
 
 	public int getMbrNum() {
 		return mbrNum;

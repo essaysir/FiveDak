@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import member.model.MemberVO;
 import semiproject.dak.common.controller.AbstractController;
 import semiproject.dak.member.model.InterMemberDAO;
 import semiproject.dak.member.model.MemberDAO;
@@ -22,16 +23,21 @@ public class MemberPwdUpdateAction extends AbstractController {
 		String loc = "";
 		
 		// 세션 사용 해서 userid 가져옴 
+		HttpSession session  = request.getSession();
+		MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 		
-		 HttpSession session = request.getSession(); 
-		 String userid = (String) session.getAttribute("userid");
-		 String pwd = (String) session.getAttribute("pwd");
+		String userid = request.getParameter("userid");
+		String pwd = request.getParameter("pwd");
+		
+		 
+		System.out.println(userid);
+		System.out.println(pwd);
 		 
 		//세션 삭제 session.removeAttribute("userid"); /// 삭제하자 (userid 삭제) 꼭 하기
+		 
 		
-		
-		// 직접 uri 를 치고 들어오는 경우 
 		/*
+		// 직접 uri 를 치고 들어오는 경우 
 		if(userid == null ) { 
 			message=("장난치지 말고 비밀번호 찾기 및 변경을 통해 들어오도록 하거라"); 
 			loc = request.getContextPath() + "/index.dak";
@@ -43,25 +49,24 @@ public class MemberPwdUpdateAction extends AbstractController {
 			return; 
 		}
 		*/
-		
 		if("POST".equalsIgnoreCase(method)) {
 			// 암호변경하기 버튼을 클릭한 경우
 		//	String userid = request.getParameter("userid");
-		//	String pwd = request.getParameter("pwd");
-			
-			MemberDTO dto = new MemberDTO(userid, pwd);
+			String newPwd = request.getParameter("pwd");
+		
+		//	CustomerDAO dao = new CustomerDAO();
 			
 			
 			
 			InterMemberDAO mdao = new MemberDAO();
+			
+			int updateCount = mdao.pwdUpdate(userid, newPwd);
 			/* int n = mdao.pwdUpdate(dto);
 			
 			request.setAttribute("n", n); */
 			
 			try {
-				if(mdao.pwdUpdate(dto)) {
-					request.setAttribute("userid", userid);
-					request.setAttribute("pwd", pwd);
+				if(updateCount != 0) {
 					
 					super.setRedirect(false);
 					//super.setViewPage("/WEB-INF/login/registerAfterAutoLogin.jsp");  
@@ -77,9 +82,6 @@ public class MemberPwdUpdateAction extends AbstractController {
 				}
 				request.setAttribute("message", message);
 				request.setAttribute("loc", loc);
-				
-				session.removeAttribute("userid");
-				session.removeAttribute("pwd");
 				
 				super.setViewPage("/WEB-INF/views/msg.jsp");
 			} catch (Exception e) {

@@ -355,9 +355,9 @@ public class MemberDAO implements InterMemberDAO {
 
 	// 암호변경하기
 	@Override
-	public boolean pwdUpdate(MemberDTO dto) throws SQLException {
-		
-		boolean result = false;
+	public int pwdUpdate(String userid, String newPwd) throws SQLException {
+
+		int n = 0;
 		
 		try {
 			conn = ds.getConnection();
@@ -368,23 +368,17 @@ public class MemberDAO implements InterMemberDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, Sha256.encrypt(dto.getMbrPwd())); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
-			pstmt.setString(2, dto.getMbrId());
+			pstmt.setString(1, Sha256.encrypt(newPwd)); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(2, userid);
 			
-			int n = pstmt.executeUpdate();
+			n = pstmt.executeUpdate();
 			
-			if(n == 1) {
-				result = true;
-			}
 			
-		}  catch (NullPointerException e) {
-			e.printStackTrace();
 		} finally {
 			close();
 		}
 		
-		return result;
-		
+		return n;
 	}
 
 

@@ -21,7 +21,7 @@ public interface InterMemberDAO {
 	boolean isUserExist(Map<String, String> paraMap) throws SQLException;
 
 	// 암호변경하기
-	boolean pwdUpdate(MemberDTO dto) throws SQLException;
+	int pwdUpdate(String userid, String newPwd) throws SQLException;
 
 
 }
