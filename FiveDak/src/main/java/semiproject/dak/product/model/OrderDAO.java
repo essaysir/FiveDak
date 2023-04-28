@@ -136,29 +136,74 @@ public class OrderDAO implements InterOrderDAO{
 	@Override
 	public List<OrderDTO> showAllOrder(Map<String, String> paraMap) throws SQLException {
 		List<OrderDTO> orderList = new ArrayList<>();
+		String sql = "";
 		try {
 			conn = ds.getConnection();
 			
+			if ("".equals(paraMap.get("order_date"))) {
+				sql = " SELECT RNO, ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE  "+
+						"					, ORDER_STATUS , ORDER_DATE , status_name "+
+						"					 FROM  "+
+						"					 (  "+
+						"					 select row_number() over (order by ORDER_DATE DESC) AS RNO   "+
+						"					 , ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE   "+
+						"					 , ORDER_STATUS , to_char( ORDER_DATE , 'yyyy-mm-dd') as order_date , S.status_name  "+
+						"					 from tbl_order O  "+
+						"                     JOIN order_status S "+
+						"                     ON O.ORDER_STATUS = S.status_id "+
+						"                    WHERE to_char(order_date, 'yyyy-mm') = to_char(sysdate, 'yyyy-mm' ) " ;
+						
+						
+			}
 			
-			String sql = " SELECT RNO, ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE  "+
-					"					, ORDER_STATUS , ORDER_DATE , status_name "+
-					"					 FROM  "+
-					"					 (  "+
-					"					 select row_number() over (order by ORDER_DATE DESC) AS RNO   "+
-					"					 , ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE   "+
-					"					 , ORDER_STATUS , to_char( ORDER_DATE , 'yyyy-mm-dd') as order_date , S.status_name  "+
-					"					 from tbl_order O  "+
-					"                     JOIN order_status S "+
-					"                     ON O.ORDER_STATUS = S.status_id "+
-					"                    WHERE to_char(order_date, 'yyyy-mm') = to_char(sysdate, 'yyyy-mm' ) "+
-					"					 )  "+
-					"					 WHERE RNO BETWEEN ? AND ?  "+
-					""; 
+			else {
+				if ( "6".equals(paraMap.get("order_date"))) {
+					sql = " SELECT RNO, ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE  "+
+							"					, ORDER_STATUS , ORDER_DATE , status_name "+
+							"					 FROM  "+
+							"					 (  "+
+							"					 select row_number() over (order by ORDER_DATE DESC) AS RNO   "+
+							"					 , ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE   "+
+							"					 , ORDER_STATUS , to_char( ORDER_DATE , 'yyyy-mm-dd') as order_date , S.status_name  "+
+							"					 from tbl_order O  "+
+							"                     JOIN order_status S "+
+							"                     ON O.ORDER_STATUS = S.status_id "+
+							"                   WHERE order_date >= ADD_MONTHS(TRUNC(SYSDATE), -6 ) " ;
+					
+				}
+				
+				else {
+					sql = " SELECT RNO, ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE  "+
+							"					, ORDER_STATUS , ORDER_DATE , status_name "+
+							"					 FROM  "+
+							"					 (  "+
+							"					 select row_number() over (order by ORDER_DATE DESC) AS RNO   "+
+							"					 , ORDER_ID, ORDER_MEMBER_ID, ORDER_TOTAL_PRICE , SHIPPING_ADDRESS, TRACKING_NUMBER, RECIPIENT_MOBILE   "+
+							"					 , ORDER_STATUS , to_char( ORDER_DATE , 'yyyy-mm-dd') as order_date , S.status_name  "+
+							"					 from tbl_order O  "+
+							"                     JOIN order_status S "+
+							"                     ON O.ORDER_STATUS = S.status_id "+
+							"                 WHERE order_date >= ADD_MONTHS(TRUNC(SYSDATE), -12 )" ;
+				}
+
+					
+			}
+			if ( !"".equals(paraMap.get("order_status"))) {
+				sql += "and order_status = ? "; 
+			}
 			
+			sql += "					 )  "+
+			"	WHERE RNO BETWEEN ? AND ?  "
+			; 
 			pstmt = conn.prepareStatement(sql);
+			int cnt = 1 ;
 			
-			pstmt.setString(1, paraMap.get("start"));
-			pstmt.setString(2, paraMap.get("end"));
+			if ( !"".equals(paraMap.get("order_status"))) {
+				pstmt.setString(cnt++, paraMap.get("order_status"));
+			}
+			
+			pstmt.setString(cnt++, paraMap.get("start"));
+			pstmt.setString(cnt++, paraMap.get("end"));
 			
 			rs = pstmt.executeQuery();
 			
@@ -184,6 +229,63 @@ public class OrderDAO implements InterOrderDAO{
 			close();
 		}
 		return orderList;
+	}
+
+	@Override
+	public int getTotalNo(Map<String,String> paraMap) throws SQLException {
+		int totalNo = 0 ;
+		String sql = "";
+		try {
+			conn = ds.getConnection();
+			
+			if ( "".equals(paraMap.get("order_date")) ) {
+				sql = " select count ( * ) as count  "+
+						" from tbl_order O "+
+						" JOIN order_status S "+
+						" ON O.ORDER_STATUS = S.STATUS_ID  "+
+						" WHERE TO_CHAR ( ORDER_DATE , 'YYYY-MM') = TO_CHAR(SYSDATE,'YYYY-MM' ) " ;
+						
+			}
+			
+			else {
+				sql = " select count ( * ) as count  "+
+						" from tbl_order O "+
+						" JOIN order_status S "+
+						" ON O.ORDER_STATUS = S.STATUS_ID  " ;
+				if ( "6".equals(paraMap.get("order_date"))) {
+					
+						sql += 	" WHERE order_date >= ADD_MONTHS(TRUNC(SYSDATE), -6 ) " ;
+				}
+				else {
+					sql += " WHERE order_date >= ADD_MONTHS(TRUNC(SYSDATE), -12 ) " ;
+				}
+				
+				
+			}
+			
+			if ( !"".equals(paraMap.get("order_status"))) {
+				sql += "AND ORDER_STATUS = ? ";
+			}
+			pstmt = conn.prepareStatement(sql);
+			int cnt = 1 ;
+			
+			if ( !"".equals(paraMap.get("order_status"))) {
+				pstmt.setString(cnt++, paraMap.get("order_status"));
+			}
+			
+			rs = pstmt.executeQuery();	
+			
+			rs.next();
+			totalNo = rs.getInt("count"); 		
+
+		}finally {
+			close();
+		}
+			
+			
+			
+			
+		return totalNo ;
 	}
 
 	
