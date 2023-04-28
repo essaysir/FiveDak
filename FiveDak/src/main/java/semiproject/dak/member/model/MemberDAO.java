@@ -541,8 +541,6 @@ public class MemberDAO implements InterMemberDAO {
 			
 			totalPage =  rs.getInt(1);
 			
-			System.out.println(totalPage+"입니다.");	
-			
 			
 		} finally { 
 			close();
