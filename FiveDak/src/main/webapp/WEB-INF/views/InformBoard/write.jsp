@@ -5,11 +5,11 @@
     //    /MyMVC
 %>
 
-<jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
+<jsp:include page="/WEB-INF/views/member/serviceSidebar.jsp"/>
 
 <style type="text/css">
 .board_wrap {
-    margin: 100px auto;
+    margin: 30px auto;
 }
 
 .board_title {

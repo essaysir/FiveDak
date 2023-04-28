@@ -52,6 +52,22 @@ public class MemberDTO {
 		
 	}
 
+
+	public MemberDTO(String userid, String password, String email, String mobile, String postcode, String address,
+			String detailAddress, String gender, String birthday) {
+		this.mbrId = userid;
+		this.mbrPwd = password;
+		this.mbrEmail = email;
+		this.mbrMobile = mobile;
+		this.mbrPostcode = postcode;
+		this.mbrAddress = address;
+		this.mbrDetailAddress = detailAddress;
+		this.mbrGender = gender;
+		this.mbrBirth = birthday;
+	}
+
+
+
 	public int getMbrNum() {
 		return mbrNum;
 	}
