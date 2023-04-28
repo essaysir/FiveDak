@@ -449,7 +449,10 @@ public class ProductDAO implements InterProductDAO {
 			
 			for (int i = 0; i < cartIds.length; i++) {
 			    pstmt.setInt(i + 1, cartIds[i]);
+			    
 			}
+			
+			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				CartDTO cart = new CartDTO();

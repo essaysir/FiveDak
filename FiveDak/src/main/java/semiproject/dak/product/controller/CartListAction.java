@@ -33,7 +33,7 @@ public class CartListAction extends AbstractController {
 		}
 		
 		request.setAttribute("cartlist", cartlist);
-		super.setViewPage("/WEB-INF/views/product/cartlist.jsp");
+		super.setViewPage("/WEB-INF/views/product/cartList2.jsp");
 
 	}
 

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
 	String ctxPath = request.getContextPath();
 %>
@@ -543,7 +544,7 @@
 									<p class="tit text">오븐구이 혼합 10팩 ★한입소스 3팩증정★</p>
 									<ul style="padding: 0" class="h6">
 										<li>
-											<span class="text">${cart.prod.prodPrice }</span>원
+											<span class="text"><fmt:formatNumber type="number" value="${cart.prod.prodPrice}"  pattern="#,###"/></span>원
 										</li>
 									</ul>
 								</div>
