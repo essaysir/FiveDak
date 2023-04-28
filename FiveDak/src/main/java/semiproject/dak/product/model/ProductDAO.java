@@ -293,7 +293,7 @@ public class ProductDAO implements InterProductDAO {
 		
 		return totalHITCount;
 	}
-	
-	
-	
 }
+	
+	
+	
