@@ -22,4 +22,7 @@ public interface InterOrderDAO {
 	// 
 	int getTotalNo(Map<String,String> paraMap) throws SQLException ;
 
+	// 주문 상세 정보에 띄울 정보들 DB에서 가져오기 
+	OrderDTO getOrderInfo(String orderid)  throws SQLException ;
+
 }

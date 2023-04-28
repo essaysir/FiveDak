@@ -1,13 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>
-<% String ctxPath = request.getContextPath();%>
+
 <jsp:include page="/WEB-INF/views/member/mypageSidebar_admin.jsp"/>
-<style type="text/css">
-	
-	
-</style>
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('span#countHIT').hide();
@@ -30,23 +26,10 @@
 				displayOrder($(this).val());				
 			}
 			
-		}); // END OF $('BUTTON#BTNMOREHIT').CLICK(FUNCTION(){
-			
-		$(document).on('click', 'tr.orderInfo', function(e){
-			const orderid = ($(e.target).parent().find('.orderid').text());
-			// console.log(orderid);
-			location.href ="<%= ctxPath%>/admin/orderDetail.dak?orderid="+orderid;
-		});
-			
-		$(document).on('mouseenter', 'tr.orderInfo', function() {
-		    $(this).css('cursor', 'pointer');
-		});
-
-		$(document).on('mouseleave', 'tr.orderInfo', function() {
-		    $(this).css('cursor', '');
 		});
 		
-	}); // END OF 	$(DOCUMENT).READY(FUNCTION(){
+		
+	});
 	
 	let lenHIT = 1 ;
 	
@@ -72,8 +55,8 @@
 				else if ( json.length > 0 ){
 					$.each(json,function(index,item){
 						html += 
-							"<tr class='orderInfo'>"
-					    +"<td class='orderid'>"+item.order_id+"</td>"
+							"<tr>"
+					    +"<td>"+item.order_id+"</td>"
 					    +"<td>"+item.order_member_id+"</td>"
 					    +"<td>"+item.order_total_price+"</td>"
 					    +"<td>"+item.shipping_address+"</td>"
@@ -128,10 +111,11 @@
 
 <div class="col-md-9">
       <!-- 오른쪽에 들어갈 내용 -->
-      		<h2 class="float-left">전체주문내역</h2>
-      		<h5 class="float-right" style="position:relative; top:10px;">전체 주문 수 : ${requestScope.sumMonthOrder} / 미배송중 : ${requestScope.sumNotShipped} </h5>
+      		<h2 class="float-left">전체제품목록</h2>
+      		<h5 class="float-right" style="position:relative; top:10px;">전체 제품 수 : ${requestScope.sumMonthOrder}  </h5>
 			<hr style="border: 1px solid; clear:both;"/>
 		<form name="orderListFrm">
+			<input type="text" name="searchName" />
 			<select id="order_date" name="order_date" class="mx-3 form-select float-right">
 	            <option value="">이번달</option>
 	            <option value="6">6개월</option>

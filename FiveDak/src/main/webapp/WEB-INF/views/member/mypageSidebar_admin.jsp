@@ -184,9 +184,9 @@
 	                    </ul>
 	                </li>
 	                <li class="check">
-	                    <a href="" class="menu">활동관리</a>
+	                    <a href="" class="menu">제품관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list admin-sidebar" href="">최근 본 상품</a></li>
+	                        <li class="check"><a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminProductSearch.dak">전체 제품 관리</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="">찜한상품</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="">관심브랜드</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="">1:1문의</a></li>

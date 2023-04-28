@@ -288,6 +288,45 @@ public class OrderDAO implements InterOrderDAO{
 		return totalNo ;
 	}
 
+	// 주문 상세 정보에 띄울 정보들 DB에서 가져오기
+	@Override
+	public OrderDTO getOrderInfo(String orderid) throws SQLException {
+		OrderDTO odto = null ;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT  ORDER_MEMBER_ID ,ORDER_TOTAL_PRICE , (SHIPPING_ADDRESS || ' ' || SHIPPING_DETAIL_ADDRESS ) AS ORDER_ADDRESS "
+					+ " , RECIPIENT_MOBILE , TRACKING_NUMBER , ORDER_STATUS , REVIEW_STATUS ,  STATUS_NAME "
+					+ " FROM TBL_ORDER "
+					+ " JOIN order_status S "
+					+ " ON O.ORDER_STATUS = S.STATUS_ID  "  
+					+ " WHERE ORDER_ID = ? "; 
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			if ( rs.next()) {
+				odto = new OrderDTO();
+				odto.setFk_orderMbrId(rs.getString("ORDER_MEMBER_ID"));
+				odto.setOrderTotalPrice(rs.getInt("ORDER_TOTAL_PRICE"));
+				odto.setCombineAddress(rs.getString("ORDER_ADDRESS"));
+				odto.setRecipMobile("RECIPIENT_MOBILE");
+				odto.setOrderTrackNo(rs.getString("TRACKING_NUMBER"));
+				odto.setOrderStatus(rs.getInt("ORDER_STATUS"));
+				odto.setOrderStatus_name(rs.getString("STATUS_NAME"));
+				odto.setReviewStatus(rs.getInt("REVIEW_STATUS"));
+			
+			}
+		}finally {
+			close();
+		}
+		
+		return odto;
+	}// END OF PUBLIC ORDERDTO GETORDERINFO(STRING ORDERID) THROWS SQLEXCEPTION {
+	
+	
+
 	
 	
 	

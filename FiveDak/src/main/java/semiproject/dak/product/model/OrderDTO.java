@@ -9,6 +9,7 @@ public class OrderDTO {
 	private String orderPostcode ; // 우편번호
 	private String orderAddress ; // 배송주소 
 	private String orderDetailAddress ; // 배송주소 상세주소
+	private String combineAddress ; // 배송주소와 상세주소를 합친 주소
 	private String recipName ;	// 수령인 이름
 	private String recipMobile ; // 수령인 연락처
 	private String orderMessage ; // 배송 요청사항
@@ -24,7 +25,7 @@ public class OrderDTO {
 	
 	public OrderDTO(int orderId, String fk_orderMbrId, String orderDate, int orderTotalPrice, int orderPoint,
 			String orderPostcode, String orderAddress, String orderDetailAddress, String recipName, String recipMobile,
-			String orderMessage, String orderTrackNo, int orderStatus, int reviewStatus,String orderStatus_name) {
+			String orderMessage, String orderTrackNo, int orderStatus, int reviewStatus,String orderStatus_name, String combineAddress) {
 		super();
 		this.orderId = orderId;
 		this.fk_orderMbrId = fk_orderMbrId;
@@ -41,8 +42,16 @@ public class OrderDTO {
 		this.orderStatus = orderStatus;
 		this.reviewStatus = reviewStatus;
 		this.orderStatus_name = orderStatus_name;
-		
+		this.combineAddress = combineAddress ;
 	}
+	public String getCombineAddress() {
+		return combineAddress;
+	}
+
+	public void setCombineAddress(String combineAddress) {
+		this.combineAddress = combineAddress;
+	}
+
 	public String getOrderStatus_name() {
 		return orderStatus_name;
 	}
