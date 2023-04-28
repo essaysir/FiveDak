@@ -12,6 +12,8 @@ public class ProductDTO {
 	private int prodDiscount ; // 판매가
 	private double prodAvgRating ; // 평균 별점
 	private String prodImage1 ; // 제품 이미지
+	private int prodRno;
+	
 	
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
@@ -23,7 +25,7 @@ public class ProductDTO {
 
 
 	public ProductDTO(int prodNum, String prodName, int fk_prodCateNum, int fk_prodBrandNum, int prodPrice,
-			int prodStock, int prodSales, int prodDiscount, double prodAvgRating, String prodImage1) {
+			int prodStock, int prodSales, int prodDiscount, double prodAvgRating, String prodImage1, int prodRno) {
 		this.prodNum = prodNum;
 		this.prodName = prodName;
 		this.fk_prodCateNum = fk_prodCateNum;
@@ -34,10 +36,21 @@ public class ProductDTO {
 		this.prodDiscount = prodDiscount;
 		this.prodAvgRating = prodAvgRating;
 		this.prodImage1 = prodImage1;
+		this.prodRno = prodRno;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public int getProdRno() {
+		return prodRno;
+	}
+
+
+	public void setProdRno(int prodRno) {
+		this.prodRno = prodRno;
+	}
+
+
 	public int getProdNum() {
 		return prodNum;
 	}
