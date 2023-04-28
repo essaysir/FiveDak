@@ -197,7 +197,7 @@ public class ProductDAO implements InterProductDAO {
 			 			+ "		 , AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME , BRAND_NAME , PRODUCT_DISCOUNT "
 				 		+ " from "
 				 		+ " ( "
-				 		+ "     select row_number() over (order by AVERAGE_RATING DESC) AS RNO  "
+				 		+ "     select row_number() over (order by "+paraMap.get("listType")+" DESC) AS RNO  "
 				 		+ "          , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL "
 				 		+ "			 , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME , B.BRAND_NAME , PRODUCT_DISCOUNT"
 				 		+ "    FROM tbl_product P "
