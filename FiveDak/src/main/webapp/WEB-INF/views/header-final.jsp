@@ -220,7 +220,7 @@
 				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
 				  </li>
 				  <li class="nav-item">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">고객센터</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/CSC/informBoardList.dak">고객센터</a>
 				  </li>
 			</ul>
 		</c:if>
