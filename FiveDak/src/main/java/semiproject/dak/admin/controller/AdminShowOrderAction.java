@@ -24,8 +24,14 @@ public class AdminShowOrderAction extends AbstractController {
 		
 		String start = request.getParameter("start"); // "HIT"
 		String len = request.getParameter("len"); // "HIT"
-		String order_status = request.getParameter("order_status");
-		
+		String order_status = request.getParameter("order_status"); // 처음 loading 되면 null 값을 준다.
+		if ( order_status == null ) {
+			order_status = "";
+		}
+		String order_date = request.getParameter("order_date");
+		if ( order_date == null ) {
+			order_date = "";
+		}
 		InterOrderDAO ordao = new OrderDAO();
 		Map<String,String> paraMap = new HashMap<>();
 		
@@ -33,6 +39,7 @@ public class AdminShowOrderAction extends AbstractController {
 		paraMap.put("start", start);
 		paraMap.put("end", end ); // end ==> start + len - 1 ;
 		paraMap.put("order_status", order_status);
+		paraMap.put("order_date", order_date);
 		
 		List<OrderDTO> orderList = ordao.showAllOrder(paraMap);
 		

@@ -40,7 +40,6 @@
 	    padding: 10px 24px;
 	    border: 1px solid #E6E6E6;
 	}
-
 	.sidebar-left {
 	    display: block;
 	    float: left;
@@ -58,7 +57,6 @@
 	    margin-block-end: 1em;
 	    margin-inline-start: 0px;
 	    margin-inline-end: 0px;
-
 	}
 	.sidebar-left li.check {
 	    padding: 5px 0;
@@ -174,14 +172,14 @@
 	                        	<a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminHome.dak">전체주문내역</a>
 	                        </li>
 	                        <li class="check">
-	                        	<a class="list admin-sidebar" href="">취소/반품 내역</a>
+	                        	<a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminProfit.dak">수익 내역</a>
 	                        </li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">멤버관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list admin-sidebar" href="">전체 멤버</a></li>
+	                        <li class="check"><a class="list admin-sidebar" href="">회원관리</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="">포인트</a></li>
 	                    </ul>
 	                </li>
@@ -215,9 +213,3 @@
 
 
 <!-- 마이페이지 -->
-
-
-
-
-
-	
