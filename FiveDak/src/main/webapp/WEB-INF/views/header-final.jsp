@@ -29,7 +29,7 @@
 		randomInput() ; // INPUT에 PLACEHOLDER 가 랜덤하게 들어가게 하는 방법
 		setHeaderEvent();
 		putSearchWord(); // INPUT 검색시에 검색값이 그대로 있도록 하는 메소드
-		
+		console.log('하하하');
 	}); // END OF $(DOCUMENT).READY(FUNCTION(){
 		
 	/////////////////////////////////////////////////////////////////////////////////////////////////
