@@ -19,4 +19,7 @@ public interface InterOrderDAO {
 	// 최근 것부터 주문 내역 하나씩 보여주기 
 	List<OrderDTO> showAllOrder(Map<String, String> paraMap) throws SQLException;
 
+	// 
+	int getTotalNo(Map<String,String> paraMap) throws SQLException ;
+
 }

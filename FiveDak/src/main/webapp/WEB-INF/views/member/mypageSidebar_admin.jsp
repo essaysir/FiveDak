@@ -174,14 +174,14 @@
 	                        	<a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminHome.dak">전체주문내역</a>
 	                        </li>
 	                        <li class="check">
-	                        	<a class="list admin-sidebar" href="">취소/반품 내역</a>
+	                        	<a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminProfit.dak">수익 내역</a>
 	                        </li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">멤버관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list admin-sidebar" href="">전체 멤버</a></li>
+	                        <li class="check"><a class="list admin-sidebar" href="">회원관리</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="">포인트</a></li>
 	                    </ul>
 	                </li>

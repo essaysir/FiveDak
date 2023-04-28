@@ -9,8 +9,11 @@
 		$('span#countHIT').hide();
 	    $('span#totalHITCount').hide();
 		displayOrder("1");
+		$('select#order_status').val('${requestScope.order_status}');
+		$('select#order_date').val('${requestScope.order_date}');
 		
-		
+		$('select#order_status').on('change',goRedirect) ;
+		$('select#order_date').on('change',goRedirect) ;
 		
 		$('button#btnMoreHIT').click(function(){
 			if( $(this).text() == "처음으로" ){
@@ -25,22 +28,18 @@
 			
 		});
 		
-		const order_date = $('select#order_date').val();
-		const order_status = $('select#order_status').val();
 		
 	});
 	
 	let lenHIT = 1 ;
 	
-	$('select#order_status').change(function(){
-		displayOrder("1");
-	});
 	
  	function displayOrder(start){
-		$.ajax({
+ 		$.ajax({ 
 			url:"<%=request.getContextPath()%>/admin/adminShowOrder.dak"
 			,type:"get"
-			,data:{  "order_status":order_status
+			,data:{"order_date":'${requestScope.order_date}' 
+				,"order_status":'${requestScope.order_status}'  
 					,"start":start // "1" "9" "17" "25" "33"
 					,"len":lenHIT} // "8" "8" "8"  "8"  "8"
 			,dataType:"json"
@@ -49,10 +48,9 @@
 				let html = `` ;
 				
 				if (start == "1" && json.length == 0 ){
-					html += "해당기간 동안에 주문이 없습니다.";
-					
+				
 					// HIT 상품 결과물 출력하기
-					$("tbody#json_put").html(html);
+					$("span#no_data").text('요청하신 기간에 요건에 해당하는 주문이 없습니다.');
 				}
 				else if ( json.length > 0 ){
 					$.each(json,function(index,item){
@@ -102,7 +100,13 @@
 	
  	}
  	
-
+	function goRedirect(){
+		const orderListFrm = document.orderListFrm;
+		orderListFrm.method = "get";
+		orderListFrm.action="adminHome.dak";
+		orderListFrm.submit();	
+		
+	}
 </script>
 
 <div class="col-md-9">
@@ -112,11 +116,10 @@
 			<hr style="border: 1px solid; clear:both;"/>
 		<form name="orderListFrm">
 			<select id="order_date" name="order_date" class="mx-3 form-select float-right">
-				<option value="desc">1개월</option>
-				<option value="asc">3개월</option>
-				<option value="asc">6개월</option>
-				<option value="asc">12개월</option>
-			</select>
+	            <option value="">이번달</option>
+	            <option value="6">6개월</option>
+	            <option value="12">12개월</option>
+       		</select>
 			
 			<select id="order_status" name="order_status" class="mx-3 form-select float-right">
 				<option value="">전체</option>
@@ -147,8 +150,9 @@
 		
         <p class="text-center">
             <span id="end" style="display:block; margin:20px; font-size: 14pt; font-weight: bold; color: red;"></span> 
+            <span id="no_data" style="display:block; margin:20px; font-size: 14pt; font-weight: bold; color: red;"></span> 
             <button type="button" class="btn btn-secondary btn-lg" id="btnMoreHIT" value="" style="border-color:#FFA751; background-color: #FFA751">더보기...</button>
-            <span id="totalHITCount">${requestScope.sumMonthOrder}</span>
+            <span id="totalHITCount">${requestScope.totalNo}</span>
             <span id="countHIT">0</span>
          </p>
         
