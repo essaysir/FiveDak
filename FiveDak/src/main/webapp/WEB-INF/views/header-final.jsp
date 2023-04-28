@@ -84,14 +84,12 @@
 		const searchText = $('input#search-header').val();
 		
 		const searchFrm = document.searchFrm;
-		searchFrm.action="<%=ctxPath%>/product/searchProd.dak";
+		searchFrm.action="searchProd.dak";
 		searchFrm.method="get";
 
 		searchFrm.submit();	
 	
 	}// END OF FUNCTION
-	
-	
 	
 	function deleteBanner(){
 		$('div.banner').hide();
@@ -210,7 +208,7 @@
 			</ul>
 		</c:if>
 		
-		<c:if test="${sessionScope.loginuser != null && sessionScope.loginuser.mbrId != 'admin'}">
+		<c:if test="${sessionScope.loginuser != null }">
 			<ul class="nav" id="login_menu" >
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/logout.dak">로그아웃</a>
@@ -226,24 +224,6 @@
 				  </li>
 			</ul>
 		</c:if>
-		
-		<c:if test="${sessionScope.loginuser != null && sessionScope.loginuser.mbrId == 'admin' }">
-			<ul class="nav" id="login_menu" >
-				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/logout.dak">로그아웃</a>
-				  </li>
-				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/admin/adminHome.dak">관리자페이지</a>
-				  </li>
-				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
-				  </li>
-				  <li class="nav-item">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">고객센터</a>
-				  </li>
-			</ul>
-		</c:if>
-		
 	</div>
 	
 	<!-- 로고, 검색창, 아이콘 -->
@@ -267,7 +247,7 @@
 		<div id="my_menu" class="col-3 container">	
 			<ul class="nav row">
 				  <li class="nav-item col-3 offset-1">
-				    <a class="nav-link header-link" onclick=""><i class="fa-solid fa-user fa-2x"></i></a>
+				    <a class="nav-link header-link" href="#"><i class="fa-solid fa-user fa-2x"></i></a>
 				  </li>
 				  <li class="nav-item col-3">
 				    <a class="nav-link active header-link" href="#"><i class="fa-solid fa-cart-shopping fa-2x"  ></i></a>
@@ -434,7 +414,7 @@
 				    </li>
 				 
 				    <li class="col-2 offset-2">
-				      <a class="header-category" href="<%= ctxPath %>/product/rankingList.dak" style="color: black;">랭킹</a>
+				      <a class="header-category" href="<%= ctxPath %>/rankingList.dak" style="color: black;">랭킹</a>
 				    </li>
 				    <li class="col-2">
 				      <a class="header-category" href="#" style="color: black;">신제품</a>

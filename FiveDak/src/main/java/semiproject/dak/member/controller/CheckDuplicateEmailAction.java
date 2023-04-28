@@ -19,10 +19,10 @@ public class CheckDuplicateEmailAction extends AbstractController {
 		if("POST".equals(method)) {
 			InterMemberDAO dao = new MemberDAO(); 
 			String email = request.getParameter("email");
-			boolean isExists = dao.CheckDuplicateEmail(email);
+			boolean isExist = dao.CheckDuplicateEmail(email);
 			
 			JSONObject jsonObj = new JSONObject();
-			jsonObj.put("isExists", isExists);
+			jsonObj.put("isExist", isExist);
 			String json = jsonObj.toString();
 			request.setAttribute("json", json);
 			

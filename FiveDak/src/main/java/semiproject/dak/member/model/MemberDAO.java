@@ -423,11 +423,15 @@ public class MemberDAO implements InterMemberDAO {
 	}
 
 	@Override
-	public int pwdUpdate(Map<String, String> paraMap) {
+	public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
+
 		
-		
-		
-		
+		return 0;
+	}
+
+	@Override
+	public int pwdUpdate(String userid, String newPwd) throws SQLException {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
