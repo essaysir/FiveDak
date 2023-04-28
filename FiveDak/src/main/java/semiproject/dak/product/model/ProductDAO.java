@@ -181,4 +181,119 @@ public class ProductDAO implements InterProductDAO {
 		}
 		return totalProduct;
 	}
-}	
+	
+	
+	
+	// Ajax(JSON)를 이용한 더보기 방식(페이징처리)으로 상품정보를 20개씩 잘라서(start ~ end) 조회해오기
+	@Override
+	public List<ProductDTO> selectByRank(Map<String, String> paraMap) throws SQLException {
+		
+		List<ProductDTO> prodList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			
+			 String sql = " select RNO, PRODUCT_ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID , PRODUCT_PRICE, PRODUCT_SALES "
+			 			+ "		 , AVERAGE_RATING, PRODUCT_IMAGE_URL , CATEGORY_NAME , BRAND_NAME , PRODUCT_DISCOUNT "
+				 		+ " from "
+				 		+ " ( "
+				 		+ "     select row_number() over (order by AVERAGE_RATING DESC) AS RNO  "
+				 		+ "          , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL "
+				 		+ "			 , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME , B.BRAND_NAME , PRODUCT_DISCOUNT"
+				 		+ "    FROM tbl_product P "
+				 		+ "    JOIN tbl_category C "
+				 		+ "    ON P.product_category_id = C.category_id "
+				 		+ "    JOIN tbl_brand B "
+				 		+ "	   ON P.product_brand_id = B.brand_id"
+				 		+ " ) V "
+				 		+ " where RNO between ? and ? ";
+			 
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("start"));
+			pstmt.setString(2, paraMap.get("end"));
+			
+			
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				ProductDTO pvo = new ProductDTO();
+				pvo.setProdRno(rs.getInt("RNO"));
+				pvo.setProdNum(rs.getInt("PRODUCT_ID"));	
+				pvo.setProdName(rs.getString("PRODUCT_NAME"));
+
+				CategoryDTO categdto = new CategoryDTO();	
+				categdto.setCateId(rs.getInt("PRODUCT_CATEGORY_ID")); 	
+				categdto.setCateName(rs.getString("CATEGORY_NAME"));
+				pvo.setCateDTO(categdto);				
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("BRAND_NAME"));
+				pvo.setBrandDTO(bdto);
+				
+	            pvo.setProdPrice(rs.getInt("PRODUCT_PRICE"));   		
+	            pvo.setProdSales(rs.getInt("PRODUCT_SALES"));         
+	            pvo.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));        		
+	            pvo.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));	  		
+	            pvo.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+	            
+	            
+	            prodList.add(pvo);
+			}// end of while ------------
+			
+		} finally {
+			close();
+		}
+		
+		return prodList;
+	}
+	
+	
+	// Ajax(JSON)를 사용하여 상품목록을 "더보기" 방식으로 페이징 처리 해주기위해 전체개수 알아오기 
+	@Override
+	public int totalCount() {
+		
+		int totalHITCount = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			 String sql = " select count(*) "
+				 		+ " from "
+				 		+ " ( "
+				 		+ "     select row_number() over (order by AVERAGE_RATING DESC) AS RNO  "
+				 		+ "          , PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_SALES, AVERAGE_RATING, PRODUCT_IMAGE_URL "
+				 		+ "			 , PRODUCT_CATEGORY_ID , C.CATEGORY_NAME , B.BRAND_NAME , PRODUCT_DISCOUNT"
+				 		+ "    FROM tbl_product P "
+				 		+ "    JOIN tbl_category C "
+				 		+ "    ON P.product_category_id = C.category_id "
+				 		+ "    JOIN tbl_brand B "
+				 		+ "	   ON P.product_brand_id = B.brand_id"
+				 		+ " ) V "
+				 		+ " where RNO between 1 and 100 ";
+			 
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			totalHITCount = rs.getInt(1);
+		
+		}
+		 catch(SQLException e) {
+			e.printStackTrace();
+		}		
+		 finally {
+			close();
+		}
+		
+		return totalHITCount;
+	}
+}
+	
+	
+	

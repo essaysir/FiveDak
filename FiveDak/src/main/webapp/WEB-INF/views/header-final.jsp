@@ -425,7 +425,7 @@
 				    </li>
 				 
 				    <li class="col-2 offset-2">
-				      <a class="header-category" href="<%= ctxPath %>/product/rankingList.dak" style="color: black;">랭킹</a>
+				      <a class="header-category ranking" href="<%= ctxPath %>/product/rankingList.dak" style="color: black;">랭킹</a>
 				    </li>
 				    <li class="col-2">
 				      <a class="header-category" href="#" style="color: black;">신제품</a>
