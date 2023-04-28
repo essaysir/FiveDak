@@ -40,7 +40,6 @@
 	    padding: 10px 24px;
 	    border: 1px solid #E6E6E6;
 	}
-
 	.sidebar-left {
 	    display: block;
 	    float: left;
@@ -58,7 +57,6 @@
 	    margin-block-end: 1em;
 	    margin-inline-start: 0px;
 	    margin-inline-end: 0px;
-
 	}
 	.sidebar-left li.check {
 	    padding: 5px 0;
@@ -215,9 +213,3 @@
 
 
 <!-- 마이페이지 -->
-
-
-
-
-
-	

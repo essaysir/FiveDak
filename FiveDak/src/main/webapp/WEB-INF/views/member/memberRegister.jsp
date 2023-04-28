@@ -92,14 +92,10 @@
 	let email_flag = false ; // 중복확인을 통과하면 true
 	let id_flag = false ;
 	let pwd_flag = false ;
-	
+	let birth_Flag = false;
 	$(document).ready(function(){
 		setEventHandling();
 		
-		
-		
-		
-	      
 	});
 	
 	function setEventHandling(){
@@ -140,7 +136,6 @@
 	
 	
 	function loadPage(){
-
 		$('input#inputId1').focus();
 		
 		createMonth();
@@ -151,7 +146,6 @@
 	
 	//날짜 유효성 func 만들기 
 	function validDate() {
-
 	    const year = parseInt($('#birthyy').val());
 	    const month = parseInt($('#birthmm').val());
 	    const day = parseInt($('#birthdd').val());
@@ -165,11 +159,12 @@
 	    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
 	        const lastDayOfMonth = new Date(year, month, 0).getDate();
 	        $('#dateWarning').text(` \${year}년 \${month}월은 \${lastDayOfMonth}일 까지입니다.`);
+	        birth_Flag = false;
 	      } else {
 	        $('#dateWarning').text('');
+	        birth_Flag = true;
 	      }
 	}// end of valiDate
-
 	function createYear(){
 		const date = new Date();
 		   const year = date.getFullYear();
@@ -211,7 +206,6 @@
 	         }
 	      }
 	      $("select#birthdd").html(html);
-
 	} // 
 	
 	
@@ -387,13 +381,10 @@
 	      	success:function(json) {
 	      		
 	      		if(json["isExists"]) {
-	      			$("span#emailCheckResult").html($("input#email").val() + "은 동일한 사용자가 존재합니다.").css("color","red");
-	      			$("input#email").val("");
-	      			b_flag_emailDuplicate_click = false;
+	      			alert("이미 존재하는 이메일입니다.\n다른 이메일 주소를 입력해주세요.");
 	      		} else {
-	      			$("input#email").attr("readonly",true);
-	      			$("span#emailCheckResult").html($("input#email").val() + "은 사용가능한 이메일입니다.").css("color","navy");
-	      			$("input#hp2").focus();
+	      			email_flag = true ;
+	      			btnFlag(email_flag,'emailcheck');
 	      			
 	      		}
 	      	},
@@ -403,8 +394,6 @@
 	      });
 		
 		
-		email_flag = true ;
-		btnFlag(email_flag,'emailcheck');
 		
 	}// END OF EMAILDUPLICATECHECK
 	
@@ -436,19 +425,16 @@
 		new daum.Postcode({
             oncomplete: function(data) {
                 // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
                 // 각 주소의 노출 규칙에 따라 주소를 조합한다.
                 // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
                 let addr = ''; // 주소 변수
                 let extraAddr = ''; // 참고항목 변수
-
                 //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
                 if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
                     addr = data.roadAddress;
                 } else { // 사용자가 지번 주소를 선택했을 경우(J)
                     addr = data.jibunAddress;
                 }
-
                 // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
                 if(data.userSelectedType === 'R'){
                     // 법정동명이 있을 경우 추가한다. (법정리는 제외)
@@ -468,7 +454,6 @@
                     addr += extraAddr ;
                 
                 }
-
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 document.getElementById('postcode').value = data.zonecode;
                 document.getElementById("address").value = addr;
@@ -520,7 +505,6 @@
 			alert('우편주소를 입력해주세요');
 			return ;
 		}
-
 		// 성별 
 		const genderSelect = $("#gender");
 		if (!genderSelect.val()) {
@@ -544,6 +528,10 @@
 			 alert("일을 선택해주세요.");
 			 return ;
 		}
+		if(!birth_Flag) {
+			alert("올바른 생년월일을 선택해주세요.");
+			return;
+		}
 		//////////////////////////////////////
 		const myfrm = document.myfrm;
 		
@@ -555,7 +543,6 @@
 			myfrm.email.value = inputEmail + emailSelected;
 		}
 		
-		console.log(myfrm.email.value);
 		
 		myfrm.action = "register.dak"
 		myfrm.method = "post";

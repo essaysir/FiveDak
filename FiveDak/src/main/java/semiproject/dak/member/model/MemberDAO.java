@@ -1,4 +1,4 @@
-package semiproject.dak.member.model;
+ package semiproject.dak.member.model;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -422,18 +422,8 @@ public class MemberDAO implements InterMemberDAO {
 		return isUserExist;
 	}
 
-	@Override
-	public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
 
-		
-		return 0;
-	}
 
-	@Override
-	public int pwdUpdate(String userid, String newPwd) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 
 
