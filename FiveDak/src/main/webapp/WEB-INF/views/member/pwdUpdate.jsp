@@ -66,7 +66,7 @@ $(document).ready(function(){
 </script>
 
 <form name="pwdChangeForm" method="post">
-    <input type="hidden" name="userid" value="${requestScope.userid}" />
+    <input type="text" name="userid" value="${requestScope.userid}" />
     
         <!-- PC 비밀 번호 변경 -->    
         <div class="box_pwdChange">

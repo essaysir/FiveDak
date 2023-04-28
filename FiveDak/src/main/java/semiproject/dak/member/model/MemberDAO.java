@@ -175,7 +175,7 @@ public class MemberDAO implements InterMemberDAO {
 		MemberDTO mdto = null ;
 		try {
 			conn = ds.getConnection();
-			String sql = "SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
+			String sql = " SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
 					"		   MEMBER_POINT , MEMBER_GENDER , MEMBER_BIRTH , MEMBER_POSTCODE , MEMBER_ADDRESS , "+
 					"		   MEMBER_DETAIL_ADDRESS , MEMBER_TIER_ID , MEMBER_REG_DATE , pwdchangegap "+
 					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, TIER_NAME, AMOUNT_NEEDED, REWARD_PERCENTAGE, TIER_IMAGE "+
@@ -545,6 +545,12 @@ public class MemberDAO implements InterMemberDAO {
 		
 		
 		
+	}
+
+	@Override
+	public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import member.model.MemberVO;
 import semiproject.dak.common.controller.AbstractController;
 import semiproject.dak.member.model.InterMemberDAO;
 import semiproject.dak.member.model.MemberDAO;
@@ -48,7 +47,7 @@ public class MemberPwdUpdateAction extends AbstractController {
 			super.setRedirect(false); super.setViewPage("/WEB-INF/views/msg.jsp");
 			return; 
 		}
-		*/
+	*/
 		if("POST".equalsIgnoreCase(method)) {
 			// 암호변경하기 버튼을 클릭한 경우
 		//	String userid = request.getParameter("userid");
@@ -60,10 +59,10 @@ public class MemberPwdUpdateAction extends AbstractController {
 			
 			InterMemberDAO mdao = new MemberDAO();
 			
-			int updateCount = mdao.pwdUpdate(userid, newPwd);
-			/* int n = mdao.pwdUpdate(dto);
+			/*int updateCount = mdao.pwdUpdate(userid, newPwd);
+			 int n = mdao.pwdUpdate(dto);
 			
-			request.setAttribute("n", n); */
+			request.setAttribute("n", n); 
 			
 			try {
 				if(updateCount != 0) {
@@ -89,7 +88,7 @@ public class MemberPwdUpdateAction extends AbstractController {
 				
 				System.out.println("SQL 에러 // MemberPwdUpdateAction");
 			}
-			
+			*/
 		}
 		
 		

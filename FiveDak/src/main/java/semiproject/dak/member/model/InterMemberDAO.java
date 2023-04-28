@@ -32,6 +32,8 @@ public interface InterMemberDAO {
 	// 페이징 처리 토탈 페이지 알아오기 
 	int getTotalPage(Map<String, String> paraMap) throws SQLException;
 
+	int pwdUpdate(Map<String, String> paraMap) throws SQLException;
+
 	
 
 }
