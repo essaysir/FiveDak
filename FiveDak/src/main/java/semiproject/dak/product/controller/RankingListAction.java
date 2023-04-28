@@ -13,7 +13,7 @@ public class RankingListAction extends AbstractController {
 		
 		String average_rating = request.getParameter("average_rating");
 		
-		System.out.println("~~ 확인용 : "+average_rating);
+		// System.out.println("~~ 확인용 : "+average_rating);
 
 		
 		InterProductDAO pdao = new ProductDAO();
