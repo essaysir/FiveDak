@@ -34,6 +34,7 @@
 /mypage/main.dak=semiproject.dak.member.controller.MyPageAction
 /mypage/infoedit.dak=semiproject.dak.member.controller.PasswdCheckAction
 /mypage/memberEditInfoEnd.dak=semiproject.dak.member.controller.MemberEditInfoEndAction
+/mypage/point.dak=semiproject.dak.member.controller.MyPagePointAction
 
 
 # admin 
