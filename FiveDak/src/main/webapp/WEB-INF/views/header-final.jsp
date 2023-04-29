@@ -184,7 +184,7 @@
 	<div class="container position-relative" id="header-search">
 		
 		
-		<c:if test="${sessionScope.loginuser == null }">
+		<c:if test="${sessionScope.loginuser == null}">
 			<ul class="nav" id="login_menu" >
 				  <li class="nav-item border-right">
 				    <a style="font-size:10pt;" class="nav-link active header-link" href="<%= ctxPath %>/login.dak">로그인</a>

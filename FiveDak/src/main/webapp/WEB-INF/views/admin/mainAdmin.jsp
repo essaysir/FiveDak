@@ -33,9 +33,9 @@
 		}); // END OF $('BUTTON#BTNMOREHIT').CLICK(FUNCTION(){
 			
 		$(document).on('click', 'tr.orderInfo', function(e){
-			const orderid = ($(e.target).parent().find('.orderid').text());
-			// console.log(orderid);
-			location.href ="<%= ctxPath%>/admin/orderDetail.dak?orderid="+orderid;
+			
+			const orderserial = $(this).data('orderserial') ;
+			location.href ="<%= ctxPath%>/admin/orderDetail.dak?order_serial="+orderserial;
 		});
 			
 		$(document).on('mouseenter', 'tr.orderInfo', function() {
@@ -72,7 +72,7 @@
 				else if ( json.length > 0 ){
 					$.each(json,function(index,item){
 						html += 
-							"<tr class='orderInfo'>"
+							"<tr class='orderInfo' data-orderserial='"+item.order_serial+"'>"
 					    +"<td class='orderid'>"+item.order_id+"</td>"
 					    +"<td>"+item.order_member_id+"</td>"
 					    +"<td>"+item.order_total_price+"</td>"
