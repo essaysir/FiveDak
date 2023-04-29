@@ -31,7 +31,10 @@ public class MemberDTO {
 		
 	}
 	
-	
+	public MemberDTO(String userid, String pwd) {
+		this.mbrId = userid;
+		this.mbrPwd = pwd;
+	}
 	
 	
 	public MemberDTO(String userid, String pwd, String name, String email, String mobile, String postcode,
@@ -49,6 +52,19 @@ public class MemberDTO {
 		
 	}
 
+
+	public MemberDTO(String userid, String password, String email, String mobile, String postcode, String address,
+			String detailAddress, String gender, String birthday) {
+		this.mbrId = userid;
+		this.mbrPwd = password;
+		this.mbrEmail = email;
+		this.mbrMobile = mobile;
+		this.mbrPostcode = postcode;
+		this.mbrAddress = address;
+		this.mbrDetailAddress = detailAddress;
+		this.mbrGender = gender;
+		this.mbrBirth = birthday;
+	}
 
 
 

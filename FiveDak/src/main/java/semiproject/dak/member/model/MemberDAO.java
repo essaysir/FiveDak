@@ -1,4 +1,4 @@
-package semiproject.dak.member.model;
+ package semiproject.dak.member.model;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -313,6 +315,75 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return userid;
 	}
+	
+	@Override
+	public boolean passwdCheck(Map<String, String> paraMap) throws SQLException {
+		boolean result = false;
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select * "
+					+    " from tbl_member "
+					+    " where member_id = ? and member_pwd = ? ";
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, Sha256.encrypt(paraMap.get("password")));	
+			
+			rs = pstmt.executeQuery();
+			result = rs.next();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+	}
+	
+
+	// 회원의 개인 정보 변경하기
+	@Override
+	public int updateMember(MemberDTO member) throws SQLException {
+		int result = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set member_pwd = ? "
+												 + " , member_email = ? "
+												 + " , member_mobile = ? "
+												 + " , member_postcode = ? "
+												 + " , member_address = ? "
+												 + " , member_detail_address = ? "
+												 + " , member_gender = ? "
+												 + " , member_birth = ? "
+												 + " , LAST_PWD_CHANGED = sysdate "
+					   + " where member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, Sha256.encrypt(member.getMbrPwd()) );  
+			pstmt.setString(2, aes.encrypt(member.getMbrEmail()) );   
+			pstmt.setString(3, aes.encrypt(member.getMbrMobile()) );  
+			pstmt.setString(4, member.getMbrPostcode());	
+			pstmt.setString(5, member.getMbrAddress());
+			pstmt.setString(6, member.getMbrDetailAddress());
+			pstmt.setString(7, member.getMbrGender());
+			pstmt.setString(8, member.getMbrBirth());
+			pstmt.setString(9, member.getMbrId());
+			
+			result = pstmt.executeUpdate();	
+			
+		} catch(GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		} 
+		
+		return result;
+	}// end of public int updateMember(MemberVO member) throws SQLException{} -----------------------------
+
 
 	// 비밀번호 찾기 부분 
 	@Override
@@ -351,6 +422,129 @@ public class MemberDAO implements InterMemberDAO {
 		
 		
 		return isUserExist;
+	}
+
+
+
+	// 포인트 정보 찾기 
+	@Override
+	public List<MemberPointDTO> selectPoint(Map<String, String> paraMap) {
+		
+		List<MemberPointDTO> PointList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
+			
+			String sql = " SELECT rn, to_char(point_date,'yyyy-mm-dd') as point_date, point_reason, point_change_type , point_change, point_after "
+					   + "FROM ( "
+					   + "  SELECT ROW_NUMBER() OVER (ORDER BY point_date DESC) AS rn, point_date, point_reason, point_change_type, point_change, point_after "
+				       + "  FROM member_point_history "
+				  	   + "  WHERE point_member_id = ? ";
+					   
+			String select_type = paraMap.get("pointSelect");
+			
+			
+			if( "1".equals(select_type)) {
+				sql += " and point_change_type = 1 ";
+			}
+			else if("2".equals(select_type)) {
+				sql += " and point_change_type = 0 ";
+			}
+
+			sql += " order by point_date desc "
+			    + "  ) "
+			    + " WHERE rn BETWEEN ? AND ? ";
+				
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			int ShowPageNo = Integer.parseInt(paraMap.get("ShowPageNo"));		
+			
+			
+			
+			pstmt.setString(1, paraMap.get("id"));
+			pstmt.setInt(2, (ShowPageNo * 5) - (5 - 1) );
+			pstmt.setInt(3, (ShowPageNo * 5) );
+			
+			// 우편 배달부
+			rs = pstmt.executeQuery();
+			
+			
+			while(rs.next()) {
+				
+				MemberPointDTO mpdto = new MemberPointDTO();
+				
+				mpdto.setPoint_date(rs.getString("point_date"));      // 포인트 변동 날짜 
+				mpdto.setPoint_reason(rs.getString("point_reason"));   // 포인트 변동 이유
+				mpdto.setPoint_change_type(rs.getInt("point_change_type"));   // 포인트 지급 차감 
+				mpdto.setPoint_change(rs.getInt("point_change"));   // 포인트 변동 포인트
+				mpdto.setPoint_after(rs.getInt("point_after"));   // 포인트 보유 포인트
+				
+				
+				
+	            PointList.add(mpdto);	
+				
+			} // end of while(rs != null) {
+			
+			
+		} catch(SQLException e) {
+			e.getStackTrace();
+		}finally {
+			close();
+		}
+		
+		return PointList;
+	}
+
+	// 페이징 처리 토탈 페이지 알아오기 
+	@Override
+	public int getTotalPage(Map<String, String> paraMap) throws SQLException {
+		
+		int totalPage = 0;
+		
+		try {
+			
+			conn = ds.getConnection();
+			
+			String select_type = paraMap.get("pointSelect");
+			
+			
+			String sql = " select ceil(count(*) / ? ) "   //보여줄 페이지 개수를 넣는 위치홀더
+					   + " from member_point_history "
+					   + " where POINT_MEMBER_ID = ? ";
+			
+			if( "1".equals(select_type)){
+				sql += " and point_change_type = 1 ";
+			}
+			else if("2".equals(select_type)){
+				sql += " and point_change_type = 0 ";
+			}
+				
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1,"5");
+			pstmt.setString(2, paraMap.get("id"));
+			
+			rs = pstmt.executeQuery();
+			
+			
+			rs.next();   // 이건 무조건 필요한 것이다.
+			
+			
+			totalPage =  rs.getInt(1);
+			
+			
+		} finally { 
+			close();
+		}
+			
+			
+		return totalPage;
+		
+		
+		
+		
 	}
 
 

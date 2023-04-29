@@ -175,21 +175,6 @@
       
       
       
-      
-      
-      <!-- 오른쪽에 들어갈 내용 -->
-    </div>
-  </div>
-</div>
 
-
-
-
-<!-- 마이페이지 -->
-
-
-
-
-<jsp:include page="/WEB-INF/views/footer.jsp"/>
 
 	

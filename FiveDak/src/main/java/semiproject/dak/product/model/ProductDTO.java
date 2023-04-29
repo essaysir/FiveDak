@@ -8,21 +8,24 @@ public class ProductDTO {
 	private int fk_prodBrandNum ; // 제품 브랜드 코드(번호)
 	private int prodPrice ; // 정가
 	private int prodStock ; // 재고 
-	private int prodSales ; // 판매량 (??)
+	private int prodSales ; // 판매량
 	private int prodDiscount ; // 판매가
-	private int prodAvgRating ; // 평균 별점
+	private double prodAvgRating ; // 평균 별점
 	private String prodImage1 ; // 제품 이미지
+	private int prodRno;
+	
 	
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
-	// private BrandDTO brandDTO ; // 브랜드 DTO 
+	private BrandDTO brandDTO ; // 브랜드 DTO 
+	
 	
 	// 기본 생성자 
 	public ProductDTO () {}
 
 
 	public ProductDTO(int prodNum, String prodName, int fk_prodCateNum, int fk_prodBrandNum, int prodPrice,
-			int prodStock, int prodSales, int prodDiscount, int prodAvgRating, String prodImage1) {
+			int prodStock, int prodSales, int prodDiscount, double prodAvgRating, String prodImage1, int prodRno) {
 		this.prodNum = prodNum;
 		this.prodName = prodName;
 		this.fk_prodCateNum = fk_prodCateNum;
@@ -33,10 +36,21 @@ public class ProductDTO {
 		this.prodDiscount = prodDiscount;
 		this.prodAvgRating = prodAvgRating;
 		this.prodImage1 = prodImage1;
+		this.prodRno = prodRno;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public int getProdRno() {
+		return prodRno;
+	}
+
+
+	public void setProdRno(int prodRno) {
+		this.prodRno = prodRno;
+	}
+
+
 	public int getProdNum() {
 		return prodNum;
 	}
@@ -101,11 +115,11 @@ public class ProductDTO {
 		this.prodDiscount = prodDiscount;
 	}
 
-	public int getProdAvgRating() {
+	public double getProdAvgRating() {
 		return prodAvgRating;
 	}
 
-	public void setProdAvgRating(int prodAvgRating) {
+	public void setProdAvgRating(double prodAvgRating) {
 		this.prodAvgRating = prodAvgRating;
 	}
 
@@ -119,9 +133,16 @@ public class ProductDTO {
 	public CategoryDTO getCateDTO() {
 		return cateDTO;
 	}
-
 	public void setCateDTO(CategoryDTO cateDTO) {
 		this.cateDTO = cateDTO;
+	}
+	public BrandDTO getBrandDTO() {
+		return brandDTO;
+	}
+	
+	
+	public void setBrandDTO(BrandDTO brandDTO) {
+		this.brandDTO = brandDTO;
 	}
 	///////////////////////////////////////////////
 	// *** 제품의 할인률 ***
@@ -136,5 +157,7 @@ public class ProductDTO {
 		// 할인률 = 100 - (판매가 * 100) / 정가
 		return 100 - (prodDiscount * 100)/prodPrice;
 	}
+	
+		
 	
 }
