@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class ProductDAO implements InterProductDAO {
 		}	
 	}// end of private void close 
 
-	// 총 페이지를 알아와서 돌려주는 메소드 
+	// 검색했을 경우에 총 페이지를 알아와서 돌려주는 메소드 
 	@Override
 	public int getTotalPage(Map<String, String> paraMap) throws SQLException{
 		int totalPage = 0 ;
@@ -491,6 +492,146 @@ public class ProductDAO implements InterProductDAO {
 		}
 		return checkout;
 	}
+
+	// 총 제품의 개수을 알아오는 메소드 
+	@Override
+	public Map<String,Integer> getTotalNum(Map<String, String> paraMap) throws SQLException {
+		
+		Map<String,Integer> map = new HashMap<>();
+		
+		try {
+		    conn = ds.getConnection();
+		      
+		    String sql =  " select count ( * ) "
+		    		    + " from tbl_product " ;
+		      
+		    pstmt = conn.prepareStatement(sql);
+		    
+		    rs = pstmt.executeQuery();
+		    rs.next();
+		    
+		    map.put("totalProduct", rs.getInt(1));
+		    
+		    String colname = paraMap.get("searchType");
+		    String searchWord = paraMap.get("searchWord");
+		    
+		    sql = " SELECT ceil(count(*)/ 10) "
+		    		+ " FROM "
+		    		+ " ( "
+		    		+ "    SELECT row_number() over (order by PRODUCT_ID DESC) AS RNO  , PRODUCT_ID , PRODUCT_NAME , C.CATEGORY_NAME , B.BRAND_NAME"
+		    		+ "    , PRODUCT_STOCK , PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL "
+		    		+ "    from tbl_product P "
+		    		+ "    JOIN tbl_brand B "
+		    		+ "    ON P.PRODUCT_BRAND_ID = B.BRAND_ID "
+		    		+ "    JOIN tbl_category C "
+		    		+ "    ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID " ;
+		    
+		    if ( !"".equals(colname) &&  searchWord != null && !searchWord.trim().isEmpty() ) {
+				sql += " WHERE "+colname+" like '%'|| ? || '%'  " ;
+			} 		
+		    		
+		    	sql +=  " )V" ; 
+		    
+		    pstmt = conn.prepareStatement(sql);
+		    
+		    if ( !"".equals(colname)&& searchWord != null && !searchWord.trim().isEmpty() ) {
+				pstmt.setString(1, searchWord);
+			}
+		    
+		    rs = pstmt.executeQuery();
+		    rs.next();
+		    map.put("totalPage", rs.getInt(1));
+		    	
+					
+		    } finally {
+		      close();
+		    }
+		
+		
+		return map ;
+	} // END OF PUBLIC INT GETTOTALPRODUCT() THROWS SQLEXCEPTION {
+
+	@Override
+	public List<ProductDTO> selAllProduct(Map<String, String> paraMap) throws SQLException {
+		List<ProductDTO> list = new ArrayList<>() ;
+		
+		try {
+		    String colname = paraMap.get("searchType");
+		    String searchWord = paraMap.get("searchWord");
+			conn = ds.getConnection();
+		      
+		    String sql =  " SELECT RNO , PRODUCT_ID , PRODUCT_NAME , CATEGORY_NAME , BRAND_NAME "
+		    		+ "    , PRODUCT_STOCK , PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL "
+		    		+ " FROM "
+		    		+ " ( "
+		    		+ "    SELECT row_number() over (order by PRODUCT_ID DESC) AS RNO  , PRODUCT_ID , PRODUCT_NAME , C.CATEGORY_NAME , B.BRAND_NAME "
+		    		+ "    , PRODUCT_STOCK , PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL "
+		    		+ "    from tbl_product P "
+		    		+ "    JOIN tbl_brand B "
+		    		+ "    ON P.PRODUCT_BRAND_ID = B.BRAND_ID "
+		    		+ "    JOIN tbl_category C "
+		    		+ "    ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID " ;
+		    		
+		    if ( !"".equals(colname) &&  searchWord != null && !searchWord.trim().isEmpty() ) {
+				sql += " WHERE "+colname+" like '%'|| ? || '%'  " ;
+			}
+		    	sql +=   " )V "
+			    	   + " WHERE RNO BETWEEN ? AND ?  " ;
+	    		
+		      
+		    pstmt = conn.prepareStatement(sql);
+		    int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
+		    
+		    if ( !"".equals(colname)&& searchWord != null && !searchWord.trim().isEmpty() ) {
+				pstmt.setString(1, searchWord);
+				//pstmt.setInt(2, ( 조회하고자하는 페이지번호 * 한페이지당 보여줄 행의 개수 ) - (한페이지당 보여줄 행의 개수-1 ));
+				//pstmt.setInt(3, ( 조회하고자하는 페이지번호 * 한페이지당 보여줄 행의 개수 ));
+				pstmt.setInt(2, (10*currentShowPageNo)-(10-1));
+				pstmt.setInt(3, 10*currentShowPageNo);
+			}
+		    
+		    else {
+				 pstmt.setInt(1, (10*currentShowPageNo)-(10-1));
+				 pstmt.setInt(2, 10*currentShowPageNo);	
+			}
+		    
+		    rs = pstmt.executeQuery();
+		    
+		    while(rs.next()) {
+		    	ProductDTO pdto = new ProductDTO() ;
+		    	pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+		    	pdto.setProdName(rs.getString("PRODUCT_NAME"));
+		    	
+		    	CategoryDTO catedto = new CategoryDTO();
+		    	catedto.setCateName(rs.getString("CATEGORY_NAME"));
+		    	pdto.setCateDTO(catedto);
+		    	
+		    	BrandDTO bdto = new BrandDTO() ;
+		    	bdto.setBrandName(rs.getString("BRAND_NAME"));
+		    	pdto.setBrandDTO(bdto);
+		    	
+		    	pdto.setProdStock(rs.getInt("PRODUCT_STOCK"));
+		    	pdto.setProdSales(rs.getInt("PRODUCT_SALES"));
+		    	pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+		    	pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
+		    	pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+		    	
+		    	list.add(pdto);
+		    }
+		    	
+					
+		    } finally {
+		      close();
+		    }
+		
+		return list ;
+	}
+	
+	
+	
+	
+	
+	
 }
 	
 	
