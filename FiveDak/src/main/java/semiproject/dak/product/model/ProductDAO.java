@@ -491,6 +491,51 @@ public class ProductDAO implements InterProductDAO {
 		}
 		return checkout;
 	}
+	
+	@Override
+	public List<ProductDTO> productReview(String userid) throws SQLException {
+		
+		List<ProductDTO> prodList = new ArrayList<>();
+
+		try {
+			conn = ds.getConnection();
+		
+			String sql = " select P.product_name, B.brand_name, E.order_date , P.product_image_url, O.order_detail_product_id, O.order_quantity "
+					+ " from tbl_product P JOIN tbl_order_detail O ON O.order_detail_product_id = P.product_id"
+					+ " JOIN tbl_brand B on p.product_brand_id = B.brand_id JOIN tbl_order E on E.order_id = O.order_id"
+					+ " WHERE E.order_member_id = ? ";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userid);
+			
+			pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ProductDTO pdto = new ProductDTO();
+				pdto.setProdName(rs.getString(1));
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString(2));
+				pdto.setBrandDTO(bdto);
+				OrderDTO odto = new OrderDTO();
+				odto.setOrderDate(rs.getString(3));
+				pdto.setOrderDTO(odto);
+				pdto.setProdImage1(rs.getString(4));
+				
+				
+			}
+			
+			
+			
+			
+			
+			
+		}finally {
+			close();
+		}
+		return prodList;
+	}
+	
 }
 	
 	
