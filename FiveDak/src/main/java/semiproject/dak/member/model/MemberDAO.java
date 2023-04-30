@@ -869,10 +869,31 @@ public class MemberDAO implements InterMemberDAO {
 		
 	}
 
+	// 암호변경하기
 	@Override
-	public int pwdUpdate(Map<String, String> paraMap) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+	public int pwdUpdate(MemberDTO mdto) throws SQLException {
+		
+		int result = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set MEMBER_PWD = ? "
+					   + " 		 , LAST_PWD_CHANGED = sysdate "
+					   + " where MEMBER_ID = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, Sha256.encrypt(mdto.getMbrPwd())); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(2, mdto.getMbrId());
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
 	}
 
 
