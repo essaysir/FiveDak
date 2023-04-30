@@ -638,7 +638,7 @@ public class MemberDAO implements InterMemberDAO {
 			}
 			
 			
-			sql += " order by Member_Point desc, Member_Tier_ID desc, Member_Name asc "
+			sql += " order by Member_Tier_ID desc, Member_Name asc "
 			     + "         ) A "
 				 + "     ) B "
 				 + " WHERE RNO BETWEEN ? AND ? ";
