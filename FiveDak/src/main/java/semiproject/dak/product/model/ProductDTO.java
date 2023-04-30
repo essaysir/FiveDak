@@ -18,6 +18,7 @@ public class ProductDTO {
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
+	private OrderDTO orderDTO ; // 오더 DTO
 	
 	
 	// 기본 생성자 
@@ -141,6 +142,16 @@ public class ProductDTO {
 	}
 	
 	
+	public OrderDTO getOrderDTO() {
+		return orderDTO;
+	}
+
+
+	public void setOrderDTO(OrderDTO orderDTO) {
+		this.orderDTO = orderDTO;
+	}
+
+
 	public void setBrandDTO(BrandDTO brandDTO) {
 		this.brandDTO = brandDTO;
 	}

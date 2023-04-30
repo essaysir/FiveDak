@@ -32,6 +32,11 @@ public interface InterProductDAO {
 
 	CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException;
 	
+	List<ProductDTO> productReview(String userid) throws SQLException;
+	
+	
+	
+	
 
 
 }

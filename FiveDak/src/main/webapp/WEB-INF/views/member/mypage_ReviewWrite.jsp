@@ -3,13 +3,10 @@
     
 <%
     String ctxPath = request.getContextPath();
-    //    /MyMVC
+  
 %>       
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>마이페이지 리뷰쓰기</title>
+<jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
 
 <style type="text/css">
 
@@ -88,7 +85,7 @@ button.image_button {
     border: solid 1px #ccc;
 }	
 
-#all > div > ul > li {
+div > ul > li {
 	position:relative;
 	left: -25px;
 	color: #666;
@@ -117,67 +114,72 @@ button.image_button {
 
 <script type="text/javascript">
 
-		$(document).ready(function() {
-		    
-		    $('#reviewText').on('input', inputReviewText);
-		    
-		    $("input:radio[name='rating']").click(function(){
-		    	if ($(this).val() == "1") {
-		    		$("span#star_content").html("0.5점 별로에요");
-		    	}
-		    	if ($(this).val() == "2") {
-		    		$("span#star_content").html("1점 별로에요");
-		    	}
-		    	if ($(this).val() == "3") {
-		    		$("span#star_content").html("1.5점 그저그래요");
-		    	}
-		    	if ($(this).val() == "4") {
-		    		$("span#star_content").html("2점 그저그래요");
-		    	}
-		    	if ($(this).val() == "5") {
-		    		$("span#star_content").html("2.5점 보통이에요");
-		    	}
-		    	if ($(this).val() == "6") {
-		    		$("span#star_content").html("3점 보통이에요");
-		    	}
-		    	if ($(this).val() == "7") {
-		    		$("span#star_content").html("3.5점 좋아요");
-		    	}
-		    	if ($(this).val() == "8") {
-		    		$("span#star_content").html("4점 좋아요");
-		    	}
-		    	if ($(this).val() == "9") {
-		    		$("span#star_content").html("4.5점 최고에요");
-		    	}
-		    	if ($(this).val() == "10") {
-		    		$("span#star_content").html("5점 최고에요");
-		    	}
-		    
-		    
-		    });
-		 
-		});// end of $(document).ready(function() {})-------------------------------------------
-
-
-		function inputReviewText() {
-		   const reviewLength = $(this).val().length;
-		   $('#counter').text(reviewLength);
-		   if (reviewLength >= 10) {
-		      	$('.submit-review').prop('disabled', false);
-		    } 
-		   else {
-		      	$('.submit-review').prop('disabled', true);
-		      	
-		    }
-		}
+	$(document).ready(function() {
+		   
+		setEventHandling();
+	    
+	});// end of $(document).ready(function() {})-------------------------------------------
+	
+	
+	
+	function setEventHandling() {
+		 $('#reviewText').on('input', inputReviewText);
+		 starScore();
+	}
+	
+	
+	function inputReviewText() {
+	   const reviewLength = $(this).val().length;
+	   $('#counter').text(reviewLength);
+	   if (reviewLength >= 10) {
+	      	$('.submit-review').prop('disabled', false);
+	    } 
+	   else {
+	      	$('.submit-review').prop('disabled', true);
+	      	
+	    }
+	}
+	
+	function starScore() {
+		$("input:radio[name='rating']").on('click', function(){
+			if ($(this).val() == "1") {
+				$("span#star_content").html("0.5점 별로에요");
+			}
+			if ($(this).val() == "2") {
+				$("span#star_content").html("1점 별로에요");
+			}
+			if ($(this).val() == "3") {
+				$("span#star_content").html("1.5점 그저그래요");
+			}
+			if ($(this).val() == "4") {
+				$("span#star_content").html("2점 그저그래요");
+			}
+			if ($(this).val() == "5") {
+				$("span#star_content").html("2.5점 보통이에요");
+			}
+			if ($(this).val() == "6") {
+				$("span#star_content").html("3점 보통이에요");
+			}
+			if ($(this).val() == "7") {
+				$("span#star_content").html("3.5점 좋아요");
+			}
+			if ($(this).val() == "8") {
+				$("span#star_content").html("4점 좋아요");
+			}
+			if ($(this).val() == "9") {
+				$("span#star_content").html("4.5점 최고에요");
+			}
+			if ($(this).val() == "10") {
+				$("span#star_content").html("5점 최고에요");
+			}
+		});
+	}	
+	
 		
 
 
 </script>
 
-</head>
-<body>
-	<div id="all" class="col-md-9">
 		<div class="" style="margin-left:40px; border-bottom: solid 1px #ccc;">
 			<h2 style="padding-bottom: 10px; margin: 20px 0px 20px 0px; color:#333; border-bottom : solid 1px #333;">후기작성</h2>
 			<div class="row">
@@ -233,5 +235,12 @@ button.image_button {
 				<button class="submit-review" disabled>등록</button>
 			</div>
 	</div>
-</body>
-</html>
+	
+</div>
+	
+	
+	
+	
+	
+	
+<jsp:include page="../footer.jsp"/>
