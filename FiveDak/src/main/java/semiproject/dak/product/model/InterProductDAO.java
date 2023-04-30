@@ -31,6 +31,8 @@ public interface InterProductDAO {
 	int deleteUserCart(int[] cartIds) throws SQLException;
 
 	CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException;
+
+	List<ProductDTO> productReview(String userid) throws SQLException;
 	
 	List<ProductDTO> productReview(String userid) throws SQLException;
 	

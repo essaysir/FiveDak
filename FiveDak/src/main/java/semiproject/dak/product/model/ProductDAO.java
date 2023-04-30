@@ -538,9 +538,6 @@ public class ProductDAO implements InterProductDAO {
 		return prodList;
 	}
 
-	
-	
-	
 }
 	
 	
