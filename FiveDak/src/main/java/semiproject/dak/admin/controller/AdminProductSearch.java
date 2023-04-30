@@ -139,7 +139,6 @@ public class AdminProductSearch extends AbstractController {
 		
 		
 		
-		
 		request.setAttribute("pageBar", pageBar);
 		request.setAttribute("totalProduct", map.get("totalProduct"));
 		

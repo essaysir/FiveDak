@@ -626,6 +626,29 @@ public class ProductDAO implements InterProductDAO {
 		
 		return list ;
 	}
+
+	// 제품 목록에서 해당 제품을 삭제하는 메소드 
+	@Override
+	public int deleteProd(String prodNum) throws SQLException {
+		int n = 0  ;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " DELETE FROM TBL_PRODUCT WHERE PRODUCT_ID = ? ";
+					
+			pstmt = conn.prepareStatement(sql);
+	
+			pstmt.setString(1, prodNum);
+				
+			n = pstmt.executeUpdate();
+			
+		}finally {
+			close();
+		}
+		
+		
+		return n;
+	}
 	
 	
 	

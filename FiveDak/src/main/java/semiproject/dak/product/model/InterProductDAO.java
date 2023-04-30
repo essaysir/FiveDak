@@ -39,6 +39,9 @@ public interface InterProductDAO {
  
 	// 제품 목록들 가져오는 메소드 
 	List<ProductDTO> selAllProduct(Map<String, String> paraMap)  throws SQLException  ;
+
+	// 제품 목록에서 해당 제품을 삭제하는 메소드 
+	int deleteProd(String prodNum) throws SQLException ;
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////

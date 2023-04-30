@@ -46,11 +46,28 @@
 			const prodName = ($(e.target).parent().parent().find('.prodName').text() );
 			
 			if ( confirm("해당 제품' "+prodName+" '을 삭제하시겠습니까?")){
+				$.ajax({
+					url:"<%=ctxPath %>/admin/prodDelete.dak" ,
+					type:"POST",
+					data:{"prodNum":prodNum},
+					dataType:"JSON",
+					success:function(json){
+						if(json.n == 1) { 
+							alert("해당 제품' "+prodName+" '을 제품 삭제가 되었습니다.");
+							location.href = `adminProductSearch.dak?searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&currentShowPageNo=${requestScope.currentShowPageNo}`;
+						}
+					},
+					 error: function(request, status, error){
+			               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			         }
 				
+				});
 				
 				
 			}
+			
 			else{
+				alert("해당 제품' "+prodName+" '을 제품 삭제를 취소하셨습니다.");
 				
 			}
 		}); // END OF $("tr.prodInfo").click(function(e){ 
