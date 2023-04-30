@@ -179,8 +179,8 @@
 	                <li class="check">
 	                    <a href="" class="menu">멤버관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list admin-sidebar" href="">회원관리</a></li>
-	                        <li class="check"><a class="list admin-sidebar" href="">포인트</a></li>
+	                        <li class="check"><a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminShowMember.dak">회원관리</a></li>
+	                        <li class="check"><a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminShowMemberPoint.dak">포인트</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
