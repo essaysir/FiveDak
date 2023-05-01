@@ -17,18 +17,18 @@ public class MemberPwdUpdateAction extends AbstractController {
 		String method = request.getMethod();
 		
 		// 세션 사용 해서 userid 가져옴 
-		HttpSession session  = request.getSession();
+		HttpSession session = request.getSession();
+		String userid = (String) session.getAttribute("userid");
 		
-
+		
+		
 		String message = "";
 		String loc = "";
-		
-		System.out.println(member);
-		 
+	
 		//세션 삭제 session.removeAttribute("userid"); /// 삭제하자 (userid 삭제) 꼭 하기
 		 
 		// 직접 uri 를 치고 들어오는 경우 
-		if() { 
+		if(!"POST".equalsIgnoreCase(method) && userid == null) { 
 			message=("장난치지 말고 비밀번호 찾기 및 변경을 통해 들어오십시오."); 
 			loc = request.getContextPath() + "/index.dak";
 		
@@ -39,17 +39,28 @@ public class MemberPwdUpdateAction extends AbstractController {
 			super.setViewPage("/WEB-INF/views/msg.jsp");
 			return; 
 		}
+		else {
+			super.setRedirect(false); 
+        	super.setViewPage("/WEB-INF/views/member/pwdUpdate.jsp");
+        }
+		
+		System.out.println(method);
 		
 		if("POST".equalsIgnoreCase(method)) {
 			// 암호변경하기 버튼을 클릭한 경우
-			String userid = request.getParameter("userid");
 			String pwd = request.getParameter("pwd");
 		
+			System.out.println(userid);
+			System.out.println(pwd);
+			
 			MemberDTO mdto = new MemberDTO(userid, pwd);
-		
+
 			InterMemberDAO mdao = new MemberDAO();
 			////////////////
 			int updateCount = mdao.pwdUpdate(mdto);
+			
+			//세션 삭제 
+			session.removeAttribute("userid");
 			
 			try {
 				if(updateCount != 0) {
@@ -78,6 +89,7 @@ public class MemberPwdUpdateAction extends AbstractController {
 			}
 			
 		}
+		
 		/////////////////////////////////////////////
 
 	}
