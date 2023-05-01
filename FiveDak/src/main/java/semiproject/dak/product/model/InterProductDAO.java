@@ -42,8 +42,16 @@ public interface InterProductDAO {
 
 	// 제품 목록에서 해당 제품을 삭제하는 메소드 
 	int deleteProd(String prodNum) throws SQLException ;
-	
 
+	// 특정 제품 번호에 해당하는 제품의 상세정보 가져오기 
+	ProductDTO selectOneProduct(String prodNum) throws SQLException  ;
+
+	// 특정 주문 번호에 해당하는 제품들에 대한 정보 가져오기 
+	List<ProductDTO> getOrderDetail(String order_serial) throws SQLException ;
+	
+	
+	
+	
 	///////////////////////////////////////////////////////////////////////////////////////
 
 }

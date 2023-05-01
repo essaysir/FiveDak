@@ -63,6 +63,7 @@ public class AdminFilter extends HttpFilter implements Filter {
         }
         else {
         	try {
+        		int percent = 0 ;
         		InterOrderDAO odao = new OrderDAO();
         		
         		// 한달간 전체 주문 상품 수 알아오기 
@@ -74,8 +75,10 @@ public class AdminFilter extends HttpFilter implements Filter {
         		// 한달간 현재 누적 판매액 
         		int sumTotalSales = odao.getSumTotalSales();
         		int successShipped = sumMonthOrder - sumNotShipped ;
-        		int percent = (successShipped)*100 / sumMonthOrder ; 
-        				
+        		if (  !(sumMonthOrder == 0 ) ) {
+        			percent = (successShipped)*100 / sumMonthOrder ;         			
+        		}
+        		
         		request.setAttribute("sumMonthOrder", sumMonthOrder);
         		request.setAttribute("sumNotShipped", sumNotShipped);
         		request.setAttribute("sumTotalSales", sumTotalSales);

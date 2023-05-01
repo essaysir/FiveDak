@@ -651,6 +651,63 @@ public class ProductDAO implements InterProductDAO {
 	}
 	
 	
+	// 특정 제품 번호에 해당하는 제품의 상세정보 가져오기 
+	@Override
+	public ProductDTO selectOneProduct(String prodNum) throws SQLException {
+		
+		
+		
+		
+		
+		
+		
+		return null;
+	}
+
+	@Override
+	public List<ProductDTO> getOrderDetail(String order_serial) throws SQLException {
+		List<ProductDTO> list = new ArrayList<>();
+		try {
+			conn = ds.getConnection();
+			String sql = " SELECT   D.ORDER_DETAIL_PRODUCT_ID, P.PRODUCT_NAME , D.ORDER_QUANTITY , D.PRICE_PER_UNIT , p.product_image_url , B.BRAND_NAME "
+					+ " FROM tbl_order_detail D "
+					+ " JOIN TBL_PRODUCT P  "
+					+ " ON D.ORDER_DETAIL_PRODUCT_ID = P.PRODUCT_ID "
+					+ " JOIN TBL_BRAND B "
+					+ " on P.PRODUCT_BRAND_ID = B.BRAND_ID "
+					+ " WHERE D.FK_ORDER_SERIAL = 'DAK-2023042900001234' ";
+					
+			pstmt = conn.prepareStatement(sql);
+		
+			// pstmt.setString(1, order_serial);
+			
+			rs = pstmt.executeQuery();
+			while ( rs.next()) {
+				ProductDTO pdto = new ProductDTO();
+				pdto.setProdNum(rs.getInt(1));
+				pdto.setProdName(rs.getString(2));
+				pdto.setOrderNo(rs.getInt(3));
+				pdto.setProdPrice(rs.getInt(4));
+				pdto.setProdImage1(rs.getString(5));
+				
+				BrandDTO bdto = new BrandDTO() ;
+				bdto.setBrandName(rs.getString(6));
+				pdto.setBrandDTO(bdto);
+				
+				list.add(pdto);
+			}
+			
+		}finally {
+			close();
+		}
+		
+		
+		
+		
+		return list;
+	}
+	
+	
 	
 	
 	

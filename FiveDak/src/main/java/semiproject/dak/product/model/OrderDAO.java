@@ -297,7 +297,7 @@ public class OrderDAO implements InterOrderDAO{
 			conn = ds.getConnection();
 			
 			String sql = " SELECT  ORDER_MEMBER_ID ,ORDER_TOTAL_PRICE , (SHIPPING_ADDRESS || ' ' || SHIPPING_DETAIL_ADDRESS ) AS ORDER_ADDRESS "
-					+ " , RECIPIENT_MOBILE , TRACKING_NUMBER , ORDER_STATUS  ,  STATUS_NAME , ORDER_SERIAL "
+					+ " , RECIPIENT_MOBILE , TRACKING_NUMBER , ORDER_STATUS  ,  STATUS_NAME , ORDER_SERIAL , ORDER_DATE "
 					+ " FROM TBL_ORDER O "
 					+ " JOIN order_status S "
 					+ " ON O.ORDER_STATUS = S.STATUS_ID  "  
@@ -319,7 +319,7 @@ public class OrderDAO implements InterOrderDAO{
 				odto.setOrderTrackNo(rs.getString("TRACKING_NUMBER"));
 				odto.setOrderStatus(rs.getInt("ORDER_STATUS"));
 				odto.setOrderStatus_name(rs.getString("STATUS_NAME"));
-			
+				odto.setOrderDate(rs.getString("ORDER_DATE"));
 			}
 		}finally {
 			close();
@@ -327,6 +327,39 @@ public class OrderDAO implements InterOrderDAO{
 		
 		return odto;
 	}// END OF PUBLIC ORDERDTO GETORDERINFO(STRING ORDERID) THROWS SQLEXCEPTION {
+
+	// 주문 상세 정보에 주문한 제품 정보와 이미지 가져오기
+	@Override
+	public ArrayList<Map<String, Object>> getOrderProdAndImage(String order_serial) throws SQLException {
+		ArrayList<Map<String,Object>> list = new ArrayList<>();
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT   D.ORDER_DETAIL_PRODUCT_ID, P.PRODUCT_NAME , D.ORDER_QUANTITY , D.PRICE_PER_UNIT , P.PRODUCT_IMAGE_URL "
+					+ " FROM tbl_order_detail D "
+					+ " JOIN TBL_PRODUCT P  "
+					+ " ON D.ORDER_DETAIL_PRODUCT_ID = P.PRODUCT_ID "
+					+ " WHERE D.FK_ORDER_SERIAL = ?  " ;
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, order_serial );
+			rs = pstmt.executeQuery();
+			
+			while( rs.next()) {
+				
+				
+				
+				
+			}
+			
+		}finally {
+			close();
+		}
+		
+		
+		return list;
+	}
 	
 	
 

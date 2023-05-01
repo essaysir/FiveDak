@@ -1,6 +1,7 @@
 package semiproject.dak.product.model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,5 +25,8 @@ public interface InterOrderDAO {
 
 	// 주문 상세 정보에 띄울 정보들 DB에서 가져오기 
 	OrderDTO getOrderInfo(String orderid)  throws SQLException ;
+
+	// 주문 상세 정보에 주문한 제품 정보와 이미지 가져오기
+	ArrayList<Map<String, Object>> getOrderProdAndImage(String order_serial)   throws SQLException  ;
 
 }
