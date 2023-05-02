@@ -791,6 +791,81 @@ public class ProductDAO implements InterProductDAO {
 	
 		return ndto ;
 	}
+
+	// 제품 상세 정보에서 보여줄 리뷰 리스트 가져오기 
+	@Override
+	public List<ReviewDTO> getReviewList(Map<String, String> paraMap) throws SQLException {
+		List<ReviewDTO> arraylist = new ArrayList<>();
+		try {
+			conn = ds.getConnection(); 
+			
+			String sql = " SELECT RNO, review_id, review_member_id, review_product_id , review_score, review_content , review_date "
+					+ " FROM "
+					+ " ( "
+					+ " select row_number() over (order by review_date DESC) AS RNO   "
+					+ " , review_id, review_member_id, review_product_id , review_score, review_content  "
+					+ " , review_date "
+					+ " from tbl_review "
+					+ " where review_product_id = 24 "
+					+ " )V "
+					+ " WHERE RNO BETWEEN ? AND ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			int pageNum = Integer.parseInt(paraMap.get("pageNum"));
+			
+			// pstmt.setString(1, paraMap.get("prodNum"));
+			pstmt.setInt(1, (5*pageNum)-(5-1));
+			pstmt.setInt(2,  5* pageNum);
+			
+			rs= pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ReviewDTO rdto = new ReviewDTO();
+				rdto.setReview_id(rs.getInt("review_id"));
+				rdto.setReview_member_id(rs.getString("review_member_id"));
+				rdto.setReview_product_id(rs.getInt("review_product_id"));
+				rdto.setReview_score(rs.getDouble("review_score"));
+				rdto.setReview_content(rs.getString("review_content"));
+				rdto.setReview_date(rs.getDate("review_date"));
+				
+				arraylist.add(rdto);
+			}
+			
+		}finally {
+			close();
+		}
+		
+		return arraylist ;
+	}
+
+	// 제품 상세 정보에서 리뷰 총 페이지 구해오기 
+	@Override
+	public int getTotalReviewPage(Map<String, String> paraMap) throws SQLException {
+		int totalPage = 0 ;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT ceil(count(*)/ 5 ) "+
+					"        from tbl_review "+
+					"        where review_product_id = 24 " ;
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			// pstmt.setString(1, paraMap.get("prodNum") );
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			totalPage = rs.getInt(1);
+			
+		}finally {
+			close();
+		}
+		
+		return totalPage ;
+	}
 	
 	
 

@@ -20,7 +20,7 @@ public class ProductDTO {
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
-	private ReviewDTO reviewDTO;
+	private ReviewDTO reviewDTO; // 
 	
 	
 	public ReviewDTO getReviewDTO() {
@@ -177,6 +177,11 @@ public class ProductDTO {
 		
 		// 할인률 = 100 - (판매가 * 100) / 정가
 		return 100 - (prodDiscount * 100)/prodPrice;
+	}
+	
+	public double getAveragePercent() {
+
+		return ( prodAvgRating *100 ) / 5 ;
 	}
 	
 		

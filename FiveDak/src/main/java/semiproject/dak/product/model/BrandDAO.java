@@ -38,9 +38,7 @@ public class BrandDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				
 				brandName = rs.getString("BRAND_NAME");
-				
 			}
 			
 			

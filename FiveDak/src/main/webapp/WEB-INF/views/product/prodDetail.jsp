@@ -34,25 +34,59 @@
 			    }
 			 } );// end of $("input#spinner").spinner({});----------------    
 
+			$("span.star-rate-lg").css('width', '${requestScope.percent}%') ; 
+			goReviewList(1); 
 	}) ; // END OF 	$(DOCUMENT).READY(FUNCTION(){
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-
+	function goReviewList(pageNum){
+		  
+			$.ajax({
+    		  url:"<%=request.getContextPath() %>/product/getReviewList.dak",
+    		  data:{ "prodNum":"${requestScope.pdto.prodNum}" 
+    			  , "pageNum":pageNum} ,
+    		  type:"POST",
+    		  async:true ,
+    		  success:function(result) {
+    			  
+    			  if(result.trim() == 'false') {
+	             		$("section#review").html('<h2 class="my-5">등록된 리뷰가 존재하지 않습니다.</h2>');
+	              } 
+    			  else {
+	             		$("section#review").html(result);
+	              }
+    			   
+   	               
+    		  },
+               error: function(request, status, error){
+                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+               }
+    	   
+    	   
+    	   }); // end of $.ajax 
+		
+		
+		
+	}; // FUNCTION GOREVIEWLIST(){
+	
+	
+		
+		
 	
 
 </script>
 <%--<jsp:include page="../serviceSidebar.jsp"/> --%>
 
 <style>
- 
+  
 .star-rate-md{background: url(<%= ctxPath %>/images/ico_rating.png) 0 -40px no-repeat; position: relative; width:100px; height:20px;}
 .star-rate-md span{position: absolute; background: url(<%= ctxPath %>/images/ico_rating.png) 0 -60px;width: auto;height: 20px;}
 
- 
+  
 .star-rate-lg{ background: url(<%= ctxPath %>/images/ico_rating.png) 0 -80px no-repeat; position: relative; width:166px; height:34px;}
 .star-rate-lg span{position: absolute; background: url(<%= ctxPath %>/images/ico_rating.png) 0 -115px;width: auto;height: 34px;}
  
-
+ 
 	.content_container  {
 		margin-bottom: 10px;
 	}
@@ -541,6 +575,7 @@ a.sticky-nav-tab { text-decoration: none; }
 		border: solid 1px gray;
 	}
     
+    
 </style>
 
 <!-- 여기서부터는 제품상세 페이지 영역입니다. -->
@@ -552,7 +587,7 @@ a.sticky-nav-tab { text-decoration: none; }
 			     좌측 제품이미지 영역: 1)제품대표이미지 2)중간여백 3)광고배너이미지 --> 
 			<div class="product_images position-relative" style="right:-250px;">
 				<div class="image_main">
-					<img alt="제품상세대표 이미지 입니다." src="<%=ctxPath %>/images/제품1.jpg">
+					<img alt="제품상세대표 이미지 입니다." src="<%=ctxPath %>/images/${pdto.prodImage1}">
 				</div>
 				<div class="image_ad">
 					<img alt="배송배너 이미지 입니다." src="<%=ctxPath %>/images/상세정보배너1.jpg">
@@ -562,18 +597,23 @@ a.sticky-nav-tab { text-decoration: none; }
 		
 			<!-- 우측 상품선택 영역 -->
 			<div class="product_choice position-relative">
-				<h2>${requestScope.prodName }</h2>
+				<h2>${requestScope.pdto.prodName }</h2>
 				<div class="product_rating">
 					<div class="star-rate-lg">
         				<span class="star-rate-lg" style="width: 85%"></span>
 					</div>
 
-					<a>${requestScope.prodAvgRating}점</a>
-					<a>(리뷰 개수를 넣어주는 곳)</a>
+					<a>${requestScope.pdto.prodAvgRating}점</a>
+					<a>(<fmt:formatNumber value="${requestScope.pdto.reviewDTO.review_cnt}" pattern="###,###" />)</a>
 				</div>
 				
 				<div class="product_price">
-					<p class="price"><strong style="font-size:30pt;"><fmt:formatNumber value="${requestScope.prodPrice}" pattern="###,###" /></strong>원</p>
+					
+					<p class="price"><span style="color:#f15220;font-size:30pt; font-weight: bold;">${pdto.discountPercent}%</span>
+					<strong style="font-size:30pt;"><fmt:formatNumber value="${requestScope.pdto.prodPrice}" pattern="###,###" /></strong>원&nbsp;
+					<span class="text-muted" style="text-decoration: line-through;font-size:15pt; font-weight: bold;"><fmt:formatNumber value="${pdto.prodPrice}" pattern="#,###"/>원</span>
+					</p>
+					
 					<p class="per_price" style="color:#666;">(1팩당 2,300 ~ 3,400)</p>
 				</div>
 				
@@ -582,7 +622,7 @@ a.sticky-nav-tab { text-decoration: none; }
 						<dt style="margin-bottom:12px ; width: 60px;">판매량</dt>
 						<dd>
 							<ul style="list-style-type: none">
-								<li><fmt:formatNumber value="${requestScope.prodSales }" pattern="###,###" />개</li>
+								<li><fmt:formatNumber value="${requestScope.pdto.prodSales }" pattern="###,###" />개</li>
 								<li></li>
 							</ul>
 						</dd>
@@ -610,7 +650,7 @@ a.sticky-nav-tab { text-decoration: none; }
 					<dl style="border-bottom:solid 1px #ccc;">
 						<dt style="margin-bottom:12px; width: 60px; ">브랜드관</dt>
 						<dd>
-							<span style="text-decoration: none; color:#212529;">브랜드네임</span> 
+							<span style="text-decoration: none; color:#212529;">${requestScope.pdto.brandDTO.brandName }</span> 
 						</dd>
 					</dl>
 					
@@ -669,15 +709,15 @@ a.sticky-nav-tab { text-decoration: none; }
 											<td>당류</td>
 										</tr>
 										<tr>
- 					<%-- 						<td><%=product_cal%></td>
-											<td><%=product_protein%></td>
-											<td><%=product_sodium%></td>
-											<td><%=product_kal%></td>
-											<td><%=product_fat%></td>
-											<td><%=product_transfat%></td>
-											<td><%=product_satfat%></td>
-											<td><%=product_col%></td>
-											<td><%=product_sug%></td>  --%>
+ 											<td>${ndto.product_cal }</td>
+											<td>${ndto.product_protein }</td>
+											<td>${ndto.product_sodium }</td>
+											<td>${ndto.product_kal }</td>
+											<td>${ndto.product_fat }</td>
+											<td>${ndto.product_transfat }</td>
+											<td>${ndto.product_satfat }</td>
+											<td>${ndto.product_col }</td>
+											<td>${ndto.product_sug }</td>
 										</tr>
 									</tbody>
 								</table>
@@ -764,35 +804,10 @@ a.sticky-nav-tab { text-decoration: none; }
 		
 		
 <div class="content_container2 my-3">	
-	<section class="spa-slide" id="tab-cssscript" style="margin-left:30px;">
-		<h3 style="font-weight:bold; font-size:12pt;">구매후기</h3>
-		<div class="reviewBox">
-			<div class="reviewContent">
-				<span>평점<br></span>
-				<span>닉네임 | 날짜 <br></span>
-				<span>리뷰 내용을 작성해주세요.</span>
-			</div>
-			<div class="reviewContent">
-				<span>평점<br></span>
-				<span>닉네임 | 날짜 <br></span>
-				<span>리뷰 내용을 작성해주세요.</span>
-			</div>
-			<div class="reviewContent">
-				<span>평점 <br></span>
-				<span>닉네임 | 날짜 <br></span>
-				<span>리뷰 내용을 작성해주세요.</span>
-			</div>
-			<div class="reviewContent">
-				<span>평점<br></span>
-				<span>닉네임 | 날짜 <br></span>
-				<span>리뷰 내용을 작성해주세요.</span>
-			</div>
-			<div class="reviewContent" style="border-bottom:solid 1px #ccc; margin-bottom:50px;">
-				<span>평점<br></span>
-				<span>닉네임 | 날짜 <br></span>
-				<span>리뷰 내용을 작성해주세요.</span>
-			</div>
-		</div>
+	<section class="spa-slide" id="review" style="margin-left:30px;">
+		
+		
+		
 	</section>
 	
 	<section class="spa-slide" id="tab-vue">
@@ -992,11 +1007,10 @@ a.sticky-nav-tab { text-decoration: none; }
 		<div class="sideMenubar" style="padding-top:60px; height:80%;">
 			<span style="font-size:12pt;">제품선택<br></span>
 			<div>
-				<h4 style="margin-top: 20px; margin-bottom:250px;" >${requestScope.prodName}</h4>
-				<div class="product_price" style="text-align: right;">
-					<strong style="font-size:30pt;"></strong><fmt:formatNumber value="${requestScope.prodPrice}" pattern="###,###" />원
-					<p class="per_price" style="color:#666; margin-top:0;">(1팩당 2,300 ~ 3,400)</p>
-				</div>
+				<h4 style="margin-top: 20px; margin-bottom:250px;" >${requestScope.pdto.prodName}</h4>
+				
+				<h5>총 가격 : <fmt:formatNumber value="${requestScope.pdto.prodPrice}" pattern="###,###" />원</h5>
+				
 				<%-- ==== 장바구니 담기 폼 ==== --%>
 			          <form name="cartOrderFrm">       
 			             <ul class="list-unstyled mt-3">
