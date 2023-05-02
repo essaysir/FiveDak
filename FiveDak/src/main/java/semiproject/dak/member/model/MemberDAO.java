@@ -896,6 +896,132 @@ public class MemberDAO implements InterMemberDAO {
 		return result;
 	}
 
+	// *** 페이징 처리를 한 모든 공지사항 목록 보여주기 *** //
+	@Override
+	public List<NoticeBoardDTO> selectPagingMember(Map<String, String> paraMap) throws SQLException {
+		
+		List<NoticeBoardDTO> boardList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " select * "
+					   + " FROM "
+					   + " ( "
+					   + "    select notice_id, notice_title, notice_created_at "
+					   + "    from "
+					   + "    ( "
+					   + "        select * "
+					   + "        from tbl_notice "; 
+			
+			String colname = paraMap.get("searchField");
+			String searchText = paraMap.get("searchText");
+			/*
+			if("email".equals(colname)) {
+				// 검색대상이 email인 경우
+				searchWord = aes.encrypt(searchWord);
+			}
+			*/
+			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
+				sql += " and " + colname + " like '%'|| ? || '%' ";
+				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
+				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
+			}
+			
+			sql += " order by notice_id desc "
+				 + "    ) V "
+				 + " ) T "
+				 + " where notice_id between ? and ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo")); 	// 조회하고자하는 페이지번호
+			int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));			// 한페이지당 보여줄 행의 개수
+			
+		/*
+		    === 페이징 처리 공식 ===
+		    where RNO between (조회하고자하는 페이지번호*한페이지당 보여줄 행의 개수) - (한페이지당 보여줄 행의 개수-1) and (조회하고자하는 페이지번호 * 한페이지당 보여줄 행의 개수);
+		*/
+			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
+				pstmt.setString(1, searchText);
+				pstmt.setInt(2, (currentShowPageNo * sizePerPage) - (sizePerPage - 1));
+				pstmt.setInt(3, (currentShowPageNo * sizePerPage));
+			}
+			
+			else {
+				pstmt.setInt(1, (currentShowPageNo * sizePerPage) - (sizePerPage - 1));
+				pstmt.setInt(2, (currentShowPageNo * sizePerPage));
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				NoticeBoardDTO board = new NoticeBoardDTO();
+				
+				board.setNote_id(Integer.parseInt(rs.getString(1)));;
+				board.setNote_title(rs.getString(2));
+				board.setNote_created_at(rs.getString(3));
+				//userid, name, email, gender
+				//notice_id, notice_title, notice_created_at
+				boardList.add(board);
+				
+			} // end of while(rs.next())----------------------------------------
+			
+		} finally {
+			close();
+		}
+		
+		return boardList;
+	}
+
+	// 페이징 처리를 위한 검색이 있거나 없는 공지사항에 대한 총페이지 알아오기
+	@Override
+	public int getBoardTotalPage(Map<String, String> paraMap) throws SQLException {
+		
+		int boardTotalPage = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " select ceil(count(*)/?) "
+					   + " from tbl_notice "; 
+			
+			String colname = paraMap.get("searchField");
+			String searchText = paraMap.get("searchText");
+			/*
+			if("email".equals(colname)) {
+				// 검색대상이 email인 경우
+				searchText = aes.encrypt(searchText);
+			}
+			*/
+			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
+				sql += " and " + colname + " like '%'|| ? || '%' ";
+				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
+				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
+			}
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("sizePerPage"));
+			
+			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
+				pstmt.setString(2, searchText);
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			boardTotalPage = rs.getInt(1);
+			
+		} finally {
+			close();
+		}
+		
+		return boardTotalPage;
+	}
+
 
 
 }
