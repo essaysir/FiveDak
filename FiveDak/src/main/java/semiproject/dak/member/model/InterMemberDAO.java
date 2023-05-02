@@ -44,6 +44,15 @@ public interface InterMemberDAO {
 	// 회원 정보 포인트 부분 
 	List<MemberDTO> memberShowListPoint(Map<String, String> paraMap) throws SQLException;
 
+	// 회원마다 주문건수 찾기
+	int CountOrder(String order_Member_count) throws SQLException;
+
+	// QNA 보내기 
+	int goQNA(Map<String, String> paraMap)  throws SQLException;
+
+	
+
+
 	
 
 }

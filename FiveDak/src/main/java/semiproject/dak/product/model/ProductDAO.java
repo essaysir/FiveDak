@@ -15,8 +15,11 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import semiproject.dak.product.model.ProductDAO;
 import semiproject.dak.security.AES256;
 import semiproject.dak.security.SecretMyKey;
 
@@ -63,6 +66,28 @@ public class ProductDAO implements InterProductDAO {
 		}	
 	}// end of private void close 
 
+	
+	//////////////////////////////////////////////////////////////////////
+	// 로그인 유무를 검사해서 로그인을 했으면 true를 리턴해주고, 로그인 안 했으면 false를 리턴해주도록 한다.
+	
+	public boolean checkLogin(HttpServletRequest request) { 
+	
+	HttpSession session = request.getSession();
+	ProductDAO loginuser = (ProductDAO)session.getAttribute("loginuser");
+	
+	if(loginuser != null) {
+	//로그인 한 경우
+	return true;
+	}
+	else {
+	//로그인 안 한 경우
+	return false;
+	}
+	
+	}//end of public boolean checkLogin(HttpServletRequest request)------------------------
+
+	
+	
 	// 총 페이지를 알아와서 돌려주는 메소드 
 	@Override
 	public int getTotalPage(Map<String, String> paraMap) throws SQLException{
@@ -491,6 +516,110 @@ public class ProductDAO implements InterProductDAO {
 		}
 		return checkout;
 	}
+	
+
+	// 제품정보를 알아오는 메소드
+	public ProductDTO prodInfo(int product_id, int review_product_id) throws SQLException {
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		
+		ProductDTO pdto = new ProductDTO();
+	
+		try {
+			
+			conn = ds.getConnection(); 
+			
+			
+			String sql=" select product_id, product_name, brand_name, product_price, product_stock, product_sales, product_discount, average_rating, product_image_url, review_count "
+					 + " from (select product_id, product_name,brand_name, product_price, product_stock, product_sales, product_discount, average_rating, product_image_url "
+					 + " from tbl_product P join tbl_brand B on P.product_brand_id = B.brand_id where product_id = ? ) A CROSS JOIN "
+					 + " (select count(*) as review_count from tbl_review where review_product_id = ? group by review_product_id) C ";
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, product_id);
+			ps.setInt(2, review_product_id);
+			
+			rs=ps.executeQuery();
+			
+			
+			if(rs.next()) {
+				
+				pdto = new ProductDTO();
+				pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+				pdto.setProdName(rs.getString("PRODUCT_NAME"));
+				pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
+				pdto.setProdStock(rs.getInt("PRODUCT_STOCK"));
+				pdto.setProdSales(rs.getInt("PRODUCT_SALES"));
+				pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+				pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
+				pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+				
+				ReviewDTO rdto = new ReviewDTO();
+				rdto.setReview_cnt(rs.getInt("REVIEW_COUNT"));
+				pdto.setreviewDTO(rdto);
+				
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("BRAND_NAME"));
+				pdto.setBrandDTO(bdto);
+			
+				
+			}
+		//	System.out.println("제발 나와주세요"+pdto);
+			
+			return pdto;
+		}finally {
+			close();
+		}
+	}//제품정보를 알아오는 메소드
+	
+	
+	
+	//제품의 영양정보를 알아오는 메소드
+		public NutritionDTO nutritionInfo(String nutrition_id) throws SQLException {
+			Connection conn=null;
+			PreparedStatement ps=null;
+			ResultSet rs=null;
+			
+			NutritionDTO ndto = new NutritionDTO();
+		
+			try {
+				
+				conn = ds.getConnection(); 
+				
+				
+				String sql=" select nutrition_id,product_cal, product_protein, product_sodium, product_kal, product_fat, product_transfat, product_satfat, product_col, product_sug "
+						 + " from tbl_product P join tbl_product_nutrition N on P.product_id = N.nutrition_id "
+						 + " where nutrition_id = ? ";
+				ps=conn.prepareStatement(sql);
+				ps.setString(1, nutrition_id);
+				
+				rs=ps.executeQuery();
+				
+				
+				if(rs.next()) {
+					
+					ndto = new NutritionDTO();
+					ndto.setNutrition_id(rs.getInt("NUTRITION_ID"));
+					ndto.setProduct_cal(rs.getDouble("PRODUCT_CAL"));
+					ndto.setProduct_protein(rs.getDouble("PRODUCT_PROTEIN"));
+					ndto.setProduct_sodium(rs.getInt("PRODUCT_SODIUM"));
+					ndto.setProduct_kal(rs.getInt("PRODUCT_KAL"));
+					ndto.setProduct_fat(rs.getInt("PRODUCT_FAT"));
+					ndto.setProduct_transfat(rs.getInt("PRODUCT_TRANSFAT"));
+					ndto.setProduct_satfat(rs.getInt("PRODUCT_SATFAT"));
+					ndto.setProduct_col(rs.getInt("PRODUCT_COL"));
+					ndto.setProduct_sug(rs.getInt("PRODUCT_SUG"));
+					
+				}
+				System.out.println(ndto.getNutrition_id());
+				return ndto;
+			}finally {
+				close();
+			}
+		}//제품정보를 알아오는 메소드
+	
+
+	
 }
 	
 	

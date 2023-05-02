@@ -2,6 +2,10 @@
     pageEncoding="UTF-8"%>
 
 
+<%
+    String ctxPath = request.getContextPath();
+%>
+
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>
 
 
@@ -94,7 +98,7 @@
         <div class="card my-page-card">
           <div class="card-body">
             <p class="card-title">주문/배송</p>
-            <p class="card-text font-weight-bold"><span class="h3">4</span>건</p>
+            <p class="card-text font-weight-bold"><span class="h3">${requestScope.order_count}</span>건</p>
           </div>
         </div>
       </div>
@@ -143,7 +147,7 @@
 	                    <a href="" class="menu">혜택관리</a>
 	                    <ul class="menu-list">
 	                        <li class="check"><a class="list" href="">쿠폰</a></li>
-	                        <li class="check"><a class="list" href="">포인트</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/point.dak">포인트</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
@@ -152,7 +156,7 @@
 	                        <li class="check"><a class="list" href="">최근 본 상품</a></li>
 	                        <li class="check"><a class="list" href="">찜한상품</a></li>
 	                        <li class="check"><a class="list" href="">관심브랜드</a></li>
-	                        <li class="check"><a class="list" href="">1:1문의</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNA.dak">1:1문의</a></li>
 	                        <li class="check"><a class="list" href="">상품후기</a></li>
 	                        <li class="check"><a class="list" href="">상품문의내역</a></li>
 	                    </ul>

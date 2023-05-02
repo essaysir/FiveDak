@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -869,6 +870,74 @@ public class MemberDAO implements InterMemberDAO {
 		
 	}
 
+	// 회원마다 주문건수 찾기
+	@Override
+	public int CountOrder(String order_Member_count) throws SQLException {
+		
+
+		int result = 0;
+		
+		try {
+			
+			conn = ds.getConnection();
+			
+			String sql = " select count(*) "   //보여줄 페이지 개수를 넣는 위치홀더
+					   + " from tbl_Order "
+					   + " where ORDER_MEMBER_ID = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			pstmt.setString(1,order_Member_count);
+			
+			rs = pstmt.executeQuery();
+			
+			
+			rs.next();   // 이건 무조건 필요한 것이다.
+			
+			
+			result =  rs.getInt(1);
+			
+			
+		} finally { 
+			close();
+		}
+			
+			
+		return result;
+		
+		
+	}
+
+	// QNA 보내기 
+	@Override
+	public int goQNA(Map<String, String> paraMap) throws SQLException {
+		
+		int n = 0;
+		
+		try {
+			
+			conn = ds.getConnection();
+			
+			String sql = " insert into TBL_QNA(QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT)"
+					   + " values(?, ?, ?, sysdate) ";
+
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("id"));
+			pstmt.setString(2, paraMap.get("title1to1"));
+			pstmt.setString(3, paraMap.get("contents"));
+
+			n = pstmt.executeUpdate();
+
+			
+		}finally {
+			close();
+		}
+		
+		return n;
+
+	}
 
 
 }
