@@ -9,12 +9,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import semiproject.dak.security.AES256;
@@ -63,7 +65,7 @@ public class ProductDAO implements InterProductDAO {
 		}	
 	}// end of private void close 
 
-	// 총 페이지를 알아와서 돌려주는 메소드 
+	// 검색했을 경우에 총 페이지를 알아와서 돌려주는 메소드 
 	@Override
 	public int getTotalPage(Map<String, String> paraMap) throws SQLException{
 		int totalPage = 0 ;
@@ -405,7 +407,7 @@ public class ProductDAO implements InterProductDAO {
 		
 	}
 
-	public String generateOrderSerial() throws SQLException {
+	private String generateOrderSerial() throws SQLException {
 	    
 	    String orderNo = null;
 	    
@@ -422,7 +424,7 @@ public class ProductDAO implements InterProductDAO {
 	        int seqNo = rs.getInt(1);
 	        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	        String currentDate = sdf.format(new Date());
-	        orderNo = "RK" +currentDate + "-" + String.format("%06d", seqNo);
+	        orderNo = "DAK" +currentDate + "-" + String.format("%08d", seqNo);
 	      }
 	      
 	    } finally {
@@ -432,8 +434,9 @@ public class ProductDAO implements InterProductDAO {
 	    return orderNo;
 	  }
 
+	
 	@Override
-	public CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException {
+	public CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException {
 		List<CartDTO> cartlist = new ArrayList<>();
 	    int totalPrice = 0, totalDiscount = 0, shippingCost = 0, pointsEarned = 0, totalAmount= 0;
 	    CheckoutDTO checkout = null;
@@ -444,7 +447,7 @@ public class ProductDAO implements InterProductDAO {
 					+ "FROM tbl_cart c JOIN tbl_product p ON c.cart_product_id = p.product_id "
 					+ "JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
 					+ "WHERE CART_ID IN (" + String.join(",", Collections.nCopies(cartIds.length, "?")) + ")";
-
+	
 			pstmt = conn.prepareStatement(sql);
 			
 			for (int i = 0; i < cartIds.length; i++) {
@@ -476,10 +479,11 @@ public class ProductDAO implements InterProductDAO {
 				totalPrice += cart.getTotalProductPrice();
 				totalDiscount += cart.getTotalDiscount();
 				totalAmount += cart.getTotalAmount();
+				pointsEarned += cart.getPointsEarned(request);
 				
 				cartlist.add(cart);
 			}
-			if(totalAmount > 30000) {
+			if(totalAmount < 30000) {
 				shippingCost += 3000;
 			}
 			
@@ -491,6 +495,7 @@ public class ProductDAO implements InterProductDAO {
 		}
 		return checkout;
 	}
+
 	
 	@Override
 	public List<ProductDTO> productReview(String userid) throws SQLException {
@@ -535,6 +540,557 @@ public class ProductDAO implements InterProductDAO {
 		}
 		return prodList;
 	}
+
+
+	// 총 제품의 개수을 알아오는 메소드 
+	@Override
+	public Map<String,Integer> getTotalNum(Map<String, String> paraMap) throws SQLException {
+		
+		Map<String,Integer> map = new HashMap<>();
+		
+		try {
+		    conn = ds.getConnection();
+		      
+		    String sql =  " select count ( * ) "
+		    		    + " from tbl_product " ;
+		      
+		    pstmt = conn.prepareStatement(sql);
+		    
+		    rs = pstmt.executeQuery();
+		    rs.next();
+		    
+		    map.put("totalProduct", rs.getInt(1));
+		    
+		    String colname = paraMap.get("searchType");
+		    String searchWord = paraMap.get("searchWord");
+		    
+		    sql = " SELECT ceil(count(*)/ 10) "
+		    		+ " FROM "
+		    		+ " ( "
+		    		+ "    SELECT row_number() over (order by PRODUCT_ID DESC) AS RNO  , PRODUCT_ID , PRODUCT_NAME , C.CATEGORY_NAME , B.BRAND_NAME"
+		    		+ "    , PRODUCT_STOCK , PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL "
+		    		+ "    from tbl_product P "
+		    		+ "    JOIN tbl_brand B "
+		    		+ "    ON P.PRODUCT_BRAND_ID = B.BRAND_ID "
+		    		+ "    JOIN tbl_category C "
+		    		+ "    ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID " ;
+		    
+		    if ( !"".equals(colname) &&  searchWord != null && !searchWord.trim().isEmpty() ) {
+				sql += " WHERE "+colname+" like '%'|| ? || '%'  " ;
+			} 		
+		    		
+		    	sql +=  " )V" ; 
+		    
+		    pstmt = conn.prepareStatement(sql);
+		    
+		    if ( !"".equals(colname)&& searchWord != null && !searchWord.trim().isEmpty() ) {
+				pstmt.setString(1, searchWord);
+			}
+		    
+		    rs = pstmt.executeQuery();
+		    rs.next();
+		    map.put("totalPage", rs.getInt(1));
+		    	
+					
+		    } finally {
+		      close();
+		    }
+		
+		
+		return map ;
+	} // END OF PUBLIC INT GETTOTALPRODUCT() THROWS SQLEXCEPTION {
+
+	@Override
+	public List<ProductDTO> selAllProduct(Map<String, String> paraMap) throws SQLException {
+		List<ProductDTO> list = new ArrayList<>() ;
+		
+		try {
+		    String colname = paraMap.get("searchType");
+		    String searchWord = paraMap.get("searchWord");
+			conn = ds.getConnection();
+		      
+		    String sql =  " SELECT RNO , PRODUCT_ID , PRODUCT_NAME , CATEGORY_NAME , BRAND_NAME "
+		    		+ "    , PRODUCT_STOCK , PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL "
+		    		+ " FROM "
+		    		+ " ( "
+		    		+ "    SELECT row_number() over (order by PRODUCT_ID DESC) AS RNO  , PRODUCT_ID , PRODUCT_NAME , C.CATEGORY_NAME , B.BRAND_NAME "
+		    		+ "    , PRODUCT_STOCK , PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL "
+		    		+ "    from tbl_product P "
+		    		+ "    JOIN tbl_brand B "
+		    		+ "    ON P.PRODUCT_BRAND_ID = B.BRAND_ID "
+		    		+ "    JOIN tbl_category C "
+		    		+ "    ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID " ;
+		    		
+		    if ( !"".equals(colname) &&  searchWord != null && !searchWord.trim().isEmpty() ) {
+				sql += " WHERE "+colname+" like '%'|| ? || '%'  " ;
+			}
+		    	sql +=   " )V "
+			    	   + " WHERE RNO BETWEEN ? AND ?  " ;
+	    		
+		      
+		    pstmt = conn.prepareStatement(sql);
+		    int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
+		    
+		    if ( !"".equals(colname)&& searchWord != null && !searchWord.trim().isEmpty() ) {
+				pstmt.setString(1, searchWord);
+				//pstmt.setInt(2, ( 조회하고자하는 페이지번호 * 한페이지당 보여줄 행의 개수 ) - (한페이지당 보여줄 행의 개수-1 ));
+				//pstmt.setInt(3, ( 조회하고자하는 페이지번호 * 한페이지당 보여줄 행의 개수 ));
+				pstmt.setInt(2, (10*currentShowPageNo)-(10-1));
+				pstmt.setInt(3, 10*currentShowPageNo);
+			}
+		    
+		    else {
+				 pstmt.setInt(1, (10*currentShowPageNo)-(10-1));
+				 pstmt.setInt(2, 10*currentShowPageNo);	
+			}
+		    
+		    rs = pstmt.executeQuery();
+		    
+		    while(rs.next()) {
+		    	ProductDTO pdto = new ProductDTO() ;
+		    	pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+		    	pdto.setProdName(rs.getString("PRODUCT_NAME"));
+		    	
+		    	CategoryDTO catedto = new CategoryDTO();
+		    	catedto.setCateName(rs.getString("CATEGORY_NAME"));
+		    	pdto.setCateDTO(catedto);
+		    	
+		    	BrandDTO bdto = new BrandDTO() ;
+		    	bdto.setBrandName(rs.getString("BRAND_NAME"));
+		    	pdto.setBrandDTO(bdto);
+		    	
+		    	pdto.setProdStock(rs.getInt("PRODUCT_STOCK"));
+		    	pdto.setProdSales(rs.getInt("PRODUCT_SALES"));
+		    	pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+		    	pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
+		    	pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+		    	
+		    	list.add(pdto);
+		    }
+		    	
+					
+		    } finally {
+		      close();
+		    }
+		
+		return list ;
+	}
+
+	// 제품 목록에서 해당 제품을 삭제하는 메소드 
+	@Override
+	public int deleteProd(String prodNum) throws SQLException {
+		int n = 0  ;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " DELETE FROM TBL_PRODUCT WHERE PRODUCT_ID = ? ";
+					
+			pstmt = conn.prepareStatement(sql);
+	
+			pstmt.setString(1, prodNum);
+				
+			n = pstmt.executeUpdate();
+			
+		}finally {
+			close();
+		}
+		
+		
+		return n;
+	}
+	
+	
+	// 특정 제품 번호에 해당하는 제품의 상세정보 가져오기 
+	@Override
+	public ProductDTO selectOneProduct(String prodNum) throws SQLException {
+	
+		
+		return null;
+	}
+
+	@Override
+	public List<ProductDTO> getOrderDetail(String order_serial) throws SQLException {
+		List<ProductDTO> list = new ArrayList<>();
+		try {
+			conn = ds.getConnection();
+			String sql = " SELECT   D.ORDER_DETAIL_PRODUCT_ID, P.PRODUCT_NAME , D.ORDER_QUANTITY , D.PRICE_PER_UNIT , p.product_image_url , B.BRAND_NAME "
+					+ " FROM tbl_order_detail D "
+					+ " JOIN TBL_PRODUCT P  "
+					+ " ON D.ORDER_DETAIL_PRODUCT_ID = P.PRODUCT_ID "
+					+ " JOIN TBL_BRAND B "
+					+ " on P.PRODUCT_BRAND_ID = B.BRAND_ID "
+					+ " WHERE D.FK_ORDER_SERIAL = ? ";
+					
+			pstmt = conn.prepareStatement(sql);
+		
+			pstmt.setString(1, order_serial);
+			
+			rs = pstmt.executeQuery();
+			
+			while ( rs.next()) {
+				ProductDTO pdto = new ProductDTO();
+				pdto.setProdNum(rs.getInt(1));
+				pdto.setProdName(rs.getString(2));
+				pdto.setOrderNo(rs.getInt(3));
+				pdto.setProdPrice(rs.getInt(4));
+				pdto.setProdImage1(rs.getString(5));
+				
+				BrandDTO bdto = new BrandDTO() ;
+				bdto.setBrandName(rs.getString(6));
+				pdto.setBrandDTO(bdto);
+				
+				list.add(pdto);
+			}
+			
+		}finally {
+			close();
+		}
+	
+		return list;
+	}
+
+	@Override
+	public List<String> getCategoryList() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//  특정 prodNum에 해당하는 PDTO 가져오는 메소드
+	@Override
+	public ProductDTO prodInfo(Map<String, String> paraMap) throws SQLException {
+		ProductDTO pdto = null ;
+		try {
+			conn = ds.getConnection();
+			String sql=" select product_id, product_name, brand_name, product_price, product_stock, product_sales, product_discount, average_rating, product_image_url, review_count "
+					 + " from (select product_id, product_name,brand_name, product_price, product_stock, product_sales, product_discount, average_rating, product_image_url "
+					 + " from tbl_product P join tbl_brand B on P.product_brand_id = B.brand_id where product_id = ? ) A CROSS JOIN "
+					 + " (select count(*) as review_count from tbl_review where review_product_id = ? ) C ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("prodNum"));
+			pstmt.setString(2, paraMap.get("prodNum"));
+			
+			rs = pstmt.executeQuery();
+		
+			if(rs.next()) {
+				
+				pdto = new ProductDTO();
+				pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+				pdto.setProdName(rs.getString("PRODUCT_NAME"));
+				pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
+				pdto.setProdStock(rs.getInt("PRODUCT_STOCK"));
+				pdto.setProdSales(rs.getInt("PRODUCT_SALES"));
+				pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+				pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
+				pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+				
+				ReviewDTO rdto = new ReviewDTO();
+				rdto.setReview_cnt(rs.getInt("REVIEW_COUNT"));
+				pdto.setReviewDTO(rdto);
+				
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("BRAND_NAME"));
+				pdto.setBrandDTO(bdto);
+			
+				
+			}	
+		
+		}finally {
+			close();
+		}
+		return pdto;
+		
+	}
+
+	@Override
+	public NutritionDTO nutritionInfo(String prodNum) throws SQLException {
+		NutritionDTO ndto = null ;
+		try {
+			
+			conn = ds.getConnection(); 
+			
+			String sql=" select nutrition_id,product_cal, product_protein, product_sodium, product_kal, product_fat, product_transfat, product_satfat, product_col, product_sug "
+					 + " from tbl_product P join tbl_product_nutrition N on P.product_id = N.nutrition_id "
+					 + " where P.PRODUCT_ID = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1,prodNum );
+			
+			rs= pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				ndto = new NutritionDTO();
+				ndto.setProduct_cal(rs.getDouble("PRODUCT_CAL"));
+				ndto.setProduct_protein(rs.getDouble("PRODUCT_PROTEIN"));
+				ndto.setProduct_sodium(rs.getInt("PRODUCT_SODIUM"));
+				ndto.setProduct_kal(rs.getInt("PRODUCT_KAL"));
+				ndto.setProduct_fat(rs.getInt("PRODUCT_FAT"));
+				ndto.setProduct_transfat(rs.getInt("PRODUCT_TRANSFAT"));
+				ndto.setProduct_satfat(rs.getInt("PRODUCT_SATFAT"));
+				ndto.setProduct_col(rs.getInt("PRODUCT_COL"));
+				ndto.setProduct_sug(rs.getInt("PRODUCT_SUG"));
+				
+			}
+			
+		}finally {
+			close();
+		}
+	
+		return ndto ;
+	}
+	
+	
+
+	
+	@Override
+	public int insertOrderInfo(Map<String, Object> orderMap) throws SQLException {
+		
+		int n = 0;
+		String orderSerial = generateOrderSerial();
+		orderMap.put("orderSerial", orderSerial);
+		try {
+			conn = ds.getConnection();
+			conn.setAutoCommit(false);
+			insertOrderAndDetail(orderMap);
+			updatePointsAndHistory(orderMap);
+			updateMemberPurchaseAmountAndTier(orderMap);
+			updateProductSalesAndDeleteCart(orderMap);
+			
+			n = 1;
+			conn.commit();
+
+			
+			
+		} catch(SQLException e) {
+			conn.rollback();
+			e.printStackTrace();
+		} finally {
+			conn.setAutoCommit(true);
+			close();
+			
+		}
+		return n;
+		
+	}
+	
+	
+	
+	
+	// 멤버 구매 총액 추가하고 멤버 티어 변경하는 메소드
+	public void updateMemberPurchaseAmountAndTier(Map<String, Object> orderMap) throws SQLException {
+	    
+	    String memberId = ((OrderDTO)orderMap.get("orderinfo")).getFk_orderMbrId();
+		int purchaseAmount = ((OrderDTO)orderMap.get("orderinfo")).getOrderTotalPrice();
+		
+	    try {
+	        conn = ds.getConnection();
+	        conn.setAutoCommit(false);
+	        
+	        // 멤버 구매 총액 업데이트
+	        pstmt = conn.prepareStatement("UPDATE tbl_member SET member_purchase_amount = member_purchase_amount + ? WHERE member_id = ?");
+	        pstmt.setInt(1, purchaseAmount);
+	        pstmt.setString(2, memberId);
+	        int rowsUpdated = pstmt.executeUpdate();
+	        
+	        if (rowsUpdated != 1) {
+	            throw new SQLException("멤버 구매 총액 업데이트 실패");
+	        }
+	        
+	        // 추가된 구매 총액 바탕으로 해당하는 tier 확인
+	        pstmt = conn.prepareStatement("SELECT tier_id FROM membership_tier WHERE amount_needed <= (SELECT member_purchase_amount FROM tbl_member WHERE member_id = ?) ORDER BY amount_needed DESC FETCH FIRST 1 ROWS ONLY");
+	        pstmt.setString(1, memberId);
+	        rs = pstmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            int newTierId = rs.getInt("tier_id");
+	            
+	            // 멤버의 현재 tier_id 확인
+	            pstmt = conn.prepareStatement("SELECT member_tier_id FROM tbl_member WHERE member_id = ?");
+	            pstmt.setString(1, memberId);
+	            rs = pstmt.executeQuery();
+	            
+	            if (rs.next()) {
+	                int oldTierId = rs.getInt("member_tier_id");
+	                
+	                if (oldTierId != newTierId) {
+	                    // 멤버 티어 변경이 필요하다면 업데이트
+	                    pstmt = conn.prepareStatement("UPDATE tbl_member SET member_tier_id = ? WHERE member_id = ?");
+	                    pstmt.setInt(1, newTierId);
+	                    pstmt.setString(2, memberId);
+	                    rowsUpdated = pstmt.executeUpdate();
+	                    
+	                    if (rowsUpdated != 1) {
+	                        throw new SQLException("멤버 티어 업데이트 실패");
+	                    }
+	                }
+	            } else {
+	                throw new SQLException("멤버 현재 TIER 조회 실패");
+	            }
+	        } else {
+	            throw new SQLException("멤버의 변경된 금액 바탕으로 바뀔 Tier 조회 실패");
+	        }
+	        
+	        conn.commit();
+	    } catch (SQLException e) {
+	        if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+	
+	// 구매로 인한 테이블 변동 반영
+	public void updatePointsAndHistory(Map<String, Object> orderMap) throws SQLException {
+	    
+		String orderSerial = (String)orderMap.get("orderSerial");
+		
+		String memberId = ((OrderDTO)orderMap.get("orderinfo")).getFk_orderMbrId();
+		int usePoint = ((OrderDTO)orderMap.get("orderinfo")).getOrderPoint();
+		int earnedPoint = ((CheckoutDTO)orderMap.get("checkout")).getPointsEarned();
+		
+		try {
+	        
+	        // 멤버 테이블의 포인트 변경 + 변동전 포인트 받아오기
+	        int currentPoints = 0;
+	        pstmt = conn.prepareStatement("SELECT member_point FROM tbl_member WHERE member_id = ?");
+	        pstmt.setString(1, memberId);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            currentPoints = rs.getInt("member_point");
+	        }
+	        int newPoints = currentPoints + earnedPoint - usePoint;
+	        pstmt = conn.prepareStatement("UPDATE tbl_member SET member_point = ? WHERE member_id = ?");
+	        pstmt.setInt(1, newPoints);
+	        pstmt.setString(2, memberId);
+	        pstmt.executeUpdate();
+	        
+	        // 히스토리 테이블에 insert 사용 획득포인트가 발생한 경우만
+	        if (usePoint > 0) {
+	            pstmt = conn.prepareStatement("INSERT INTO MEMBER_POINT_HISTORY (point_member_id, point_before, point_change, point_after, point_reason, point_change_type) VALUES (?, ?, ?, ?, ?, 0)");
+	            pstmt.setString(1, memberId);
+	            pstmt.setInt(2, currentPoints);
+	            pstmt.setInt(3, usePoint);
+	            pstmt.setInt(4, newPoints);
+	            pstmt.setString(5, orderSerial + " | 구매시 사용으로 인한 차감");
+	            pstmt.executeUpdate();
+	        }
+	        if (earnedPoint > 0) {
+	            pstmt = conn.prepareStatement("INSERT INTO MEMBER_POINT_HISTORY (point_member_id, point_before, point_change, point_after, point_reason, point_change_type) VALUES (?, ?, ?, ?, ?, 1)");
+	            pstmt.setString(1, memberId);
+	            pstmt.setInt(2, newPoints - earnedPoint);
+	            pstmt.setInt(3, earnedPoint);
+	            pstmt.setInt(4, newPoints);
+	            pstmt.setString(5, orderSerial + " | 구매로 인한 적립");
+	            pstmt.executeUpdate();
+	        }
+	        
+	        conn.commit();
+	    } catch (SQLException e) {
+	        if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+	
+	public void updateProductSalesAndDeleteCart(Map<String, Object> orderMap) throws SQLException {
+
+	    try {
+	        // 맵에서 cartDTOList받아오기
+	        List<CartDTO> cartDtoList = ((CheckoutDTO) orderMap.get("checkout")).getCartDtoList();
+
+
+	        // for문으로 cartDtoList에 있는 데이터 바탕으로 테이블 변경, 삭제하기
+	        for (CartDTO cartDTO : cartDtoList) {
+	            int productId = cartDTO.getCart_product_id();
+	            int quantity = cartDTO.getCart_quantity();
+
+	            // 제품 재고, 판매량 변경
+	            String sqlUpdate = "UPDATE tbl_product SET product_stock = product_stock - ?, product_sales = product_sales + ? WHERE product_id = ?";
+	            pstmt = conn.prepareStatement(sqlUpdate);
+	            pstmt.setInt(1, quantity);
+	            pstmt.setInt(2, quantity);
+	            pstmt.setInt(3, productId);
+	            pstmt.executeUpdate();
+
+	            // 모든 처리가 끝난 cart 테이블에서 삭제.
+	            String sqlDelete = "DELETE FROM tbl_cart WHERE cart_id = ?";
+	            pstmt = conn.prepareStatement(sqlDelete);
+	            pstmt.setInt(1, cartDTO.getCart_id());
+	            pstmt.executeUpdate();
+	        }
+
+	    } catch (SQLException e) {
+	    	if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+	public void insertOrderAndDetail(Map<String, Object> orderMap) throws SQLException {
+
+	    try {
+	        // 맵에서 cartDTOList받아오기
+	        List<CartDTO> cartDtoList = ((CheckoutDTO) orderMap.get("checkout")).getCartDtoList();
+	        OrderDTO orderinfo = (OrderDTO)orderMap.get("orderinfo");
+	        String orderSerial = (String)orderMap.get("orderSerial");
+	        String sql = "";
+	        
+	        sql = "insert into tbl_order(ORDER_SERIAL,ORDER_MEMBER_ID, ORDER_TOTAL_PRICE, ORDER_POINT, RECIPIENT_NAME, SHIPPING_POSTCODE, SHIPPING_ADDRESS, SHIPPING_DETAIL_ADDRESS,RECIPIENT_MOBILE, ORDER_MESSAGE, ORDER_STATUS)"
+	        		+ "VALUES(? , ? , ? , ? , ? , ?, ?, ?, ? , ? , 1)";
+	        pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, orderSerial);
+            pstmt.setString(2, orderinfo.getFk_orderMbrId());
+            pstmt.setInt(3, orderinfo.getOrderTotalPrice());
+            pstmt.setInt(4, orderinfo.getOrderPoint());
+            pstmt.setString(5, orderinfo.getRecipName());
+            pstmt.setString(6, orderinfo.getOrderPostcode());
+            pstmt.setString(7, orderinfo.getOrderAddress());
+            pstmt.setString(8, orderinfo.getOrderDetailAddress());
+            pstmt.setString(9, orderinfo.getRecipMobile());
+            pstmt.setString(10, orderinfo.getOrderMessage());
+            pstmt.executeUpdate();
+	        
+	        // for문으로 cartDtoList에 있는 데이터 바탕으로 order_detail 테이블에 insert하기
+	        for (CartDTO cartDTO : cartDtoList) {
+	            
+	        	int productId = cartDTO.getCart_product_id();
+	            int quantity = cartDTO.getCart_quantity();
+	            int pricePerUnit = cartDTO.getProd().getProdDiscount();
+	            
+
+	            // 제품 재고, 판매량 변경
+	            sql = "INSERT INTO TBL_ORDER_DETAIL(FK_ORDER_SERIAL, ORDER_DETAIL_PRODUCT_ID , ORDER_QUANTITY, PRICE_PER_UNIT, REVIEW_STATUS)"
+	            		+ "VALUES(? , ? , ? , ?, 0)";
+	            pstmt = conn.prepareStatement(sql);
+	            pstmt.setString(1, orderSerial);
+	            pstmt.setInt(2, productId);
+	            pstmt.setInt(3, quantity);
+	            pstmt.setInt(4, pricePerUnit);
+	            pstmt.executeUpdate();
+	        }
+
+	    } catch (SQLException e) {
+	    	if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+
+	
+	
+
 	
 }
 	
