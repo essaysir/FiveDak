@@ -11,15 +11,19 @@ public class RankingListAction extends AbstractController {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		String average_rating = request.getParameter("average_rating");
 		
-		System.out.println("~~ 확인용 : "+average_rating);
+		// System.out.println("~~ 확인용 : "+average_rating);
 
+		String listType = request.getParameter("listType");
+		if(listType == null) {
+			listType ="";
+		}
 		
 		InterProductDAO pdao = new ProductDAO();
 		int totalHITCount = pdao.totalCount();
 		
 		request.setAttribute("totalHITCount", totalHITCount);
+		request.setAttribute("listType", listType);
 		
 		super.setRedirect(false);
 		super.setViewPage("/WEB-INF/views/product/rankingList.jsp");

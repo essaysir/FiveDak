@@ -1,6 +1,7 @@
 package semiproject.dak.member.model;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public interface InterMemberDAO {
@@ -23,6 +24,41 @@ public interface InterMemberDAO {
 	int updateMember(MemberDTO member) throws SQLException;
 
 	boolean passwdCheck(Map<String, String> paraMap) throws SQLException;
+
+
+	// 포인트 정보 찾기
+	List<MemberPointDTO> selectPoint(Map<String, String> paraMap) throws SQLException;
+
+	// 페이징 처리 토탈 페이지 알아오기 
+	int getTotalPage(Map<String, String> paraMap) throws SQLException;
+
+	// 암호변경
+	int pwdUpdate(MemberDTO mdto) throws SQLException;
+
+	// 페이징 처리를 하기 위해 회원정보 목록 보기 
+	int getShowMemberTotalPage(Map<String, String> paraMap) throws SQLException;
+
+	// 회원 목록 보기 
+	List<MemberDTO> memberShowList(Map<String, String> paraMap) throws SQLException;
+
+	// 회원 정보 디테일하게 보기 위해 
+	MemberDTO MemberShowDetail(String MemberId) throws SQLException;
+	
+	// 회원 정보 포인트 부분 
+	List<MemberDTO> memberShowListPoint(Map<String, String> paraMap) throws SQLException;
+
+	// *** 페이징 처리를 한 모든 공지사항 목록 보여주기 *** //
+	List<NoticeBoardDTO> selectPagingMember(Map<String, String> paraMap) throws SQLException;
+
+	// 게시판 총페이지
+	int getBoardTotalPage(Map<String, String> paraMap) throws SQLException;
+
+	// 게시판 내용 보기
+	NoticeBoardDTO informBoardView(String note_id) throws SQLException;
+
+
+
+
 	
 
 }

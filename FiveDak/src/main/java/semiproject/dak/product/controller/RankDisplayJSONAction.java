@@ -20,14 +20,25 @@ public class RankDisplayJSONAction extends AbstractController {
 		
 		String start = request.getParameter("start");
 		String len = request.getParameter("len");
+		String listType = request.getParameter("listType");
+		
+		if("".equals(listType)) {
+			listType = "product_sales";
+		}
+		
+	//	System.out.println("확인용 : " + listType);
+		
 		InterProductDAO pdao = new ProductDAO();
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("start", start);
+		paraMap.put("listType", listType);
 		
 		String end = String.valueOf(Integer.parseInt(start)  + Integer.parseInt(len) - 1);
 		paraMap.put("end", end);
 		
 		List<ProductDTO> prodList = pdao.selectByRank(paraMap);
+		
+		//System.out.println("prodList" +prodList);
 		
 		JSONArray jsonArr = new JSONArray();
 		if(prodList.size() > 0) {
