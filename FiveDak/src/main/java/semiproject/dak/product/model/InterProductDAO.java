@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+
+
 public interface InterProductDAO {
 	
 	// 총 페이지를 알아오는 메소드 
@@ -21,6 +23,14 @@ public interface InterProductDAO {
 	// Ajax(JSON)를 사용하여 상품목록을 "더보기" 방식으로 페이징 처리 해주기위해 전체개수 알아오기 
 	int totalCount();
 
+	
+	List<CartDTO> getCartList(String userid) throws SQLException;
+
+	int updateProductQty(Map<String, String> paraMap) throws SQLException;
+
+	int deleteUserCart(int[] cartIds) throws SQLException;
+
+	CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException;
 	
 
 

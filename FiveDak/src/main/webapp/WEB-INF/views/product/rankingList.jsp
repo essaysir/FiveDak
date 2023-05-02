@@ -52,21 +52,51 @@
 	font-size: 15pt;
 	}
 	
-	
+	.activeList {
+		color: #ff8237 !important; border: solid 1px #ff8237; font-weight: bold; background-color: #ffffff; 
+	}
 </style>
 
 <script type="text/javascript">
 	
 	$(document).ready(function(){
 		
-		setEventHandling();	
+		$('input#save').val("${requestScope.listType}");
 		
-		$("a.a_button")on('click', function(event)){
-			$(event.target).val
+		if ( $('input#save').val() == ""){
+			$('a#sales').addClass("activeList");
+			$('a#live').removeClass("activeList");
+		}
+		else if (  $('input#save').val() == "average_rating"  ){
+			$('a#live').addClass("activeList");
+			$('a#sales').removeClass("activeList");
+		}
+		else if (  $('input#save').val() == "product_sales" ) {
+			$('a#sales').addClass("activeList");
+			$('a#live').removeClass("activeList");
 		}
 		
+		setEventHandling();	
+		$('a#live').on('click',function(){
+			$('input#save').val('average_rating');	
+			goRedirect();
+		});
+		$('a#sales').on('click',function(){
+			$('input#save').val('product_sales');
+			
+			goRedirect();
+		});
+		
+		
 	});
-	
+	function goRedirect(){
+		const frm = document.listfrm;
+		listfrm.action = "rankingList.dak";
+		listfrm.method = "get";
+		listfrm.submit();
+		
+		
+	}
 	// Function Declaration
 	function setEventHandling() {
 	
@@ -95,8 +125,9 @@
 		$.ajax({
 			url:"<%= request.getContextPath()%>/product/rankDisplayJSON.dak",
   			type:"get",
-			data:{"start":start		
-				 ,"len":lenHIT},	
+			data:{"listType":"${requestScope.listType}",
+				  "start":start,		
+				  "len":lenHIT},	
 			dataType:"json",
 			success:function(json){
 				
@@ -121,7 +152,7 @@
 											"<a href='<%= ctxPath%>/product/productDetail.dak?product_id="+item.product_id+"'><img src='/FiveDak/images/"+item.product_image_url+"' style='height:90px'/></a>"+
 										"</div>"+
 										"<div class='col-md-5' style='display:inline;  padding-left:50px;'>"+
-											"<a href='#' style='vertical-align: top; text-decoration: none; color:#333333;' >["+item.brand_name+"]"+item.product_name+" </a>"+
+											"<a href='<%= ctxPath%>/product/productDetail.dak?product_id="+item.product_id+"' style='vertical-align: top; text-decoration: none; color:#333333;' >["+item.brand_name+"]"+item.product_name+" </a>"+
 											"<div style='margin-top:30px;'>"+
 												"<span><i class='fa-solid fa-star' style='color:yellow;'></i>"+item.average_rating+"</span>"+
 											"</div>"+
@@ -130,7 +161,7 @@
 											"<span class='price'style='font-size: 18px;color: #333;font-weight: 700;'>"+(item.product_discount).toLocaleString('en')+" 원</span>"+
 										"</div>"+
 										"<div class='col-md-1' style='margin-top:30px;'>"+
-											"<span class='price'style='font-size: 11px;color: #333;'>10%적립</span>"+
+											"<img src='/FiveDak/images/특급배송.png' />"+
 										"</div>"+
 										"<div class='col-md-2 text-right' style='margin-top:30px;'>"+
 											"<ul style='list-style-type: none; margin-right: 30px;'>"+
@@ -175,19 +206,19 @@
 			<div class="row-12" style="margin-top: 50px; width:100%; height: 70px;">
 				<h4 style="display:inline;">오늘의 전체 랭킹 순위!</h4>
 				<ul style="float:right;">
-					<li class="orderby"><a class="a_button" href="#" style="color: #666666;background-color: #F8F8F8;">실시간</a></li>
-					<li class="orderby"><a class="a_button" href="#" style="color: #ff8237; border: 1px solid #ff8237; font-weight: bold;background: #ffffff;">판매량</a></li>
-					<form name="frm">
-						<input type="hidden"  value="" />
+					<li class="orderby"><a id="live" href="#" style="color: #666666;background-color: #F8F8F8;">실시간</a></li>
+					<li class="orderby"><a id="sales" href="#" style= "color: #666666;background-color: #F8F8F8;">판매량</a></li>
+					<form name="listfrm">
+						<input type="hidden" name="listType" id="save"   value="" />
 					</form>
 				</ul>
 			</div>
 			<div id= "displayHIT" class="rank_list_top " style="width:100%;"></div>
 				
-			<div>
+			<div style="width:100%">
 		         <p class="text-center">
 		            <span id="end" style="display:block; margin:20px; font-size: 14pt; font-weight: bold; color: red;"></span> 
-		            <button type="button" class="btn btn-secondary btn-lg text-center" id="btnMoreHIT" value="">더보기...</button>
+		            <button type="button" class="btn  btn-lg text-center" id="btnMoreHIT" value="" style="color: #ff8237; border: solid 1px #ff8237; font-weight: bold; background-color: #ffffff; ">더보기</button>
 		            <span id="totalHITCount">${requestScope.totalHITCount}</span>
 	            	<span id="countHIT">0</span>
 		         </p>
