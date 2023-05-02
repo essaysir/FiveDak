@@ -35,10 +35,10 @@
 		$("button#fileadd1to2").click(goaddfile1to12);
 		$("button#fileadd1to3").click(goaddfile1to13);
 		
-		
+		/* 
 		// 이미지 를 보여주는 곳이다. 
 		$("input[type='file']").change(function(e) {
-			const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
+			  const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 			  const fileInput = e.target;
 			  const file = fileInput.files[0];
 
@@ -54,6 +54,11 @@
 			  for (let i = 0; i < files.length; i++) {
 			    let loopFile = files[i]; // 변수 이름 변경
 			    let reader = new FileReader();
+			    const input_file = $(this).get(i);
+			    console.log(input_file.files[i].name);
+			    
+			    
+			    
 			    reader.onload = function(e) {
 			      let img = $('<img />', {
 			        src: e.target.result,
@@ -70,7 +75,8 @@
 			  }
 			});
 		
-		
+				
+		 */
 			// textarea에 글자수를 제한과 글자수 실시간 표시하기 
 			$('#textarea1to1').on('input', function() {
 			  let inputText = $(this).val();
@@ -183,7 +189,7 @@
 	      							<textarea name="contents" placeholder="문의내용을 입력하세요." style="font-size: 12pt; border: none; width: 100%; height: 300px;" class="1to1borderccc" id="textarea1to1"></textarea>
 									<div class="txt-count" style="text-align: right;"><span id="counter1to1">0</span> / <span class="total1to1">1,000</span></div>
 								</div>
-								<div style="margin-top: 20px;">
+								<!-- <div style="margin-top: 20px;">
 								
 									<div style="background-color: #f2f2f2; font-weight: 700; margin-bottom: 10px; font-weight:500; padding: 20px;">
 							           <i class="fa-solid fa-camera"></i>&nbsp;사진 첨부<span style="color: #666; font-size:13px;"></span>
@@ -198,7 +204,7 @@
 							           </div>
 							        </div>
 					
-								</div>
+								</div> -->
 							</td>
 	     				</tr>
 	     				

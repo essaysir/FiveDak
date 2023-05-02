@@ -1119,6 +1119,168 @@ public class MemberDAO implements InterMemberDAO {
 		
 	}
 
+	
+	
+	// 회원마다 주문건수 찾기
+		@Override
+		public int CountOrder(String order_Member_count) throws SQLException {
+			
+
+			int result = 0;
+			
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " select count(*) "   //보여줄 페이지 개수를 넣는 위치홀더
+						   + " from tbl_Order "
+						   + " where ORDER_MEMBER_ID = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				
+				pstmt.setString(1,order_Member_count);
+				
+				rs = pstmt.executeQuery();
+				
+				
+				rs.next();   // 이건 무조건 필요한 것이다.
+				
+				
+				result =  rs.getInt(1);
+				
+				
+			} finally { 
+				close();
+			}
+				
+				
+			return result;
+			
+			
+		}
+
+		// QNA 보내기 
+		@Override
+		public int goQNA(Map<String, String> paraMap) throws SQLException {
+			
+			int n = 0;
+			
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " insert into TBL_QNA(QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT)"
+						   + " values(?, ?, ?, sysdate) ";
+
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, paraMap.get("id"));
+				pstmt.setString(2, paraMap.get("title1to1"));
+				pstmt.setString(3, paraMap.get("contents"));
+
+				n = pstmt.executeUpdate();
+
+				
+			}finally {
+				close();
+			}
+			
+			return n;
+
+		}
+
+		// 문의하기 페이징바 처리 
+		@Override
+		public int Show1to1TotalPage(Map<String, String> paraMap) throws SQLException {
+			
+			int Show1to1TotalPage = 0;
+			
+			try {
+				
+				conn = ds.getConnection();
+				
+				String id = paraMap.get("id");
+				
+				String sql = " select ceil(count(*) / ? ) "   //보여줄 페이지 개수를 넣는 위치홀더
+						   + " from tbl_qna  "
+						   + " where QNA_MEMBER_ID = ? ";
+									
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1,"5");
+				pstmt.setString(2, id);
+				
+				rs = pstmt.executeQuery();
+				
+				
+				rs.next();   // 이건 무조건 필요한 것이다.
+				
+				
+				Show1to1TotalPage =  rs.getInt(1);
+				
+				
+			}finally { 
+				close();
+			}
+				
+				
+			return Show1to1TotalPage;
+			
+		}
+		
+		// 문의하기 한것돌 가져오기 
+		@Override
+		public List<MemberQNADTO> selectQNAList(Map<String, String> paraMap) throws SQLException {
+			
+			List<MemberQNADTO> QNAList = new ArrayList<>();
+			
+			try {
+				conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
+				
+				String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
+						   + " from (  select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
+						   + "        from ( select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
+						   + "               from tbl_qna "
+						   + "               where QNA_MEMBER_ID = ? "
+						   + "               order by QUESTION_CREATED_AT asc "
+						   + "               ) A "
+						   + "      ) B "
+						   + "where RNO BETWEEN ? and ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				int ShowPage = Integer.parseInt(paraMap.get("ShowPage"));	
+				String id = paraMap.get("id");
+				
+				pstmt.setString(1, id);
+				pstmt.setInt(2, (ShowPage * 5) - (5 - 1) );
+				pstmt.setInt(3, (ShowPage * 5) );
+				// 우편 배달부
+				rs = pstmt.executeQuery();
+				
+				
+				while(rs.next()) {     // 다음이 있으면 실행 
+					
+					MemberQNADTO qnadto = new MemberQNADTO();
+					qnadto.setQNA_ID(rs.getInt("QNA_ID"));
+					qnadto.setQNA_MEMBER_ID(rs.getString("QNA_MEMBER_ID"));
+					qnadto.setQUESTION_TITLE(rs.getString("QUESTION_TITLE"));
+					qnadto.setQUESTION_CONTENT(rs.getString("QUESTION_CONTENT"));
+					qnadto.setQUESTION_CREATED_AT(rs.getString("QUESTION_CREATED_AT"));
+					
+					QNAList.add(qnadto);
+				}  // end of while(rs.next())
+				
+				
+			} finally {
+				close();
+			}
+			
+			return QNAList;
+		}
+
+
 
 
 

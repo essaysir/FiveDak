@@ -33,9 +33,6 @@ public class Member1to1QNAAction extends AbstractController {
 	    	  String select1to1 = request.getParameter("select1to1");
 	    	  String title1to1 = request.getParameter("title1to1");
 	    	  String contents = request.getParameter("contents");
-	    	  String image1to11 = request.getParameter("image1to11");
-	    	  String image1to12 = request.getParameter("image1to12");
-	    	  String image1to13 = request.getParameter("image1to13");
 	    	  
 	    	  
 	    	  Map<String, String> paraMap = new HashMap<>();  //Map 사용위해
@@ -44,9 +41,6 @@ public class Member1to1QNAAction extends AbstractController {
 	  		  paraMap.put("select1to1",select1to1);
 	  		  paraMap.put("title1to1", title1to1);
 	  		  paraMap.put("contents", contents);
-	  		  paraMap.put("image1to11", image1to11);
-	  		  paraMap.put("title1to12", image1to12);
-	  		  paraMap.put("title1to13", image1to13);
 	  		  
 	  		  InterMemberDAO mdao = new MemberDAO();
 	  		  
@@ -54,6 +48,7 @@ public class Member1to1QNAAction extends AbstractController {
 	    	  int n = mdao.goQNA(paraMap);
 	    	  
 	    	  if(n==1) {
+	    		  
 	    		// 로그인한 사용자가 다른 사용자의 코인을 충전결제 시도하는 경우 
 				String message = "문의하기 성공!!!";
 				String loc = request.getContextPath() + "/index.dak";    

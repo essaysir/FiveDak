@@ -157,6 +157,7 @@
 	                    <a href="" class="menu">활동관리</a>
 	                    <ul class="menu-list">
 	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNA.dak">1:1문의</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNAAnswer.dak">1:1문의 답변</a></li>
 	                        <li class="check"><a class="list" href="">상품후기</a></li>
 	                    </ul>
 	                </li>
