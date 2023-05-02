@@ -19,7 +19,7 @@ public class CheckoutDTO {
         this.totalAmount = totalAmount;
     }
 
-    public List<CartDTO> getCartDTOList() {
+    public List<CartDTO> getCartDtoList() {
         return cartDtoList;
     }
 
