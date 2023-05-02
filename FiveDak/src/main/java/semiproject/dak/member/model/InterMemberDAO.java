@@ -1,6 +1,7 @@
 package semiproject.dak.member.model;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public interface InterMemberDAO {
@@ -23,6 +24,10 @@ public interface InterMemberDAO {
 	int updateMember(MemberDTO member) throws SQLException;
 
 	boolean passwdCheck(Map<String, String> paraMap) throws SQLException;
+
+	int getTotalPage(Map<String, String> paraMap);
+
+	List<MemberDTO> selectPagingMember(Map<String, String> paraMap);
 	
 
 }

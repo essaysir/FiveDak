@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -420,6 +421,18 @@ public class MemberDAO implements InterMemberDAO {
 		
 		
 		return isUserExist;
+	}
+
+	@Override
+	public int getTotalPage(Map<String, String> paraMap) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<MemberDTO> selectPagingMember(Map<String, String> paraMap) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

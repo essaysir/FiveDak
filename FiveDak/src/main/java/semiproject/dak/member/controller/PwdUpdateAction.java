@@ -30,10 +30,11 @@ public class PwdUpdateAction extends AbstractController {
 			paraMap.put("pwd", pwd);
 			paraMap.put("userid", userid);
 			
-			InterMemberDAO mdao = new MemberDAO();
-			int n = mdao.pwdUpdate(paraMap);
-			
-			request.setAttribute("n", n);
+			/*
+			 * InterMemberDAO mdao = new MemberDAO(); int n = mdao.pwdUpdate(paraMap);
+			 * 
+			 * request.setAttribute("n", n);
+			 */
 		}
 		
 		request.setAttribute("method", method);
