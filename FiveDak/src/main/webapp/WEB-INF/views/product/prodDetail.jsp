@@ -6,22 +6,52 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>     
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-
+<jsp:include page="../header-final.jsp"/>
 <%--     직접 만든 CSS   
 <link rel="stylesheet" type="text/css" href="./Product.css" />
 --%>
 
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" /> 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
+<!-- SPINNER 를 위한 링크 -->
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+			$("input#spinner").spinner( {
+			    spin: function(event, ui) {
+			       if(ui.value > 100) {
+			          $(this).spinner("value", 100);
+			          return false;
+			       }
+			       else if(ui.value < 1) {
+			          $(this).spinner("value", 1);
+			          return false;
+			       }
+			    }
+			 } );// end of $("input#spinner").spinner({});----------------    
 
-<jsp:include page="../header-final.jsp"/>
+	}) ; // END OF 	$(DOCUMENT).READY(FUNCTION(){
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	
+
+</script>
 <%--<jsp:include page="../serviceSidebar.jsp"/> --%>
 
 <style>
+ 
+.star-rate-md{background: url(<%= ctxPath %>/images/ico_rating.png) 0 -40px no-repeat; position: relative; width:100px; height:20px;}
+.star-rate-md span{position: absolute; background: url(<%= ctxPath %>/images/ico_rating.png) 0 -60px;width: auto;height: 20px;}
 
+ 
+.star-rate-lg{ background: url(<%= ctxPath %>/images/ico_rating.png) 0 -80px no-repeat; position: relative; width:166px; height:34px;}
+.star-rate-lg span{position: absolute; background: url(<%= ctxPath %>/images/ico_rating.png) 0 -115px;width: auto;height: 34px;}
+ 
 
 	.content_container  {
 		margin-bottom: 10px;
@@ -520,39 +550,45 @@ a.sticky-nav-tab { text-decoration: none; }
 		<div class="product_head">
 			 <!-- 좌측 제품 이미지 삽입 영역 
 			     좌측 제품이미지 영역: 1)제품대표이미지 2)중간여백 3)광고배너이미지 --> 
-			<div class="product_images">
+			<div class="product_images position-relative" style="right:-250px;">
 				<div class="image_main">
 					<img alt="제품상세대표 이미지 입니다." src="<%=ctxPath %>/images/제품1.jpg">
 				</div>
 				<div class="image_ad">
-					<img alt="배송배너 이미지 입니다." src="<%=ctxPath %>/images/배너2.jpg">
+					<img alt="배송배너 이미지 입니다." src="<%=ctxPath %>/images/상세정보배너1.jpg">
 				</div>
 			</div>
 		
 		
 			<!-- 우측 상품선택 영역 -->
-			<div class="product_choice">
+			<div class="product_choice position-relative">
 				<h2>${requestScope.prodName }</h2>
 				<div class="product_rating">
-					<div class="star-rate-md">
-        				<span style="width: 70%"></span>
+					<div class="star-rate-lg">
+        				<span class="star-rate-lg" style="width: 85%"></span>
 					</div>
+
 					<a>${requestScope.prodAvgRating}점</a>
 					<a>(리뷰 개수를 넣어주는 곳)</a>
 				</div>
 				
 				<div class="product_price">
-					<p class="price"><strong style="font-size:30pt;">${requestScope.prodPrice}</strong>원</p>
+					<p class="price"><strong style="font-size:30pt;"><fmt:formatNumber value="${requestScope.prodPrice}" pattern="###,###" /></strong>원</p>
 					<p class="per_price" style="color:#666;">(1팩당 2,300 ~ 3,400)</p>
 				</div>
 				
 				<div class="product_info_tbl">
 					<dl style="border-bottom:solid 1px #ccc;">
-						<dt style="margin:12px 0;">판매량</dt>
-						<dd>${requestScope.prodSales }</dd>
+						<dt style="margin-bottom:12px ; width: 60px;">판매량</dt>
+						<dd>
+							<ul style="list-style-type: none">
+								<li><fmt:formatNumber value="${requestScope.prodSales }" pattern="###,###" />개</li>
+								<li></li>
+							</ul>
+						</dd>
 					</dl>
 					<dl style="border-bottom:solid 1px #ccc;">
-						<dt style="margin-bottom:12px;">배송방법</dt>
+						<dt style="margin-bottom:12px; width: 60px;">배송방법</dt>
 						<dd>
 							<ul>
 								<li>일반&nbsp;&nbsp;&nbsp;<strong>24시</strong> 이전 주문 시 <strong>내일</strong> 도착</li>
@@ -561,7 +597,7 @@ a.sticky-nav-tab { text-decoration: none; }
 						</dd>
 					</dl>
 					<dl style="border-bottom:solid 1px #ccc;">
-						<dt style="margin-bottom:12px;">추가혜택</dt>
+						<dt style="margin-bottom:12px; width: 60px;">추가혜택</dt>
 						<dd>
 							<ul>
 								<li>[추가증정 EVENT★]<br></li>
@@ -572,7 +608,7 @@ a.sticky-nav-tab { text-decoration: none; }
 						</dd>
 					</dl>
 					<dl style="border-bottom:solid 1px #ccc;">
-						<dt style="margin-bottom:12px;">브랜드관</dt>
+						<dt style="margin-bottom:12px; width: 60px; ">브랜드관</dt>
 						<dd>
 							<span style="text-decoration: none; color:#212529;">브랜드네임</span> 
 						</dd>
@@ -727,7 +763,7 @@ a.sticky-nav-tab { text-decoration: none; }
 		
 		
 		
-<div class="content_container2">	
+<div class="content_container2 my-3">	
 	<section class="spa-slide" id="tab-cssscript" style="margin-left:30px;">
 		<h3 style="font-weight:bold; font-size:12pt;">구매후기</h3>
 		<div class="reviewBox">
@@ -826,7 +862,7 @@ a.sticky-nav-tab { text-decoration: none; }
     		<ul class="deliveryInfo_contents">
     			<li class="tbl_row1" style="border-bottom: solid 1px #e6e6e6;">
     				<span>
-    					<img class="deliveryImage" alt="일반배송" src="images/일반배송.png" style="vertical-align: top; margin-right:100px; margin-top:20px;">
+    					<img class="deliveryImage" alt="일반배송" src="<%=ctxPath %>/images/일반배송.png" style="vertical-align: top; margin-right:100px; margin-top:20px;">
     				</span>
     				<div class="tbl_cols">
     					<div class="tbl_col2">
@@ -992,45 +1028,8 @@ a.sticky-nav-tab { text-decoration: none; }
 		
   </div>	
   
-  
-  <script type="text/javascript">
-
-$(document).ready(function(){
-    
-    
-    // 헤더 카테고리 
-     // 2차 카테고리 열리게
-     $('.dropdown-menu li').mouseover(function(){
-         $(this).find('.header-list').show();
-     });
-
-     // 2차 카테고리 닫히게
-     $('.dropdown-menu li').mouseleave(function(){
-         $(this).find('.header-list').hide();
-     });
-    
-	 /* $("input#spinner").spinner( {
-         spin: function(event, ui) {
-            if(ui.value > 100) {
-               $(this).spinner("value", 100);
-               return false;
-            }
-            else if(ui.value < 1) {
-               $(this).spinner("value", 1);
-               return false;
-            }
-         }
-      } );// end of $("input#spinner").spinner({});----------------    
-       */
-    
-    
-    
- }); // END OF $(DOCUMENT).READY(FUNCTION(){
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-		document.addEventListener('DOMContentLoaded', function(){ //DOM 생성 후 이벤트 리스너 등록
+ <script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function(){ //DOM 생성 후 이벤트 리스너 등록
 	    //더보기 버튼 이벤트 리스너
 	    document.querySelector('.btn_open').addEventListener('click', function(e){
 	        
@@ -1140,9 +1139,7 @@ $(document).ready(function(){
 		      frm.submit();
 		   
 		   }// end of function goCart()-------------------------
-		
-	
-	</script>
+ </script> 
 
 
 

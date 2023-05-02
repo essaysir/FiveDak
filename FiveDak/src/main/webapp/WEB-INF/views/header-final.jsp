@@ -23,6 +23,7 @@
 <!-- 글꼴 적용하기 -->
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
 <link rel="icon" href="<%=ctxPath%>/images/파비콘.ico">
+
 <title>오조닭조</title>
 <script type="text/javascript">
 	$(document).ready(function(){
