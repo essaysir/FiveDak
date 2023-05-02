@@ -38,11 +38,8 @@ public class RankDisplayJSONAction extends AbstractController {
 		
 		List<ProductDTO> prodList = pdao.selectByRank(paraMap);
 		
-<<<<<<< HEAD
 		// System.out.println("prodList" +prodList);
-=======
 		//System.out.println("prodList" +prodList);
->>>>>>> refs/heads/main
 		
 		JSONArray jsonArr = new JSONArray();
 		if(prodList.size() > 0) {

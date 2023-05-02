@@ -21,10 +21,21 @@ public class ProductDTO {
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
 
+	private ReviewDTO reviewDTO;
 
 	
 	
 
+
+
+	public ReviewDTO getReviewDTO() {
+		return reviewDTO;
+	}
+
+
+	public void setReviewDTO(ReviewDTO reviewDTO) {
+		this.reviewDTO = reviewDTO;
+	}
 
 
 	// 기본 생성자 

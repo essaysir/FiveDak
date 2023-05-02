@@ -41,8 +41,6 @@ public interface InterProductDAO {
 	// 제품 목록들 가져오는 메소드 
 	List<ProductDTO> selAllProduct(Map<String, String> paraMap)  throws SQLException  ;
 
-	CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException;
-
 	// 제품 목록에서 해당 제품을 삭제하는 메소드 
 	int deleteProd(String prodNum) throws SQLException ;
 
@@ -60,8 +58,6 @@ public interface InterProductDAO {
 
 	// 제품 상세 정보에서 보여줄 영양소 가져오기 
 	NutritionDTO nutritionInfo(String prodNum) throws SQLException ;
-	
-	List<ProductDTO> productReview(String userid) throws SQLException;
 	
 	List<OrderDTO> productReview(String userid ,int status) throws SQLException;
 

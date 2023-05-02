@@ -496,50 +496,6 @@ public class ProductDAO implements InterProductDAO {
 		return checkout;
 	}
 
-	
-	@Override
-	public List<ProductDTO> productReview(String userid) throws SQLException {
-		
-		List<ProductDTO> prodList = new ArrayList<>();
-
-		try {
-			conn = ds.getConnection();
-		
-			String sql = " select P.product_name, B.brand_name, E.order_date , P.product_image_url, O.order_detail_product_id, O.order_quantity "
-					+ " from tbl_product P JOIN tbl_order_detail O ON O.order_detail_product_id = P.product_id"
-					+ " JOIN tbl_brand B on p.product_brand_id = B.brand_id JOIN tbl_order E on E.order_id = O.order_id"
-					+ " WHERE E.order_member_id = ? ";
-
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, userid);
-			
-			pstmt.executeQuery();
-			
-			while(rs.next()) {
-				ProductDTO pdto = new ProductDTO();
-				pdto.setProdName(rs.getString(1));
-				BrandDTO bdto = new BrandDTO();
-				bdto.setBrandName(rs.getString(2));
-				pdto.setBrandDTO(bdto);
-				OrderDTO odto = new OrderDTO();
-				odto.setOrderDate(rs.getString(3));
-				pdto.setOrderDTO(odto);
-				pdto.setProdImage1(rs.getString(4));
-				
-				
-			}
-			
-			
-			
-			
-			
-			
-		}finally {
-			close();
-		}
-		return prodList;
-	}
 
 
 	// 총 제품의 개수을 알아오는 메소드 
@@ -749,11 +705,7 @@ public class ProductDAO implements InterProductDAO {
 		return list;
 	}
 
-	@Override
-	public List<String> getCategoryList() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	//  특정 prodNum에 해당하는 PDTO 가져오는 메소드
 	@Override
@@ -1108,10 +1060,9 @@ public class ProductDAO implements InterProductDAO {
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				
 				OrderDTO odto = new OrderDTO();
 				odto.setOrderDate(rs.getString(3));
-				odto.setOrder_serial(rs.getString(7));
+				odto.setOrder_serial((rs.getString(7)));
 				ProductDTO pdto = new ProductDTO();
 				pdto.setProdName(rs.getString(1));
 				pdto.setProdImage1(rs.getString(4));
@@ -1169,9 +1120,8 @@ public class ProductDAO implements InterProductDAO {
 				bdto.setBrandName(rs.getString("brand_name"));
 				pdto.setBrandDTO(bdto);
 				
-				odto.setOrder_serial(rs.getString("order_serial"));
+				odto.setOrder_serial((rs.getString("order_serial")));
 				odto.setProd(pdto);
-				
 			}
 			
 			
@@ -1185,7 +1135,7 @@ public class ProductDAO implements InterProductDAO {
 	
 	@Override
 	public int addReview(Map<String, String> paraMap)  throws SQLException {
-		int n1 = 0, n2 = 0;
+		int n1 = 0, n2 = 0, n3 = 0;
 		int isSuccess = 0;
 		
 		try {
@@ -1217,9 +1167,28 @@ public class ProductDAO implements InterProductDAO {
 				n2 = pstmt.executeUpdate();
 			}
 			
+			if(n2 == 1) {
+				
+				sql = " UPDATE tbl_product"
+					+ "    SET average_rating = ("
+					+ "        SELECT ROUND(AVG(review_score), 1) "
+					+ "        FROM tbl_review "
+					+ "        WHERE review_product_id = ? "
+					+ "    )"
+					+ "    WHERE product_id = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")) );
+				pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
+				
+				n3 = pstmt.executeUpdate();
+				System.out.println("n3 : " +n3);
+			}
 			
 			
-			if (n1 * n2 > 0) {
+			
+			if (n1 * n2 * n3 > 0) {
 				
 				conn.commit();
 				
@@ -1246,6 +1215,14 @@ public class ProductDAO implements InterProductDAO {
 		
 		return isSuccess;
 	}
+
+
+	@Override
+	public List<String> getCategoryList() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	
 	
