@@ -18,8 +18,13 @@ public class OrderAction extends AbstractController {
 		
 		String method = request.getMethod();
 		
+		
 		if("GET".equalsIgnoreCase(method)) {
-			return;
+			String msg = "비정상적인 접근입니다.";
+			String loc = "javascript:history.back()";
+			request.setAttribute("message", msg);
+			request.setAttribute("loc", loc);
+			super.setViewPage("/WEB-INF/views/msg.jsp");
 		}
 		
 		String SelectedProductArr = request.getParameter("SelectedProductArr");
@@ -35,7 +40,7 @@ public class OrderAction extends AbstractController {
 		
 		InterProductDAO dao = new ProductDAO();
 		
-		CheckoutDTO checkout = dao.getCheckOutData(cartIds);
+		CheckoutDTO checkout = dao.getCheckOutData(cartIds, request);
 		
 		request.setAttribute("checkout", checkout);
 		

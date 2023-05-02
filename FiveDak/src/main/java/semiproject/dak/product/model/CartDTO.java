@@ -1,5 +1,6 @@
 package semiproject.dak.product.model;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import semiproject.dak.member.model.MemberDTO;
@@ -101,7 +102,11 @@ public class CartDTO {
     	return (prod.getProdDiscount() * cart_quantity);
     }
 
-    public int getPointsEarned(int rewardPercentage) {
+    public int getPointsEarned(HttpServletRequest request) {
+    	
+    	HttpSession session = request.getSession(false);
+    	int rewardPercentage = ((MemberDTO)session.getAttribute("loginuser")).getMbrTier().getRewardPercentage();
+    	
         return (int) ((prod.getProdDiscount() * cart_quantity / 100.0) * rewardPercentage);
     }
 

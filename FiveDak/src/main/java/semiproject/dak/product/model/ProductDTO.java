@@ -12,15 +12,21 @@ public class ProductDTO {
 	private int prodDiscount ; // 판매가
 	private double prodAvgRating ; // 평균 별점
 	private String prodImage1 ; // 제품 이미지
-	private int prodRno;
+	private int prodRno; // 제품 순위
 	
+	///////////////////////////////////////////////
+	private int orderNo ; // 주문 상세 테이블의 특정 제품의 주문수
 	
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
-	private OrderDTO orderDTO ; // 오더 DTO
+
+
 	
 	
+
+
+
 	// 기본 생성자 
 	public ProductDTO () {}
 
@@ -140,15 +146,19 @@ public class ProductDTO {
 	public BrandDTO getBrandDTO() {
 		return brandDTO;
 	}
+
 	
 	
-	public OrderDTO getOrderDTO() {
-		return orderDTO;
+	
+
+	public int getOrderNo() {
+		return orderNo;
 	}
 
 
-	public void setOrderDTO(OrderDTO orderDTO) {
-		this.orderDTO = orderDTO;
+	public void setOrderNo(int orderNo) {
+		this.orderNo = orderNo;
+
 	}
 
 

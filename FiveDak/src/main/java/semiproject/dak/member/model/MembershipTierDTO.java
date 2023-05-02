@@ -8,8 +8,21 @@ public class MembershipTierDTO {
 	private int amountNeeded;
 	private int rewardPercentage;
 	private String tierImage;
+	private String nextTierName;
+	private int nextTierNeeded;
 	
-	
+	public String getNextTierName() {
+		return nextTierName;
+	}
+	public void setNextTierName(String nextTierName) {
+		this.nextTierName = nextTierName;
+	}
+	public int getNextTierNeeded() {
+		return nextTierNeeded;
+	}
+	public void setNextTierNeeded(int nextTierNeeded) {
+		this.nextTierNeeded = nextTierNeeded;
+	}
 	public int getTierId() {
 		return tierId;
 	}

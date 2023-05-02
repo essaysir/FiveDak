@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>
 
@@ -85,7 +86,10 @@
           <div class="card-body">
             <h4 class="card-title"><span class="font-weight-bold">${sessionScope.loginuser.mbrName}</span>님 반갑습니다.</h4>
             <p class="card-text">${sessionScope.loginuser.mbrTier.tierName }</p>
-            <p class="card-text orange-text">50,000원 더 구매 시,닭과장 진급</p>
+            <c:if test="${not empty sessionScope.loginuser.mbrTier.nextTierName}">
+			  <p class="card-text orange-text"><fmt:formatNumber type="number" value="${sessionScope.loginuser.mbrTier.nextTierNeeded - sessionScope.loginuser.mbrPurchaseAmount}"  pattern="#,###"/>원 더 구매 시,${sessionScope.loginuser.mbrTier.nextTierName } 진급</p>
+			</c:if>
+            
           </div>
         </div>
       </div>
@@ -103,7 +107,7 @@
         <div class="card my-page-card">
           <div class="card-body">
             <p class="card-title">누적구매금액</p>
-            <p class="card-text font-weight-bold"><span class="h5">${sessionScope.loginuser.mbrPurchaseAmount }</span>원</p>
+            <p class="card-text font-weight-bold"><span class="h5"><fmt:formatNumber type="number" value="${sessionScope.loginuser.mbrPurchaseAmount }"  pattern="#,###"/></span>원</p>
           </div>
         </div>
       </div>
@@ -142,25 +146,19 @@
 	                <li class="check">
 	                    <a href="" class="menu">혜택관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">쿠폰</a></li>
 	                        <li class="check"><a class="list" href="">포인트</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">활동관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">최근 본 상품</a></li>
-	                        <li class="check"><a class="list" href="">찜한상품</a></li>
-	                        <li class="check"><a class="list" href="">관심브랜드</a></li>
 	                        <li class="check"><a class="list" href="">1:1문의</a></li>
-	                        <li class="check"><a class="list" href="">상품후기</a></li>
-	                        <li class="check"><a class="list" href="">상품문의내역</a></li>
+	                        <li class="check"><a class="list" href="<%= request.getContextPath() %>/mypage/productReview.dak">상품후기</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">회원정보관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">배송지 관리</a></li>
 	                        <li class="check"><a class="list" href="">정보수정</a></li>
 	                    </ul>
 	                </li>
