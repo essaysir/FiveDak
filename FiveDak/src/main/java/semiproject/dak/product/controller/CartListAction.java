@@ -28,11 +28,13 @@ public class CartListAction extends AbstractController {
 		List<CartDTO> cartlist = dao.getCartList(userid);
 		
 		if(cartlist.size() == 0) {
-			super.setViewPage("index.dak");
+			super.setRedirect(true);
+			super.setViewPage(request.getContextPath() + "/index.dak");
 			return;
 		}
 		
 		request.setAttribute("cartlist", cartlist);
+		super.setRedirect(false);
 		super.setViewPage("/WEB-INF/views/product/cartList2.jsp");
 
 	}

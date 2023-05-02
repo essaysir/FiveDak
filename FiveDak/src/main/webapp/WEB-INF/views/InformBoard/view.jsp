@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     String ctxPath = request.getContextPath();
     //    /MyMVC
@@ -22,7 +24,7 @@
 
 .board_title p {
     margin-top: 5px;
-    font-size: 1.4rem;
+    font-size: 15px;
 }
 
 .bt_wrap {
@@ -151,6 +153,30 @@
 
 </style>
 
+<%--
+<c:if test="${not empty requestScope.mvo}">
+   <h3>::: ${requestScope.mvo.name}님의 회원 상세정보 :::</h3>
+
+   <div id="mvoInfo">
+    <ol>   
+       <li><span class="myli">아이디 : </span>${mvo.userid}</li>
+       <li><span class="myli">회원명 : </span>${mvo.name}</li>
+       <li><span class="myli">이메일 : </span>${mvo.email}</li>
+       <li><span class="myli">휴대폰 : </span>${fn:substring(mobile, 0, 3)}-${fn:substring(mobile, 3, 7)}-${fn:substring(mobile, 7, 11)}</li>
+       <li><span class="myli">우편번호 : </span>${mvo.postcode}</li>
+       <li><span class="myli">주소 : </span>${mvo.address}&nbsp;${mvo.detailaddress}&nbsp;${mvo.extraaddress}</li>
+       <li><span class="myli">성별 : </span><c:choose><c:when test="${mvo.gender eq '1'}">남</c:when><c:otherwise>여</c:otherwise></c:choose></li> 
+       <li><span class="myli">생년월일 : </span>${fn:substring(birthday, 0, 4)}.${fn:substring(birthday, 4, 6)}.${fn:substring(birthday, 6, 8)}</li> 
+       <li><span class="myli">나이 : </span>${mvo.age}세</li> 
+       <li><span class="myli">코인액 : </span><fmt:formatNumber value="${mvo.coin}" pattern="###,###" /> 원</li>
+       <li><span class="myli">포인트 : </span><fmt:formatNumber value="${mvo.point}" pattern="###,###" /> POINT</li>
+       <li><span class="myli">가입일자 : </span>${mvo.registerday}</li>
+     </ol>
+   </div>
+   
+</c:if>
+ --%>
+
 <body>
     <div class="board_wrap">
         <div class="board_title">
@@ -159,30 +185,42 @@
         </div>
         <div class="board_view_wrap">
             <div class="board_view">
-                <div class="title">
-                    글 제목
+            <c:if test="${empty requestScope.ndto}">
+			   <div class="title">
                 </div>
                 <div class="info">
                     <dl>
                         <dt>번호</dt>
-                        <dd>1</dd>
-                    </dl>
-                    <dl>
-                        <dt>작성자</dt>
-                        <dd>작성자</dd>
+                        <dd></dd>
                     </dl>
                     <dl>
                         <dt>작성일</dt>
-                        <dd>2023.4.13</dd>
-                    </dl>
-                    <dl>
-                        <dt>조회</dt>
-                        <dd>55</dd>
+                        <dd></dd>
                     </dl>
                 </div>
                 <div class="cont">
-                    글 내용물<br><br><br><br><br><br><br>
                 </div>
+			</c:if>
+
+			<c:if test="${not empty requestScope.ndto}">
+                <div class="title">
+                    ${ndto.note_title}
+                </div>
+                <div class="info">
+                    <dl>
+                        <dt>번호</dt>
+                        <dd>${ndto.note_id}</dd>
+                    </dl>
+                    <dl>
+                        <dt>작성일</dt>
+                        <dd>${ndto.note_created_at}</dd>
+                    </dl>
+                </div>
+                <div class="cont">
+                    ${ndto.note_content}
+                </div>
+            </c:if>
+            
             </div>
             <div class="bt_wrap">
                 <a href="<%= ctxPath%>/CSC/informBoardList.dak" class="on">목록</a>
@@ -190,5 +228,11 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    
+          <!-- 오른쪽에 들어갈 내용 -->
+</div>
+  </div>
+</div>
+
+<jsp:include page="/WEB-INF/views/footer.jsp"/>

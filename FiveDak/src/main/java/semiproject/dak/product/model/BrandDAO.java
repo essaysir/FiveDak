@@ -48,7 +48,41 @@ public class BrandDAO {
 				
 			}
 		//	System.out.println("제발 나와주세요"+pdto);
+				
+import javax.sql.DataSource;
+
+import semiproject.dak.security.AES256;
+
+public class BrandDAO {
+
+	private DataSource ds; 
+	private PreparedStatement pstmt;
+	private Connection conn;
+	private ResultSet rs;
+	private AES256 aes;
+	
+
+	public String getBrandName(int brand_id) throws SQLException {
+
+		
+		String brandName = "";
+		
+		try {
 			
+			conn = ds.getConnection(); 
+			
+			
+			String sql = " select brand_name "
+					   + " from tbl_brand"
+					   + " where brand_id = ? ";
+		
+			pstmt =conn.prepareStatement(sql);
+			pstmt.setInt(1, brand_id);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				brandName = rs.getString("BRAND_NAME");			
 			
 		}finally {
 			close();

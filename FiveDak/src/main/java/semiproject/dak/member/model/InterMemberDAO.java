@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 public interface InterMemberDAO {
 
 	//Register Method
@@ -32,6 +34,9 @@ public interface InterMemberDAO {
 	// 페이징 처리 토탈 페이지 알아오기 
 	int getTotalPage(Map<String, String> paraMap) throws SQLException;
 
+	// 암호변경
+	int pwdUpdate(MemberDTO mdto) throws SQLException;
+
 	// 페이징 처리를 하기 위해 회원정보 목록 보기 
 	int getShowMemberTotalPage(Map<String, String> paraMap) throws SQLException;
 
@@ -44,14 +49,17 @@ public interface InterMemberDAO {
 	// 회원 정보 포인트 부분 
 	List<MemberDTO> memberShowListPoint(Map<String, String> paraMap) throws SQLException;
 
-	// 회원마다 주문건수 찾기
-	int CountOrder(String order_Member_count) throws SQLException;
+	// *** 페이징 처리를 한 모든 공지사항 목록 보여주기 *** //
+	List<NoticeBoardDTO> selectPagingMember(Map<String, String> paraMap) throws SQLException;
 
-	// QNA 보내기 
-	int goQNA(Map<String, String> paraMap)  throws SQLException;
+	// 게시판 총페이지
+	int getBoardTotalPage(Map<String, String> paraMap) throws SQLException;
 
-	
+	// 게시판 내용 보기
+	NoticeBoardDTO informBoardView(String note_id) throws SQLException;
 
+	// 멤버 세션 갱신
+	void updateMemberSession(HttpSession session) throws SQLException;
 
 	
 

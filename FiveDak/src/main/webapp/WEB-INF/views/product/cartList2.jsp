@@ -152,7 +152,7 @@
 	.cart-total-box .col-sm-3 span{font-size: 20pt; font-weight: 700;}
 	.cart-total-box .col-sm-3 .price-total-info span{color:#ff7e32;}
 	
-	
+	.original-price{ color: #333; text-decoration: line-through; margin-left: 2px; font-size: 11pt;}
 	.checkbox-col{margin-left: 20px;}
 </style>
 
@@ -277,7 +277,8 @@
 	        		const cartTotal = discountPrice * nQty;
 	        		const prodTotal = productPrice * nQty;
 	        		const discountTotal = (productPrice - discountPrice) * nQty ;
-	        		const point = Math.floor(cartTotal / 100 * 1);
+	        		const rewardPercentage = Number('${sessionScope.loginuser.mbrTier.rewardPercentage }');
+	        		const point = Math.floor(cartTotal / 100 * rewardPercentage);
 	                
 	        		
 	                $("span#cart-price" + prodCode).text(cartTotal.toLocaleString());
@@ -362,7 +363,9 @@
     		const cartTotal = discountPrice * qty;
     		const prodTotal = productPrice * qty;
     		const discountTotal = (productPrice - discountPrice) * qty ;
-    		const point = Math.floor(cartTotal / 100 * 1);
+    		const rewardPercentage = Number('${sessionScope.loginuser.mbrTier.rewardPercentage }');
+    		console.log(rewardPercentage);
+    		const point = Math.floor(cartTotal / 100 * rewardPercentage);
             
     		
             $("span#cart-price" + prodCode).text(cartTotal.toLocaleString());
@@ -544,7 +547,8 @@
 									<p class="tit text">오븐구이 혼합 10팩 ★한입소스 3팩증정★</p>
 									<ul style="padding: 0" class="h6">
 										<li>
-											<span class="text"><fmt:formatNumber type="number" value="${cart.prod.prodPrice}"  pattern="#,###"/></span>원
+											<span class="text"><fmt:formatNumber type="number" value="${cart.prod.prodDiscount}"  pattern="#,###"/></span>원
+											<span class="text original-price"><fmt:formatNumber type="number" value="${cart.prod.prodPrice}"  pattern="#,###"/></span>원
 										</li>
 									</ul>
 								</div>
@@ -561,7 +565,7 @@
 							   		 >		<!-- &&&&&&&품절여부 나중에 수정&&&&&&&&&&&&&& -->
 							   		 <i class="fa-solid fa-minus"></i></span>
 							   		 
-							    	 <input type="text" class="quantity-input qty-product-${cart.cart_id}-${cart.cart_product_id }" value="9" readonly>
+							    	 <input type="text" class="quantity-input qty-product-${cart.cart_id}-${cart.cart_product_id }" value="${cart.cart_quantity }" readonly>
 							    	 
 							    	 <span class="quantity-plus btn-qty"
 							    	       data-cartid="${cart.cart_id}"
