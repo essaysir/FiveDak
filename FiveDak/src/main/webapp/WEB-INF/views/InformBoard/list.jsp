@@ -176,47 +176,7 @@
 			</div>
         </div>
         
-        
- <%--
-        <table id="memberTbl" class="table table-bordered" style="width: 90%; margin-top: 20px;">
-	<thead>
-    	<tr>
-         	<th>아이디</th>
-          	<th>회원명</th>
-           	<th>이메일</th>
-          	<th>성별</th>
-       	</tr>
-   	</thead>
-        
-   	<tbody>
-   		<c:if test="${not empty requestScope.memberList}">
-	    	<c:forEach var="mvo" items="${requestScope.memberList}">
-	    		<tr class="memberInfo">
-		         	<td class="userid">${mvo.userid}</td>
-		          	<td>${mvo.name}</td>
-		           	<td>${mvo.email}</td>
-		          	<td>
-		          		<c:choose>
-			          		<c:when test="${mvo.gender eq '1'}">
-			          			남
-			          		</c:when>
-			          		<c:otherwise>
-			          			여
-			          		</c:otherwise>
-		          		</c:choose>
-		          	</td>
-		       	</tr>
-	    	</c:forEach>
-    	</c:if>
-    	<c:if test="${empty requestScope.memberList}">
-	    	<tr>
-	         	<td colspan="4">가입된 회원이 없습니다.</td>
-	       	</tr>
-    	</c:if>
-    </tbody>
-</table>
-        
-         --%>       
+           
 
         <div class="board_list_wrap">
             <div class="board_list">

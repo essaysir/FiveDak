@@ -53,6 +53,9 @@ public interface InterMemberDAO {
 	// 게시판 총페이지
 	int getBoardTotalPage(Map<String, String> paraMap) throws SQLException;
 
+	// 게시판 내용 보기
+	NoticeBoardDTO informBoardView(String note_id) throws SQLException;
+
 
 
 

@@ -958,7 +958,7 @@ public class MemberDAO implements InterMemberDAO {
 			while(rs.next()) {
 				NoticeBoardDTO board = new NoticeBoardDTO();
 				
-				board.setNote_id(Integer.parseInt(rs.getString(1)));;
+				board.setNote_id(Integer.parseInt(rs.getString(1)));
 				board.setNote_title(rs.getString(2));
 				board.setNote_created_at(rs.getString(3));
 				//userid, name, email, gender
@@ -1021,6 +1021,46 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return boardTotalPage;
 	}
+
+	@Override
+	public NoticeBoardDTO informBoardView(String note_id) throws SQLException {
+		
+		NoticeBoardDTO boardContents = null;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " select NOTICE_ID, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CREATED_AT "
+					   + " from tbl_notice "
+		 		       + " where NOTICE_ID = ? "; 
+			
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			pstmt.setString(1, note_id);
+			
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				boardContents = new NoticeBoardDTO();
+				
+				boardContents.setNote_id(Integer.parseInt(rs.getString(1)));
+				boardContents.setNote_title(rs.getString(2));
+				boardContents.setNote_content(rs.getString(3));
+				boardContents.setNote_created_at(rs.getString(4));
+				
+			} // end of while(rs.next())----------------------------------------
+			
+		} finally {
+			close();
+		}
+		
+		return boardContents;
+	}
+
 
 
 
