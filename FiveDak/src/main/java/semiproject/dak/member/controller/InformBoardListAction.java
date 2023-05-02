@@ -29,8 +29,8 @@ public class InformBoardListAction extends AbstractController {
 		
 		
 		if(searchField == null ||
-				  (!"title".equals(searchField) && 
-				   !"detail".equals(searchField))) {
+				  (!"notice_title".equals(searchField) && 
+				   !"notice_content".equals(searchField))) {
 			searchField = "";
 				}
 		if(searchText == null ||

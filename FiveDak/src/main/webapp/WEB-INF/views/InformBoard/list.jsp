@@ -163,8 +163,8 @@
 							<tr>
 								<td><select class="form-control" name="searchField">
 										<option value="0">선택</option>
-										<option value="title">제목</option>
-										<option value="detail">내용</option>
+										<option value="notice_title">제목</option>
+										<option value="notice_content">내용</option>
 								</select></td>
 								<td><input type="text" class="form-control"
 									placeholder="검색어 입력" name="searchText" ></td>

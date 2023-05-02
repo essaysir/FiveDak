@@ -157,16 +157,16 @@
         <div class="board_view_wrap">
             <div class="board_view">
                 <div class="title">
-                    글 제목
+                    <input type="text" placeholder="${ndto.note_title}">
                 </div>
                 <div class="info">
                     <dl>
                         <dt>번호</dt>
-                        <dd>1</dd>
+                        <dd>${ndto.note_id}</dd>
                     </dl>
                     <dl>
                         <dt>작성일</dt>
-                        <dd>2023.4.13</dd>
+                        <dd>${ndto.note_created_at}</dd>
                     </dl>
                     <dl>
                         <dt>조회</dt>
@@ -174,7 +174,7 @@
                     </dl>
                 </div>
                 <div class="cont">
-                    글 내용물<br><br><br><br><br><br><br>
+                    ${ndto.note_content}
                 </div>
             </div>
             <div class="bt_wrap">

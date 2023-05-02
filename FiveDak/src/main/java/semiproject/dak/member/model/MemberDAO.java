@@ -984,22 +984,17 @@ public class MemberDAO implements InterMemberDAO {
 			conn = ds.getConnection();
 			
 			String sql = " select ceil(count(*)/?) "
-					   + " from tbl_notice "; 
+					   + " from tbl_notice"
+					   + " where notice_id != 0 "; 
 			
 			String colname = paraMap.get("searchField");
 			String searchText = paraMap.get("searchText");
-			/*
-			if("email".equals(colname)) {
-				// 검색대상이 email인 경우
-				searchText = aes.encrypt(searchText);
-			}
-			*/
+
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
 				sql += " and " + colname + " like '%'|| ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
-			
 			
 			pstmt = conn.prepareStatement(sql);
 			
