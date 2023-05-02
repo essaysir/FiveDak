@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>   
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+ 
 <%
     String ctxPath = request.getContextPath();
     //    /MyMVC
@@ -59,20 +63,36 @@
 	
 	$(document).ready(function(){
 		
-		pr
+		
 		
 	});
 
+	
+	function goReviewWrite(product_id, order_serial) {
+		
+		
+		location.href= "reviewWrite.dak?product_id="+product_id+"&order_serial="+order_serial;
+		
+	}
+	
 </script>
 
 			<div class="review_1" style="border-bottom: solid 1px #333; margin-left: 40px; padding-bottom: 120px; ">
 				<h2 style="padding-bottom: 10px; margin: 20px 0px 15px 0px; color:#333; border-bottom : solid 1px #333;">상품후기</h2>
-					<p style="margin: 20px 0px 15px 0px; font-size:14pt;">작성가능한 후기 
-						<span style="color: #FF7E32;"> </span>
+					
+					
+				
+					
+					<c:forEach var="ord" items="${requestScope.orderList1}" varStatus="status">
+					<c:if test="${status.index == 0}">
+						<p style="margin: 20px 0px 15px 0px; font-size:14pt;">작성가능한 후기  
+						<span style="color: #FF7E32;">${ord.orddt.order_quantity}건 </span>
 						<button class="btn" type="button" data-toggle="collapse" data-target="#demo1" style="float:right;">
 						  <i class="fa-solid fa-chevron-down"></i>
 					  	</button>
 					</p>
+					</c:if>
+					
 				<div id="demo1" class="collapse">
 					<div class="card bg-light" style="margin: 20px 0px 40px 0px;">
 					  	<div class="card-header row-12" style="display:flex; height: 45px; font-size:13pt;">
@@ -82,78 +102,72 @@
 					  	</div>
 					  <div class="card-body body_1 row-md-12">
 					  	  <div class="body col-md-2" style="padding:0px;">
-					  		<img src="../images1/맛있닭 이미지.png"/>
+					  		<img src="/FiveDak/images/${ord.prod.prodImage1}" style="width:80px; height:80px;"/>
 					  	  </div>	
 						  <div class="contents col-md-5" style="padding: 5px 0 10px 0px;">
 						  	  <div style="margin-bottom: 15px;">
-						  	  		<span style="color:#666666;">RK2304010003503276</span>
+						  	  		<span id="serial_num"style="color:#666666;">${ord.order_serial}</span>
 						  	  </div>
-						  	  <a href="#" style="color:#333; ">맛있닭 스팀 닭가슴살 오리지널 100g X 30팩(3kg)</a>
+						  	  <a id="product_id"href='<%= ctxPath%>/product/productDetail.dak?product_id=${ord.prod.prodNum}' style="color:#333;" >[${ord.prod.brandDTO.brandName}]${ord.prod.prodName}</a>
 						  </div>
 						  <div class="col-md-3 text-center"style="padding-top:30px; margin-left:25px">
-							  <span style="color:#666666;font-size:13pt; ">&nbsp;&nbsp;2023.04.22</span>
+							  <span style="color:#666666;font-size:13pt; ">&nbsp;&nbsp;${ord.orderDate}</span>
 						  </div> 
 						  <div class="col-md-1"style="padding:30px 0 0 0; margin-left:15px">
-						  	  <button type="button" id="btnCommentOK" class="btn_review_write"><i class="fa-solid fa-pen"></i> 후기작성</button>
+						  	  <button type="button" id="btnCommentOK" class="btn_review_write" onclick="goReviewWrite('${ord.prod.prodNum}','${ord.order_serial}')"><i class="fa-solid fa-pen"></i> 후기작성</button>
 						  </div>   
 					  </div>
-					</div>
-					<ul class="pagination justify-content-center pagination-sm">
-						<li class="page-item"><a class="page-link text-muted" href="#"><</a></li>
-						<li class="page-item active"><a class="page-link color_orange" href="#">1</a></li>
-						<li class="page-item"><a class="page-link color_orange" href="#">2</a></li>
-						<li class="page-item"><a class="page-link color_orange" href="#">3</a></li>
-						<li class="page-item"><a class="page-link text-muted" href="#">></a></li>
-					</ul>
-				</div>
-			</div>
-			
-			<div class="review_2" style="margin-left: 40px;">
-				<div class="review-head">
-						<p style="margin: 20px 0px 15px 0px; font-size:14pt;">작성 완료 후기
-						 	<span style="color: #FF7E32;">1건</span>
-						 	<button class="btn" type="button" data-toggle="collapse" data-target="#demo2" style="float:right;">
-							   <i class="fa-solid fa-chevron-down"></i>
-						  	</button>
-						</p>
-				</div>
-				<div id="demo2" class="collapse">
-					<div class="card bg-light" style="margin: 20px 0px 40px 0px;">
-					  	<div class="card-header row-12" style="display:flex; height: 45px; font-size:13pt;">
-						  	<div class="col-md-8 text-center"><span class="product_review_reviewpossibledate">상품</span></div>
-						  	<div class="col-md-2"><span class="product_review_reviewpossibledate">작성일</span></div>
-						  	<div class="col-md-2"style="margin-left:30px;"><span class="product_review_reviewpossibledate">후기작성</span></div>
-					  	</div>
-					  <div class="card-body body_1 row-md-12">
-					  	  <div class="body col-md-2" style="padding:0px;">
-					  		<img src="../images1/맛있닭 이미지.png"/>
-					  	  </div>	
-						  <div class="contents col-md-5" style="padding: 5px 0 10px 10px;">
-						  	  <div style="margin-bottom: 15px;">
-						  	  		<span style="color:#666666;">RK2304010003503276</span>
-						  	  </div>
-						  	  <a href="#" style="color:#333; ">맛있닭 스팀 닭가슴살 오리지널 100g X 30팩(3kg)</a>
-						  </div>
-						  <div class="col-md-3 text-center" style="padding-top:30px;">
-							  <span style="color:#666666; font-size:13pt; margin-left:25px ">2023.04.22</span>
-						  </div> 
-						  <div class="col-md-1"style="padding:30px 0 0 0; margin-left:15px">
-						  	  <span class="span_review_expire"> 기간만료</span>
-						  </div>   
-					  </div>
-					</div>
-					<div id="review-paging">
-						<ul class="pagination justify-content-center pagination-sm">
-							<li class="page-item"><a class="page-link text-muted" href="#"><</a></li>
-							<li class="page-item active"><a class="page-link color_orange" href="#">1</a></li>
-							<li class="page-item"><a class="page-link color_orange" href="#">2</a></li>
-							<li class="page-item"><a class="page-link color_orange" href="#">3</a></li>
-							<li class="page-item"><a class="page-link text-muted" href="#">></a></li>
-						</ul>
 					</div>
 				</div>
 				
+				
+				</c:forEach>
 			</div>
+			
+			<div class="review_2" style="margin-left: 40px;">
+				
+					<c:if test="${fn:length(orderList2) <= 0}">
+						안됩니다.
+					</c:if>	
+					<c:forEach var="ord" items="${requestScope.orderList2}" varStatus="status">
+						<div class="review-head">
+							<c:if test="${status.index == 0}">
+								<p style="margin: 20px 0px 15px 0px; font-size:14pt;">작성 완료 후기
+								 	<span style="color: #FF7E32;">${requestScope.reviewCount}건 </span>
+								 	<button class="btn" type="button" data-toggle="collapse" data-target="#demo2" style="float:right;">
+									   <i class="fa-solid fa-chevron-down"></i>
+								  	</button>
+								</p>
+							</c:if>
+						</div>
+						<div id="demo2" class="collapse">
+							<div class="card bg-light" style="margin: 20px 0px 40px 0px;">
+							  	<div class="card-header row-12" style="display:flex; height: 45px; font-size:13pt;">
+								  	<div class="col-md-8 text-center"><span class="product_review_reviewpossibledate">상품</span></div>
+								  	<div class="col-md-2"><span class="product_review_reviewpossibledate">작성일</span></div>
+								  	<div class="col-md-2"style="margin-left:30px;"><span class="product_review_reviewpossibledate">후기작성</span></div>
+							  	</div>
+							  <div class="card-body body_1 row-md-12">
+							  	  <div class="body col-md-2" style="padding:0px;">
+							  		<img src="/FiveDak/images/${ord.prod.prodImage1}" style="width:80px; height:80px;"/>
+							  	  </div>	
+								  <div class="contents col-md-5" style="padding: 5px 0 10px 10px;">
+								  	  <div style="margin-bottom: 15px;">
+								  	  		<span style="color:#666666;">${ord.order_serial}</span>
+								  	  </div>
+								  	  <a href='<%= ctxPath%>/product/productDetail.dak?product_id=${ord.prod.prodNum}' style="color:#333; ">[${ord.prod.brandDTO.brandName}]${ord.prod.prodName}</a>
+								  </div>
+								  <div class="col-md-3 text-center" style="padding-top:30px;">
+									  <span style="color:#666666; font-size:13pt; margin-left:25px ">${writeDate}</span>
+								  </div> 
+								  <div class="col-md-1"style="padding:30px 0 0 0; margin-left:15px">
+								  	  <span class="span_review_expire"> 기간만료</span>
+								  </div>   
+							  </div>
+							</div>
+						</div>
+					</c:forEach>
+				</div>
 		
 </div>
   </div>
