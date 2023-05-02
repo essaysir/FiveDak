@@ -26,7 +26,10 @@ public interface InterOrderDAO {
 	// 주문 상세 정보에 띄울 정보들 DB에서 가져오기 
 	OrderDTO getOrderInfo(String orderid)  throws SQLException ;
 
-	// 주문 상세 정보에 주문한 제품 정보와 이미지 가져오기
-	ArrayList<Map<String, Object>> getOrderProdAndImage(String order_serial)   throws SQLException  ;
+	// 주문 상세 페이지 에서 ORDER_STATUS 변경한 경우
+	int goEditStatus(Map<String,String> paraMap)  throws SQLException  ;
+
+	// 주문 상세 페이지 에서 ORDER 를 삭제하는 경우 
+	int goRemoveOrder(String order_serial) throws SQLException ;
 
 }

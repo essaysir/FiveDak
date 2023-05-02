@@ -20,8 +20,19 @@ public class ProductDTO {
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
+	private ReviewDTO reviewDTO;
 	
 	
+	public ReviewDTO getReviewDTO() {
+		return reviewDTO;
+	}
+
+
+	public void setReviewDTO(ReviewDTO reviewDTO) {
+		this.reviewDTO = reviewDTO;
+	}
+
+
 	// 기본 생성자 
 	public ProductDTO () {}
 

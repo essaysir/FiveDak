@@ -654,12 +654,7 @@ public class ProductDAO implements InterProductDAO {
 	// 특정 제품 번호에 해당하는 제품의 상세정보 가져오기 
 	@Override
 	public ProductDTO selectOneProduct(String prodNum) throws SQLException {
-		
-		
-		
-		
-		
-		
+	
 		
 		return null;
 	}
@@ -675,13 +670,14 @@ public class ProductDAO implements InterProductDAO {
 					+ " ON D.ORDER_DETAIL_PRODUCT_ID = P.PRODUCT_ID "
 					+ " JOIN TBL_BRAND B "
 					+ " on P.PRODUCT_BRAND_ID = B.BRAND_ID "
-					+ " WHERE D.FK_ORDER_SERIAL = 'DAK-2023042900001234' ";
+					+ " WHERE D.FK_ORDER_SERIAL = ? ";
 					
 			pstmt = conn.prepareStatement(sql);
 		
-			// pstmt.setString(1, order_serial);
+			pstmt.setString(1, order_serial);
 			
 			rs = pstmt.executeQuery();
+			
 			while ( rs.next()) {
 				ProductDTO pdto = new ProductDTO();
 				pdto.setProdNum(rs.getInt(1));
@@ -700,15 +696,104 @@ public class ProductDAO implements InterProductDAO {
 		}finally {
 			close();
 		}
-		
-		
-		
-		
+	
 		return list;
+	}
+
+	@Override
+	public List<String> getCategoryList() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//  특정 prodNum에 해당하는 PDTO 가져오는 메소드
+	@Override
+	public ProductDTO prodInfo(Map<String, String> paraMap) throws SQLException {
+		ProductDTO pdto = null ;
+		try {
+			conn = ds.getConnection();
+			String sql=" select product_id, product_name, brand_name, product_price, product_stock, product_sales, product_discount, average_rating, product_image_url, review_count "
+					 + " from (select product_id, product_name,brand_name, product_price, product_stock, product_sales, product_discount, average_rating, product_image_url "
+					 + " from tbl_product P join tbl_brand B on P.product_brand_id = B.brand_id where product_id = ? ) A CROSS JOIN "
+					 + " (select count(*) as review_count from tbl_review where review_product_id = ? ) C ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("prodNum"));
+			pstmt.setString(2, paraMap.get("prodNum"));
+			
+			rs = pstmt.executeQuery();
+		
+			if(rs.next()) {
+				
+				pdto = new ProductDTO();
+				pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+				pdto.setProdName(rs.getString("PRODUCT_NAME"));
+				pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
+				pdto.setProdStock(rs.getInt("PRODUCT_STOCK"));
+				pdto.setProdSales(rs.getInt("PRODUCT_SALES"));
+				pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+				pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
+				pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+				
+				ReviewDTO rdto = new ReviewDTO();
+				rdto.setReview_cnt(rs.getInt("REVIEW_COUNT"));
+				pdto.setReviewDTO(rdto);
+				
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("BRAND_NAME"));
+				pdto.setBrandDTO(bdto);
+			
+				
+			}	
+		
+		}finally {
+			close();
+		}
+		return pdto;
+		
+	}
+
+	@Override
+	public NutritionDTO nutritionInfo(String prodNum) throws SQLException {
+		NutritionDTO ndto = null ;
+		try {
+			
+			conn = ds.getConnection(); 
+			
+			String sql=" select nutrition_id,product_cal, product_protein, product_sodium, product_kal, product_fat, product_transfat, product_satfat, product_col, product_sug "
+					 + " from tbl_product P join tbl_product_nutrition N on P.product_id = N.nutrition_id "
+					 + " where P.PRODUCT_ID = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1,prodNum );
+			
+			rs= pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				ndto = new NutritionDTO();
+				ndto.setProduct_cal(rs.getDouble("PRODUCT_CAL"));
+				ndto.setProduct_protein(rs.getDouble("PRODUCT_PROTEIN"));
+				ndto.setProduct_sodium(rs.getInt("PRODUCT_SODIUM"));
+				ndto.setProduct_kal(rs.getInt("PRODUCT_KAL"));
+				ndto.setProduct_fat(rs.getInt("PRODUCT_FAT"));
+				ndto.setProduct_transfat(rs.getInt("PRODUCT_TRANSFAT"));
+				ndto.setProduct_satfat(rs.getInt("PRODUCT_SATFAT"));
+				ndto.setProduct_col(rs.getInt("PRODUCT_COL"));
+				ndto.setProduct_sug(rs.getInt("PRODUCT_SUG"));
+				
+			}
+			
+		}finally {
+			close();
+		}
+	
+		return ndto ;
 	}
 	
 	
-	
+
 	
 	
 	

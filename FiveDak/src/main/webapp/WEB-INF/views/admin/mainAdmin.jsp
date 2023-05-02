@@ -48,7 +48,7 @@
 		
 	}); // END OF 	$(DOCUMENT).READY(FUNCTION(){
 	
-	let lenHIT = 1 ;
+	let lenHIT = 10 ;
 	
 	
  	function displayOrder(start){

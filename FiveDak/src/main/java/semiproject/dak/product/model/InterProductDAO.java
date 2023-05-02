@@ -48,6 +48,15 @@ public interface InterProductDAO {
 
 	// 특정 주문 번호에 해당하는 제품들에 대한 정보 가져오기 
 	List<ProductDTO> getOrderDetail(String order_serial) throws SQLException ;
+
+	// 카테고리 종류 모두 가져오는 메소드 
+	List<String> getCategoryList() throws SQLException ;
+
+	// 특정 prodNum에 해당하는 PDTO 가져오는 메소드
+	ProductDTO prodInfo(Map<String, String> paraMap) throws SQLException;
+
+	// 제품 상세 정보에서 보여줄 영양소 가져오기 
+	NutritionDTO nutritionInfo(String prodNum) throws SQLException ;
 	
 	
 	

@@ -101,6 +101,7 @@
 <div class="col-md-9">
       <!-- 오른쪽에 들어갈 내용 -->
       		<h2 class="float-left">전체제품목록</h2>
+      		
       		<h5 class="float-right" style="position:relative; top:10px;">전체 제품 수 : ${requestScope.totalProduct } </h5>
 			<hr style="border: 1px solid; clear:both;"/>
 	

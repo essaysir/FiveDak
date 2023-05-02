@@ -1,11 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@page import="java.sql.SQLException"%>  
-<%@ page import="semiproject.dak.product.model.ProductDAO" %>
-<%@ page import="semiproject.dak.product.model.ProductDTO" %>
-<%@ page import="semiproject.dak.product.model.NutritionDTO" %>
-<%@ page import="semiproject.dak.product.model.BrandDAO" %>
 <% String ctxPath = request.getContextPath(); %> 
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>     
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -15,11 +11,9 @@
 <link rel="stylesheet" type="text/css" href="./Product.css" />
 --%>
 
-<script src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" /> 
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" /> 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 
 
@@ -222,95 +216,10 @@
 	}
 	
 	*{
-font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-word-break : break-all ;
-}
-   img#banner{
-      position: absolute;
-      top: 0;
-      left: 0;
-      width:100%;
-      height:100%;
-   }
-   div.banner{
-      height : 80px ;
-   }
-   input#search-header{
-      border : 1px solid #FFA751 ;
-      display : inline-block ;
-      width: 380px;
-       height: 40px;
-       border-radius: 6px;
-       background: #fff;
-   }
-   ul#login_menu{
-      position: absolute;
-      top:10px ;
-      right : 0 ;
-   }
-   div#header-search{
-      height: 120px ; 
-   }
-   div#my_menu{
-      position: absolute ;
-      top: 55px;
-       right: 0;
-   }
-   button.btn-search{
-      background-color: #fff ;
-      border: 0px ;
-      top: 22%;
-       right: 10px;
-   }
-   div.header-search {
-      top: 60px;
-      left : 370px ;
-   }
-   .header-link{
-      color:#666;
-   }
-   a.header-a{
-      display: inline-block;
-      width: 100px ;
-      margin-right : 80px ;
-   }
-   a.header-category{
-      display:inline-block;
-      width: 141px;
-   }
-   span.li-category{
-      color: #666;
-      margin-top:10px;
-      margin-bottom:10px;
-   }
-
-   /* ----------------------------------------------------------------------- */
-   /* 메인 페이지 CSS */
+	font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+	word-break : break-all ;
+	}
    
-   img.card-size{
-      height: 256px;
-   
-   }
-   button.btn-icon{
-      border: 1px #f8f8f8 solid; 
-      border-radius:10%;
-      background-color:#f8f8f8;
-   }
-   div.card-time{
-      background-color: #f79960;
-      color: #fff;
-   
-   }
-   .btn-first{
-      margin-top:-36px;
-   }
-   .btn-second{
-      margin-top:-28px;
-   }
-
-
-	/* ----------------------------------------------------------------------- */
-
 
 
 
@@ -604,291 +513,6 @@ a.sticky-nav-tab { text-decoration: none; }
     
 </style>
 
-
-
-<%
-	String prodNum = request.getParameter("prodNum");
-	String review_member_id = request.getParameter("review_member_id");
-	int nutrition_id = Integer.parseInt(request.getParameter("nutrition_id"));
-	if((prodNum==null || prodNum.isEmpty()) && (review_member_id==null || review_member_id.isEmpty())){
-	
-%>
-
-	 <script type="text/javascript">
-		alert("잘못된 url입니다.");
-		location.href="index.jsp";
-	</script>
-<%
-	 return;
-	} 
-	
-	ProductDAO dao = new ProductDAO();
-	
-	ProductDTO dto = null;
-	try{
-		dto=dao.prodInfo(Integer.parseInt(prodNum),Integer.parseInt(review_member_id));
-		//dto=dao.prodInfo(Integer.parseInt(review_product_id));
-	}catch(SQLException e){
-		e.printStackTrace();
-	}
-	
-	//int prodNum = dto.getProdNum(); // 제품번호
-	String prodName = dto.getProdName(); // 제품명
-	int prodPrice = dto.getProdPrice(); // 정가
-	int prodStock = dto.getProdStock(); // 재고 
-	int prodSales = dto.getProdSales(); // 판매량
-	int prodDiscount = dto.getProdDiscount(); // 판매가
-	double prodAvgRating = dto.getProdAvgRating(); // 평균 별점
-	String prodImage1 = dto.getProdImage1(); // 제품 이미지
-	
-	int reviewCnt = dto.getreviewDTO().getReview_cnt();
-	
-	String brandName = dto.getbrandDTO().getBrandName();
-	
-	
-	////////////////////////////////////////////////////////////////////////////
-	
-	NutritionDTO ndto = null;
-	try{
-		ndto=dao.nutritionInfo(nutrition_id);
-	} catch(SQLException e) {
-		e.printStackTrace();
-	}
-	
-	//nutrition_id = ndto.getNutrition_id();
-	double product_cal = ndto.getProduct_cal();
-	
-    double product_protein = ndto.getProduct_protein();
-    double product_sodium = ndto.getProduct_sodium();
-    double product_kal = ndto.getProduct_kal();
-    double product_fat = ndto.getProduct_fat();
-    double product_transfat = ndto.getProduct_transfat();
-    double product_satfat = ndto.getProduct_satfat();
-    double product_col = ndto.getProduct_col();
-    double product_sug = ndto.getProduct_sug();
-	
-
-	
-	%>
-
-
-
-<!-- 맨 위에 있는 배너 모음 -->
-   <div class="container-fluid">
-      <div class="row justify-content-center banner">
-         <div class="col-md-10" id="image-container"><img id="banner" src="../images/메인배너.png"/></div>
-      </div>
-   </div>
-   
-   <!-- 로고, 검색창, 로그인, 회원가입 -->
-   <div class="container position-relative" id="header-search">
-      <a class="position-absolute"style="top:20px;" href="#" ><img src="../images/5조닭조.png" /></a>
-      
-      <div class="position-absolute header-search" >
-         <div class="position-relative">
-            <input id="search-header" type="text" placeholder="오늘은 무슨 닭가슴살 먹지?"/>
-            <button class="position-absolute btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>
-         </div>
-      </div>
-      
-      <ul class="nav" id="login_menu" >
-           <li class="nav-item border-right">
-             <a style="font-size:10pt;" class="nav-link active header-link" href="#">로그인</a>
-           </li>
-           <li class="nav-item border-right">
-             <a style="font-size:10pt;" class="nav-link header-link" href="#">회원가입</a>
-           </li>
-           <li class="nav-item border-right">
-             <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
-           </li>
-           <li class="nav-item">
-             <a style="font-size:10pt;" class="nav-link header-link" href="#">고객센터</a>
-           </li>
-         </ul>
-   
-      <div id="my_menu">   
-         <ul class="nav">
-              <li class="nav-item">
-                <a class="nav-link header-link" href="#"><i class="fa-solid fa-user fa-2x"></i></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active header-link" href="#"><i class="fa-solid fa-cart-shopping fa-2x"  ></i></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link header-link" href="#"><i class="fa-solid fa-receipt fa-2x"></i></a>
-              </li>
-            </ul>   
-      </div>   
-   </div>
-
-
-<!-- nav bar ( 메뉴 바 ) 시작 -->
-<div class="container-fluid sticky-top" style="background-color : #fff;">
-	<div class="container">
-	<nav>        <!-- style="border: solid 1px blue; margin: 0 100px; max-width: 1300px; min-width: 120px; -->        
-	    <!-- Links -->
-	       <ul style="border-bottom: solid 1px #f2f2f2; display:flex; list-style: none; padding-left:0;">
-	     
-	         <!-- Dropdown -->
-	        <!-- margin 상 우 좌 하 -->
-	         <li style="margin: 10px 50px 10px 10px;">
-	              <a class="header-category border-right" href="#" data-toggle="dropdown" style="color: black;">
-	                <i class="fa-solid fa-bars"></i>
-	                   카테고리
-	              </a>
-	           
-	           <div class="dropdown-menu" aria-labelledby="navbardrop">
-	             <ul style="padding: 0; list-style: none;">
-	                
-	                <li>
-	                   <a id="ChickenBreast" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-drumstick-bite" style="margin-right:10px;"></i>
-	                      닭가슴살
-	                   </a>
-	                   <div class="header-list" style="border: solid 2px white;" id="show1">
-	                      <ul style="list-style: none; overflow-y: auto; overflow-x: hidden; position: absolute; top: 0; left: 100%; z-index: 2; width: 160px; height: 100%; background: #f4f4f4; border: 1px solid #ccc; border-top: 0; border-left: 0; padding-top: 5px;">
-	                            <li><a href="#"><span class="li-category">전체</span></a></li>
-	                            <li><a href="#"><span class="li-category">스테이크</span></a></li>
-	                            <li><a href="#"><span class="li-category">소스닭가슴살</span></a></li>
-	                            <li><a href="#"><span class="li-category">스팀-소프트</span></a></li>
-	                            <li><a href="#"><span class="li-category">볼-큐브</span></a></li>
-	                            <li><a href="#"><span class="li-category">슬라이스</span></a></li>
-	                      </ul>
-	                   </div>
-	                </li>
-	                
-	                <li>
-	                   <a id="Instant" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-bowl-rice" style="margin-right:10px;"></i>
-	                      즉석 간편식
-	                   </a>
-	                   <div class="header-list" style="border: solid 2px white;" id="show2">
-	                   <ul  style="list-style: none; overflow-y: auto; overflow-x: hidden; position: absolute; top: 0; left: 100%; z-index: 2; width: 160px; height: 100%; background: #f4f4f4; border: 1px solid #ccc; border-top: 0; border-left: 0; padding-top: 5px;">
-	                            <li><a href="#"><span class="li-category">전체</span></a></li>
-	                        <li><a href="#"><span class="li-category">브리또</span></a></li>
-	                        <li><a href="#"><span class="li-category">핫도그</span></a></li>
-	                        <li><a href="#"><span class="li-category">만두-딤섬</span></a></li>
-	                        <li><a href="#"><span class="li-category">분식</span></a></li>
-	                        <li><a href="#"><span class="li-category">치킨</span></a></li>
-	                        <li><a href="#"><span class="li-category">피자</span></a></li>
-	                  </ul>
-	                  </div>            
-	                </li>
-	                
-	                <li>
-	                   <a id="BoxLunch" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-bowl-food" style="margin-right:10px;"></i>
-	                      도시락, 볶음밥
-	                   </a>
-	                   <div class="header-list" style="border: solid 2px white;" id="show3">
-	                      <ul  style="list-style: none; overflow-y: auto; overflow-x: hidden; position: absolute; top: 0; left: 100%; z-index: 2; width: 160px; height: 100%; background: #f4f4f4; border: 1px solid #ccc; border-top: 0; border-left: 0; padding-top: 5px;">
-	                            <li><a href="#"><span class="li-category">전체</span></a></li>
-	                        <li><a href="#"><span class="li-category">다이어트 도시락</span></a></li>
-	                        <li><a href="#"><span class="li-category">더담은 도시락</span></a></li>
-	                        <li><a href="#"><span class="li-category">간편 도시락</span></a></li>
-	                        <li><a href="#"><span class="li-category">볶음밥</span></a></li>
-	                        <li><a href="#"><span class="li-category">덮밥-컵밥</span></a></li>
-	                     </ul>
-	                  </div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="Beef" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-cow" style="margin-right:10px;"></i>
-	                      소고기
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show4"></div>               
-	                </li>
-	                
-	                <li style="list-style: none;">
-	                   <a id="Pig" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-bacon" style="margin-right:10px;"></i>
-	                      돼지, 오리고기
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show5"></div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="ChickenTenderloin" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-utensils" style="margin-right:10px;"></i>
-	                      닭안심살
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show6"></div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="Salad" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-apple-whole" style="margin-right:10px;"></i>
-	                      샐러드, 과일
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show7"></div>               
-	                </li>                    
-	                
-	                <li style="list-style: none;">
-	                   <a id="Cheese" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-cheese" style="margin-right:10px;"></i>
-	                      배이커리, 치즈
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show8"></div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="Snacks" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-hotdog" style="margin-right:10px;"></i>
-	                      과자, 간식, 떡
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show9"></div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="Beverage" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-mug-hot" style="margin-right:10px;"></i>
-	                      음료, 차, 프로틴
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show10"></div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="HealthyFood" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-thumbs-up" style="margin-right:10px;"></i>
-	                      건강식품
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show11"></div>               
-	                </li>   
-	                
-	                <li style="list-style: none;">
-	                   <a id="sportingGoods" class="dropdown-item" href="#">
-	                      <i class="fa-solid fa-futbol" style="margin-right:10px;"></i>
-	                      운동생활용품
-	                   </a>
-	                   <div style="border: solid 2px white;" id="show12"></div>               
-	                </li>   
-	             </ul>
-	           </div>
-	         </li>
-	      
-	         <li style="margin: 10px 130px 10px 10px;">
-	           <a class="header-category" href="#" style="color: black;">랭킹</a>
-	         </li>
-	         <li style="margin: 10px 130px 10px 10px;">
-	           <a class="header-category" href="#" style="color: black;">신제품</a>
-	         </li>
-	         <li style="margin: 10px 130px 10px 10px;">
-	           <a class="header-category" href="#" style="color: black;">특가/혜택</a>
-	         </li>
-	         <li style="margin: 10px 130px 10px 10px;">
-	           <a class="header-category" href="#" style="color: black;">MD추천</a>
-	         </li>
-	<!--                 <li style="margin: 10px 130px 10px 10px;">
-	                  <a class="header-category" href="#" style="color: black;">이벤트</a>
-	                </li> -->
-	        </ul>
-	   </nav>
-	</div>
-</div>
-<!-- nav bar ( 메뉴 바 ) 끝 -->
-
-
 <!-- 여기서부터는 제품상세 페이지 영역입니다. -->
 <div class="content_container">
 
@@ -898,34 +522,34 @@ a.sticky-nav-tab { text-decoration: none; }
 			     좌측 제품이미지 영역: 1)제품대표이미지 2)중간여백 3)광고배너이미지 --> 
 			<div class="product_images">
 				<div class="image_main">
-					<img alt="제품상세대표 이미지 입니다." src="./images/제품상세대표.jpg">
+					<img alt="제품상세대표 이미지 입니다." src="<%=ctxPath %>/images/제품1.jpg">
 				</div>
 				<div class="image_ad">
-					<img alt="배송배너 이미지 입니다." src="./images/배송배너.jpg">
+					<img alt="배송배너 이미지 입니다." src="<%=ctxPath %>/images/배너2.jpg">
 				</div>
 			</div>
 		
 		
 			<!-- 우측 상품선택 영역 -->
 			<div class="product_choice">
-				<h2><%=prodName%></h2>
+				<h2>${requestScope.prodName }</h2>
 				<div class="product_rating">
 					<div class="star-rate-md">
         				<span style="width: 70%"></span>
 					</div>
-					<a><%=prodAvgRating%>점</a>
-					<a>(<%=reviewCnt%>)</a>
+					<a>${requestScope.prodAvgRating}점</a>
+					<a>(리뷰 개수를 넣어주는 곳)</a>
 				</div>
 				
 				<div class="product_price">
-					<p class="price"><strong style="font-size:30pt;"><%=prodPrice%></strong>원</p>
+					<p class="price"><strong style="font-size:30pt;">${requestScope.prodPrice}</strong>원</p>
 					<p class="per_price" style="color:#666;">(1팩당 2,300 ~ 3,400)</p>
 				</div>
 				
 				<div class="product_info_tbl">
 					<dl style="border-bottom:solid 1px #ccc;">
 						<dt style="margin:12px 0;">판매량</dt>
-						<dd><%=prodSales%></dd>
+						<dd>${requestScope.prodSales }</dd>
 					</dl>
 					<dl style="border-bottom:solid 1px #ccc;">
 						<dt style="margin-bottom:12px;">배송방법</dt>
@@ -950,7 +574,7 @@ a.sticky-nav-tab { text-decoration: none; }
 					<dl style="border-bottom:solid 1px #ccc;">
 						<dt style="margin-bottom:12px;">브랜드관</dt>
 						<dd>
-							<span style="text-decoration: none; color:#212529;"><%=brandName%></span> 
+							<span style="text-decoration: none; color:#212529;">브랜드네임</span> 
 						</dd>
 					</dl>
 					
@@ -1009,7 +633,7 @@ a.sticky-nav-tab { text-decoration: none; }
 											<td>당류</td>
 										</tr>
 										<tr>
-											<td><%=product_cal%></td>
+ 					<%-- 						<td><%=product_cal%></td>
 											<td><%=product_protein%></td>
 											<td><%=product_sodium%></td>
 											<td><%=product_kal%></td>
@@ -1017,7 +641,7 @@ a.sticky-nav-tab { text-decoration: none; }
 											<td><%=product_transfat%></td>
 											<td><%=product_satfat%></td>
 											<td><%=product_col%></td>
-											<td><%=product_sug%></td>
+											<td><%=product_sug%></td>  --%>
 										</tr>
 									</tbody>
 								</table>
@@ -1324,7 +948,7 @@ a.sticky-nav-tab { text-decoration: none; }
 </section>
 </div> 	<!-- 여기까지 div.content_container2 끝! -->	
 			
-			S
+			
 		</div>  <!-- 여기까지가 div.productDetail_Info 끝! -->
 		
 		
@@ -1332,9 +956,9 @@ a.sticky-nav-tab { text-decoration: none; }
 		<div class="sideMenubar" style="padding-top:60px; height:80%;">
 			<span style="font-size:12pt;">제품선택<br></span>
 			<div>
-				<h4 style="margin-top: 20px; margin-bottom:250px;" >${pdo.prodName}</h4>
+				<h4 style="margin-top: 20px; margin-bottom:250px;" >${requestScope.prodName}</h4>
 				<div class="product_price" style="text-align: right;">
-					<strong style="font-size:30pt;"><%=prodPrice%></strong>원
+					<strong style="font-size:30pt;"></strong><fmt:formatNumber value="${requestScope.prodPrice}" pattern="###,###" />원
 					<p class="per_price" style="color:#666; margin-top:0;">(1팩당 2,300 ~ 3,400)</p>
 				</div>
 				<%-- ==== 장바구니 담기 폼 ==== --%>
@@ -1385,60 +1009,19 @@ $(document).ready(function(){
          $(this).find('.header-list').hide();
      });
     
-     // 이미지 슬라이드로 만들기 1
-    $('.card-icon').slick({
-          infinite: true,
-          slidesToShow: 6,
-          slidesToScroll: 6
-     });
-    
-    // 이미지 슬라이드로 만들기 2
-     $('.card-md').slick({
-          dots: true,
-          infinite: false,
-          speed: 300,
-          slidesToShow: 4,
-          slidesToScroll: 4,
-          responsive: [
-            {
-              breakpoint: 1024,
-              settings: {
-                slidesToShow: 3,
-                slidesToScroll: 3,
-                infinite: true,
-                dots: true
-              }
-            },
-            {
-              breakpoint: 600,
-              settings: {
-                slidesToShow: 2,
-                slidesToScroll: 2
-              }
-            },
-            {
-              breakpoint: 480,
-              settings: {
-                slidesToShow: 1,
-                slidesToScroll: 1
-              }
+	 /* $("input#spinner").spinner( {
+         spin: function(event, ui) {
+            if(ui.value > 100) {
+               $(this).spinner("value", 100);
+               return false;
             }
-
-          ]
-        });
-     
-    // 슬라이드 버튼 CSS 적용하기 1       
-    $("button.slick-prev").html('<h4><</h4>');
-    $("button.slick-prev").css('color','#666');
-    $("button.slick-prev").eq(0).addClass("btn-first");
-    $("button.slick-prev").eq(1).addClass("btn-second");      
-    
-    // 슬라이드 버튼 CSS 적용하기 2       
-    $("button.slick-next").html('<h4>></h4>');
-    $("button.slick-next").css('color','#666');
-    $("button.slick-next").eq(0).addClass("btn-first");
-    $("button.slick-next").eq(1).addClass("btn-second");
-    
+            else if(ui.value < 1) {
+               $(this).spinner("value", 1);
+               return false;
+            }
+         }
+      } );// end of $("input#spinner").spinner({});----------------    
+       */
     
     
     
@@ -1521,19 +1104,7 @@ $(document).ready(function(){
 		});
 
 		
-		$("input#spinner").spinner( {
-	         spin: function(event, ui) {
-	            if(ui.value > 100) {
-	               $(this).spinner("value", 100);
-	               return false;
-	            }
-	            else if(ui.value < 1) {
-	               $(this).spinner("value", 1);
-	               return false;
-	            }
-	         }
-	      } );// end of $("input#spinner").spinner({});----------------    
-	      
+
 		
 		
 		// *** 장바구니 담기 ***//

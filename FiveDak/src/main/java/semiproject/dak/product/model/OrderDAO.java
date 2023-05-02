@@ -328,37 +328,56 @@ public class OrderDAO implements InterOrderDAO{
 		return odto;
 	}// END OF PUBLIC ORDERDTO GETORDERINFO(STRING ORDERID) THROWS SQLEXCEPTION {
 
-	// 주문 상세 정보에 주문한 제품 정보와 이미지 가져오기
+	
+	// 주문 상세 페이지 에서 ORDER_STATUS 변경한 경우
 	@Override
-	public ArrayList<Map<String, Object>> getOrderProdAndImage(String order_serial) throws SQLException {
-		ArrayList<Map<String,Object>> list = new ArrayList<>();
+	public int goEditStatus(Map<String, String> paraMap) throws SQLException {
+		int n = 0 ;
 		try {
 			conn = ds.getConnection();
 			
-			String sql = " SELECT   D.ORDER_DETAIL_PRODUCT_ID, P.PRODUCT_NAME , D.ORDER_QUANTITY , D.PRICE_PER_UNIT , P.PRODUCT_IMAGE_URL "
-					+ " FROM tbl_order_detail D "
-					+ " JOIN TBL_PRODUCT P  "
-					+ " ON D.ORDER_DETAIL_PRODUCT_ID = P.PRODUCT_ID "
-					+ " WHERE D.FK_ORDER_SERIAL = ?  " ;
+			String sql = " UPDATE tbl_order "
+					+ " SET ORDER_STATUS = ? "
+					+ " WHERE ORDER_SERIAL = ? ";
 			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("orderStatus"));
+			pstmt.setString(2, paraMap.get("order_serial"));
+			
+			n = pstmt.executeUpdate();
+			
+		}finally {
+			close();
+		}
+		return n;
+	}
+
+	// 주문 상세 페이지 에서 ORDER 를 삭제하는 경우 
+	@Override
+	public int goRemoveOrder(String order_serial) throws SQLException {
+		int n = 0 ;
+		try {
+			conn = ds.getConnection();
+			
+			String sql =  " DELETE FROM TBL_ORDER_DETAIL WHERE FK_ORDER_SERIAL = ?  ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, order_serial );
-			rs = pstmt.executeQuery();
 			
-			while( rs.next()) {
-				
-				
-				
-				
-			}
+			n = pstmt.executeUpdate();
+			
+			sql = " DELETE FROM TBL_ORDER WHERE ORDER_SERIAL = ?  ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, order_serial );
+			
+			n = pstmt.executeUpdate();
 			
 		}finally {
 			close();
 		}
 		
-		
-		return list;
+		return n;
 	}
 	
 	
