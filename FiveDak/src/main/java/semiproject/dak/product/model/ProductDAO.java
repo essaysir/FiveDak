@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import semiproject.dak.security.AES256;
@@ -406,7 +407,7 @@ public class ProductDAO implements InterProductDAO {
 		
 	}
 
-	public String generateOrderSerial() throws SQLException {
+	private String generateOrderSerial() throws SQLException {
 	    
 	    String orderNo = null;
 	    
@@ -423,7 +424,7 @@ public class ProductDAO implements InterProductDAO {
 	        int seqNo = rs.getInt(1);
 	        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	        String currentDate = sdf.format(new Date());
-	        orderNo = "RK" +currentDate + "-" + String.format("%06d", seqNo);
+	        orderNo = "DAK" +currentDate + "-" + String.format("%08d", seqNo);
 	      }
 	      
 	    } finally {
@@ -433,8 +434,9 @@ public class ProductDAO implements InterProductDAO {
 	    return orderNo;
 	  }
 
+	
 	@Override
-	public CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException {
+	public CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException {
 		List<CartDTO> cartlist = new ArrayList<>();
 	    int totalPrice = 0, totalDiscount = 0, shippingCost = 0, pointsEarned = 0, totalAmount= 0;
 	    CheckoutDTO checkout = null;
@@ -445,7 +447,7 @@ public class ProductDAO implements InterProductDAO {
 					+ "FROM tbl_cart c JOIN tbl_product p ON c.cart_product_id = p.product_id "
 					+ "JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
 					+ "WHERE CART_ID IN (" + String.join(",", Collections.nCopies(cartIds.length, "?")) + ")";
-
+	
 			pstmt = conn.prepareStatement(sql);
 			
 			for (int i = 0; i < cartIds.length; i++) {
@@ -477,10 +479,11 @@ public class ProductDAO implements InterProductDAO {
 				totalPrice += cart.getTotalProductPrice();
 				totalDiscount += cart.getTotalDiscount();
 				totalAmount += cart.getTotalAmount();
+				pointsEarned += cart.getPointsEarned(request);
 				
 				cartlist.add(cart);
 			}
-			if(totalAmount > 30000) {
+			if(totalAmount < 30000) {
 				shippingCost += 3000;
 			}
 			
@@ -790,6 +793,251 @@ public class ProductDAO implements InterProductDAO {
 		}
 	
 		return ndto ;
+	}
+	
+	
+
+	
+	@Override
+	public int insertOrderInfo(Map<String, Object> orderMap) throws SQLException {
+		
+		int n = 0;
+		String orderSerial = generateOrderSerial();
+		orderMap.put("orderSerial", orderSerial);
+		try {
+			conn = ds.getConnection();
+			conn.setAutoCommit(false);
+			insertOrderAndDetail(orderMap);
+			updatePointsAndHistory(orderMap);
+			updateMemberPurchaseAmountAndTier(orderMap);
+			updateProductSalesAndDeleteCart(orderMap);
+			
+			n = 1;
+			conn.commit();
+
+			
+			
+		} catch(SQLException e) {
+			conn.rollback();
+			e.printStackTrace();
+		} finally {
+			conn.setAutoCommit(true);
+			close();
+			
+		}
+		return n;
+		
+	}
+	
+	
+	
+	
+	// 멤버 구매 총액 추가하고 멤버 티어 변경하는 메소드
+	public void updateMemberPurchaseAmountAndTier(Map<String, Object> orderMap) throws SQLException {
+	    
+	    String memberId = ((OrderDTO)orderMap.get("orderinfo")).getFk_orderMbrId();
+		int purchaseAmount = ((OrderDTO)orderMap.get("orderinfo")).getOrderTotalPrice();
+		
+	    try {
+	        conn = ds.getConnection();
+	        conn.setAutoCommit(false);
+	        
+	        // 멤버 구매 총액 업데이트
+	        pstmt = conn.prepareStatement("UPDATE tbl_member SET member_purchase_amount = member_purchase_amount + ? WHERE member_id = ?");
+	        pstmt.setInt(1, purchaseAmount);
+	        pstmt.setString(2, memberId);
+	        int rowsUpdated = pstmt.executeUpdate();
+	        
+	        if (rowsUpdated != 1) {
+	            throw new SQLException("멤버 구매 총액 업데이트 실패");
+	        }
+	        
+	        // 추가된 구매 총액 바탕으로 해당하는 tier 확인
+	        pstmt = conn.prepareStatement("SELECT tier_id FROM membership_tier WHERE amount_needed <= (SELECT member_purchase_amount FROM tbl_member WHERE member_id = ?) ORDER BY amount_needed DESC FETCH FIRST 1 ROWS ONLY");
+	        pstmt.setString(1, memberId);
+	        rs = pstmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            int newTierId = rs.getInt("tier_id");
+	            
+	            // 멤버의 현재 tier_id 확인
+	            pstmt = conn.prepareStatement("SELECT member_tier_id FROM tbl_member WHERE member_id = ?");
+	            pstmt.setString(1, memberId);
+	            rs = pstmt.executeQuery();
+	            
+	            if (rs.next()) {
+	                int oldTierId = rs.getInt("member_tier_id");
+	                
+	                if (oldTierId != newTierId) {
+	                    // 멤버 티어 변경이 필요하다면 업데이트
+	                    pstmt = conn.prepareStatement("UPDATE tbl_member SET member_tier_id = ? WHERE member_id = ?");
+	                    pstmt.setInt(1, newTierId);
+	                    pstmt.setString(2, memberId);
+	                    rowsUpdated = pstmt.executeUpdate();
+	                    
+	                    if (rowsUpdated != 1) {
+	                        throw new SQLException("멤버 티어 업데이트 실패");
+	                    }
+	                }
+	            } else {
+	                throw new SQLException("멤버 현재 TIER 조회 실패");
+	            }
+	        } else {
+	            throw new SQLException("멤버의 변경된 금액 바탕으로 바뀔 Tier 조회 실패");
+	        }
+	        
+	        conn.commit();
+	    } catch (SQLException e) {
+	        if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+	
+	// 구매로 인한 테이블 변동 반영
+	public void updatePointsAndHistory(Map<String, Object> orderMap) throws SQLException {
+	    
+		String orderSerial = (String)orderMap.get("orderSerial");
+		
+		String memberId = ((OrderDTO)orderMap.get("orderinfo")).getFk_orderMbrId();
+		int usePoint = ((OrderDTO)orderMap.get("orderinfo")).getOrderPoint();
+		int earnedPoint = ((CheckoutDTO)orderMap.get("checkout")).getPointsEarned();
+		
+		try {
+	        
+	        // 멤버 테이블의 포인트 변경 + 변동전 포인트 받아오기
+	        int currentPoints = 0;
+	        pstmt = conn.prepareStatement("SELECT member_point FROM tbl_member WHERE member_id = ?");
+	        pstmt.setString(1, memberId);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            currentPoints = rs.getInt("member_point");
+	        }
+	        int newPoints = currentPoints + earnedPoint - usePoint;
+	        pstmt = conn.prepareStatement("UPDATE tbl_member SET member_point = ? WHERE member_id = ?");
+	        pstmt.setInt(1, newPoints);
+	        pstmt.setString(2, memberId);
+	        pstmt.executeUpdate();
+	        
+	        // 히스토리 테이블에 insert 사용 획득포인트가 발생한 경우만
+	        if (usePoint > 0) {
+	            pstmt = conn.prepareStatement("INSERT INTO MEMBER_POINT_HISTORY (point_member_id, point_before, point_change, point_after, point_reason, point_change_type) VALUES (?, ?, ?, ?, ?, 0)");
+	            pstmt.setString(1, memberId);
+	            pstmt.setInt(2, currentPoints);
+	            pstmt.setInt(3, usePoint);
+	            pstmt.setInt(4, newPoints);
+	            pstmt.setString(5, orderSerial + " | 구매시 사용으로 인한 차감");
+	            pstmt.executeUpdate();
+	        }
+	        if (earnedPoint > 0) {
+	            pstmt = conn.prepareStatement("INSERT INTO MEMBER_POINT_HISTORY (point_member_id, point_before, point_change, point_after, point_reason, point_change_type) VALUES (?, ?, ?, ?, ?, 1)");
+	            pstmt.setString(1, memberId);
+	            pstmt.setInt(2, newPoints - earnedPoint);
+	            pstmt.setInt(3, earnedPoint);
+	            pstmt.setInt(4, newPoints);
+	            pstmt.setString(5, orderSerial + " | 구매로 인한 적립");
+	            pstmt.executeUpdate();
+	        }
+	        
+	        conn.commit();
+	    } catch (SQLException e) {
+	        if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+	
+	public void updateProductSalesAndDeleteCart(Map<String, Object> orderMap) throws SQLException {
+
+	    try {
+	        // 맵에서 cartDTOList받아오기
+	        List<CartDTO> cartDtoList = ((CheckoutDTO) orderMap.get("checkout")).getCartDtoList();
+
+
+	        // for문으로 cartDtoList에 있는 데이터 바탕으로 테이블 변경, 삭제하기
+	        for (CartDTO cartDTO : cartDtoList) {
+	            int productId = cartDTO.getCart_product_id();
+	            int quantity = cartDTO.getCart_quantity();
+
+	            // 제품 재고, 판매량 변경
+	            String sqlUpdate = "UPDATE tbl_product SET product_stock = product_stock - ?, product_sales = product_sales + ? WHERE product_id = ?";
+	            pstmt = conn.prepareStatement(sqlUpdate);
+	            pstmt.setInt(1, quantity);
+	            pstmt.setInt(2, quantity);
+	            pstmt.setInt(3, productId);
+	            pstmt.executeUpdate();
+
+	            // 모든 처리가 끝난 cart 테이블에서 삭제.
+	            String sqlDelete = "DELETE FROM tbl_cart WHERE cart_id = ?";
+	            pstmt = conn.prepareStatement(sqlDelete);
+	            pstmt.setInt(1, cartDTO.getCart_id());
+	            pstmt.executeUpdate();
+	        }
+
+	    } catch (SQLException e) {
+	    	if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
+	}
+	
+	
+	public void insertOrderAndDetail(Map<String, Object> orderMap) throws SQLException {
+
+	    try {
+	        // 맵에서 cartDTOList받아오기
+	        List<CartDTO> cartDtoList = ((CheckoutDTO) orderMap.get("checkout")).getCartDtoList();
+	        OrderDTO orderinfo = (OrderDTO)orderMap.get("orderinfo");
+	        String orderSerial = (String)orderMap.get("orderSerial");
+	        String sql = "";
+	        
+	        sql = "insert into tbl_order(ORDER_SERIAL,ORDER_MEMBER_ID, ORDER_TOTAL_PRICE, ORDER_POINT, RECIPIENT_NAME, SHIPPING_POSTCODE, SHIPPING_ADDRESS, SHIPPING_DETAIL_ADDRESS,RECIPIENT_MOBILE, ORDER_MESSAGE, ORDER_STATUS)"
+	        		+ "VALUES(? , ? , ? , ? , ? , ?, ?, ?, ? , ? , 1)";
+	        pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, orderSerial);
+            pstmt.setString(2, orderinfo.getFk_orderMbrId());
+            pstmt.setInt(3, orderinfo.getOrderTotalPrice());
+            pstmt.setInt(4, orderinfo.getOrderPoint());
+            pstmt.setString(5, orderinfo.getRecipName());
+            pstmt.setString(6, orderinfo.getOrderPostcode());
+            pstmt.setString(7, orderinfo.getOrderAddress());
+            pstmt.setString(8, orderinfo.getOrderDetailAddress());
+            pstmt.setString(9, orderinfo.getRecipMobile());
+            pstmt.setString(10, orderinfo.getOrderMessage());
+            pstmt.executeUpdate();
+	        
+	        // for문으로 cartDtoList에 있는 데이터 바탕으로 order_detail 테이블에 insert하기
+	        for (CartDTO cartDTO : cartDtoList) {
+	            
+	        	int productId = cartDTO.getCart_product_id();
+	            int quantity = cartDTO.getCart_quantity();
+	            int pricePerUnit = cartDTO.getProd().getProdDiscount();
+	            
+
+	            // 제품 재고, 판매량 변경
+	            sql = "INSERT INTO TBL_ORDER_DETAIL(FK_ORDER_SERIAL, ORDER_DETAIL_PRODUCT_ID , ORDER_QUANTITY, PRICE_PER_UNIT, REVIEW_STATUS)"
+	            		+ "VALUES(? , ? , ? , ?, 0)";
+	            pstmt = conn.prepareStatement(sql);
+	            pstmt.setString(1, orderSerial);
+	            pstmt.setInt(2, productId);
+	            pstmt.setInt(3, quantity);
+	            pstmt.setInt(4, pricePerUnit);
+	            pstmt.executeUpdate();
+	        }
+
+	    } catch (SQLException e) {
+	    	if (conn != null) {
+	            conn.rollback();
+	        }
+	        throw e;
+	    }
 	}
 	
 	

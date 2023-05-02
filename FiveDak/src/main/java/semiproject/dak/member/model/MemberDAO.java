@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import semiproject.dak.security.AES256;
@@ -1059,6 +1060,57 @@ public class MemberDAO implements InterMemberDAO {
 		}
 		
 		return boardContents;
+	}
+
+	@Override
+	public void updateMemberSession(HttpSession session) throws SQLException {
+		
+		
+		try {
+			
+			conn = ds.getConnection(); 
+
+			MemberDTO loginuser = ((MemberDTO)session.getAttribute("loginuser"));
+			
+			String sql = " SELECT m.*, t1.*, t2.tier_name AS next_tier_name, t2.amount_needed AS next_tier_amount\r\n"
+					+ "FROM tbl_member m\r\n"
+					+ "INNER JOIN membership_tier t1 ON m.member_tier_id = t1.tier_id\r\n"
+					+ "LEFT JOIN membership_tier t2 ON t1.tier_id + 1 = t2.tier_id\r\n"
+					+ "WHERE m.member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, loginuser.getMbrId());
+			
+			rs = pstmt.executeQuery(); 
+			if(rs.next()) {
+				loginuser.setMbrMobile(aes.decrypt(rs.getString("MEMBER_MOBILE")));
+				loginuser.setMbrEmail(aes.decrypt(rs.getString("MEMBER_EMAIL")));
+				loginuser.setMbrPoint(rs.getInt("MEMBER_POINT"));
+				loginuser.setMbrGender(rs.getString("MEMBER_GENDER"));
+				loginuser.setMbrBirth(rs.getString("MEMBER_BIRTH"));
+				loginuser.setMbrPostcode(rs.getString("MEMBER_POSTCODE"));
+				loginuser.setMbrAddress(rs.getString("MEMBER_ADDRESS"));
+				loginuser.setMbrDetailAddress(rs.getString("MEMBER_DETAIL_ADDRESS"));
+				loginuser.setMbrPurchaseAmount(rs.getInt("MEMBER_PURCHASE_AMOUNT"));
+				MembershipTierDTO tierDTO = new MembershipTierDTO();
+				tierDTO.setTierId(rs.getInt("TIER_ID"));
+				tierDTO.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
+				tierDTO.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
+				tierDTO.setTierImage("TIER_IMAGE");
+				tierDTO.setNextTierName(rs.getString("NEXT_TIER_NAME"));
+				tierDTO.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
+				loginuser.setMbrTier(tierDTO);
+				session.setAttribute("loginuser", loginuser);
+
+			}
+					
+		} catch ( GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		
 	}
 
 

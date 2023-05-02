@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 
 public interface InterProductDAO {
@@ -29,8 +31,6 @@ public interface InterProductDAO {
 	int updateProductQty(Map<String, String> paraMap) throws SQLException;
 
 	int deleteUserCart(int[] cartIds) throws SQLException;
-
-	CheckoutDTO getCheckOutData(int[] cartIds) throws SQLException;
 	
 	//////////////////////////////////////////////////////////////////////////////////////
 	// ADMIN Page 에 제품 목록 가져오는 메소드 
@@ -58,9 +58,13 @@ public interface InterProductDAO {
 	// 제품 상세 정보에서 보여줄 영양소 가져오기 
 	NutritionDTO nutritionInfo(String prodNum) throws SQLException ;
 	
-	
-	
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////
+	
+	//결제 위한 체크아웃 데이터
+	CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException;
+	//최종 주문 완료시 테이블 insert 작업
+	int insertOrderInfo(Map<String, Object> orderMap) throws SQLException;;
+	
 
 }
