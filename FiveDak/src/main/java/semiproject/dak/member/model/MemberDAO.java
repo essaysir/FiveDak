@@ -175,7 +175,7 @@ public class MemberDAO implements InterMemberDAO {
 		MemberDTO mdto = null ;
 		try {
 			conn = ds.getConnection();
-			String sql = "SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
+			String sql = " SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
 					"		   MEMBER_POINT , MEMBER_GENDER , MEMBER_BIRTH , MEMBER_POSTCODE , MEMBER_ADDRESS , "+
 					"		   MEMBER_DETAIL_ADDRESS , MEMBER_TIER_ID , MEMBER_REG_DATE , pwdchangegap "+
 					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, TIER_NAME, AMOUNT_NEEDED, REWARD_PERCENTAGE, TIER_IMAGE "+
@@ -867,6 +867,33 @@ public class MemberDAO implements InterMemberDAO {
 		return MemberShowList;
 		
 		
+	}
+
+	// 암호변경하기
+	@Override
+	public int pwdUpdate(MemberDTO mdto) throws SQLException {
+		
+		int result = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " update tbl_member set MEMBER_PWD = ? "
+					   + " 		 , LAST_PWD_CHANGED = sysdate "
+					   + " where MEMBER_ID = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, Sha256.encrypt(mdto.getMbrPwd())); // 암호를 Sha256 알고리즘으로 단방향 암호화 시킨다.
+			pstmt.setString(2, mdto.getMbrId());
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+		return result;
 	}
 
 
