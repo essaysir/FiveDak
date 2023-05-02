@@ -35,7 +35,7 @@ public class OrderAction extends AbstractController {
 		
 		InterProductDAO dao = new ProductDAO();
 		
-		CheckoutDTO checkout = dao.getCheckOutData(cartIds);
+		CheckoutDTO checkout = dao.getCheckOutData(cartIds, request);
 		
 		request.setAttribute("checkout", checkout);
 		
