@@ -18,7 +18,7 @@ import semiproject.dak.member.model.MemberDTO;
 /**
  * Servlet Filter implementation class MyPageFilter
  */
-@WebFilter({"/mypage/*" , "/cart/*"})
+@WebFilter({"/mypage/*" , "/cart/*", "/order/*" })
 public class MyPageFilter extends HttpFilter implements Filter {
        
     /**

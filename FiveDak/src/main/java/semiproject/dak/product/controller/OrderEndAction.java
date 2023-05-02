@@ -24,6 +24,17 @@ public class OrderEndAction extends AbstractController {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		
+		String method = request.getMethod();
+		
+		if("GET".equalsIgnoreCase(method)) {
+			String msg = "비정상적인 접근입니다.";
+			String loc = "javascript:history.back()";
+			request.setAttribute("message", msg);
+			request.setAttribute("loc", loc);
+			super.setViewPage("/WEB-INF/views/msg.jsp");
+		}
+		
 		String dataList = request.getParameter("dataList");
 		System.out.println(dataList);
 		JSONObject jsonObject = new JSONObject(dataList);
