@@ -179,7 +179,8 @@ public class MemberDAO implements InterMemberDAO {
 			String sql = " SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
 					"		   MEMBER_POINT , MEMBER_GENDER , MEMBER_BIRTH , MEMBER_POSTCODE , MEMBER_ADDRESS , "+
 					"		   MEMBER_DETAIL_ADDRESS , MEMBER_TIER_ID , MEMBER_REG_DATE , pwdchangegap "+
-					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, TIER_NAME, AMOUNT_NEEDED, REWARD_PERCENTAGE, TIER_IMAGE "+
+					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, T.TIER_NAME, T.AMOUNT_NEEDED, T.REWARD_PERCENTAGE, T.TIER_IMAGE, "+
+					" T2.tier_name AS next_tier_name, T2.amount_needed AS next_tier_amount "+
 					" FROM  "+
 					" ( "+
 					" select MEMBER_NUM , MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_MOBILE, MEMBER_POSTCODE, MEMBER_ADDRESS, MEMBER_DETAIL_ADDRESS "+
@@ -194,7 +195,8 @@ public class MemberDAO implements InterMemberDAO {
 					" select trunc( months_between(sysdate, max(LOGIN_TIME)) , 0 ) AS lastlogin_time  "+
 					" from member_login_history  "+
 					" where LOGIN_MEMBER_ID = ? "+
-					" )H JOIN membership_tier T ON M.MEMBER_TIER_ID = T.TIER_ID ";
+					" )H JOIN membership_tier T ON M.MEMBER_TIER_ID = T.TIER_ID "+
+					" LEFT JOIN membership_tier T2 ON T.tier_id + 1 = T2.tier_id ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, loginMap.get("userid"));
@@ -227,6 +229,8 @@ public class MemberDAO implements InterMemberDAO {
 				mbrTier.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
 				mbrTier.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
 				mbrTier.setTierImage(rs.getString("TIER_IMAGE"));
+				mbrTier.setNextTierName(rs.getString("NEXT_TIER_NAME"));
+				mbrTier.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
 				mdto.setMbrTier(mbrTier);
 				
 				
@@ -1072,10 +1076,10 @@ public class MemberDAO implements InterMemberDAO {
 
 			MemberDTO loginuser = ((MemberDTO)session.getAttribute("loginuser"));
 			
-			String sql = " SELECT m.*, t1.*, t2.tier_name AS next_tier_name, t2.amount_needed AS next_tier_amount\r\n"
-					+ "FROM tbl_member m\r\n"
-					+ "INNER JOIN membership_tier t1 ON m.member_tier_id = t1.tier_id\r\n"
-					+ "LEFT JOIN membership_tier t2 ON t1.tier_id + 1 = t2.tier_id\r\n"
+			String sql = " SELECT m.*, t1.*, t2.tier_name AS next_tier_name, t2.amount_needed AS next_tier_amount "
+					+ "FROM tbl_member m "
+					+ "INNER JOIN membership_tier t1 ON m.member_tier_id = t1.tier_id "
+					+ "LEFT JOIN membership_tier t2 ON t1.tier_id + 1 = t2.tier_id "
 					+ "WHERE m.member_id = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
