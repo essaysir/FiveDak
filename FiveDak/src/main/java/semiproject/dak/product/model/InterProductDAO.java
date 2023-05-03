@@ -73,6 +73,13 @@ public interface InterProductDAO {
 	CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException;
 	//최종 주문 완료시 테이블 insert 작업
 	int insertOrderInfo(Map<String, Object> orderMap) throws SQLException;;
-	
+
+	List<OrderDetailDTO> getReviewable(Map<String, String> paraMap) throws SQLException;
+
+	List<OrderDetailDTO> getReviewed(Map<String, String> paraMap) throws SQLException;
+
+	int getTotalReviewable(String userid) throws SQLException;
+
+	int getTotalReviewed(String userid) throws SQLException;
 
 }

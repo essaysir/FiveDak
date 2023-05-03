@@ -103,7 +103,6 @@
 	     	   type:"post" , 
 	           async:true ,
 	           success:function(result){
-	        	   console.log(result);
 	               $("div.review_2").html(result);
 	            							
 	             },

@@ -29,6 +29,36 @@
     font-size: 15px;
 }
 
+.pagination > li > a
+{
+    background-color: white;
+    color: #ffba38;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination > .active > a
+{
+    color: white;
+    background-color: #ffba38 !Important;
+    border: solid 1px #ffba38 !Important;
+}
+
+.pagination > .active > a:hover
+{
+    background-color: #ffba38 !Important;
+    border: solid 1px #ffba38;
+}
+
+
 </style>
 
 
@@ -83,23 +113,23 @@
                  <c:if test="${requestScope.totalPage > 0}"> 
 					<ul class="pagination justify-content-center pagination-sm">
 				
-						<c:if test="${requestScope.currentPage != 1}"> <!-- 현재 선택된 페이지가 첫페이지가 아니라면 맨처음으로 가는 버튼을 나타내줌 -->
+						<c:if test="${requestScope.currentPage != 1}">
 						  <li class="page-item"><a class="page-link text-muted" href="javascript:void(0)" onclick="loadReviewableOrderDetail(1)">[맨처음]</a></li>
 						</c:if>
 						
-						<c:if test="${requestScope.startPage != 1}">   <!-- 현재 선택된 페이지 블록의 제일 왼쪽 인덱스가 1이 아니라면 이전 버튼을 나타내줌 -->
+						<c:if test="${requestScope.startPage != 1}">
 						  <li class="page-item"><a class="page-link text-muted" href="javascript:void(0)" onclick="loadReviewableOrderDetail(${startPage - 1})">[이전]</a></li>
-						</c:if>												<!-- 이전 버튼은 현재 페이지 블록의 제일 첫페이지의 이전 페이지임 ex 21이 startPage면 20페이지로 이동 -->
+						</c:if>
 						
-						<c:forEach begin="${requestScope.startPage}" end="${requestScope.endPage}" var="page">  <!-- 전달받은 startPage부터 endPage까지 숫자 페이지 버튼을 만들어줌 -->
-						  <li class="page-item ${requestScope.currerntPage == page ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" onclick="loadReviewableOrderDetail(${page})">${page}</a></li>
-						</c:forEach>			<!-- 만드려는 페이지가 현재페이지라면 class에 active속성을 부여함 -->
+						<c:forEach begin="${requestScope.startPage}" end="${requestScope.endPage}" var="page">
+						  <li class="page-item ${requestScope.currentPage == page ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" onclick="loadReviewableOrderDetail(${page})">${page}</a></li>
+						</c:forEach>
 						
-						<c:if test="${requestScope.endPage != requestScope.totalPage}"> <!-- 이전 페이지와 반대임, 마지막 페이지 블록이 아니라면 다음 페이지블록으로 가는 버튼 나타냄 -->
+						<c:if test="${requestScope.endPage != requestScope.totalPage}">
 						  <li class="page-item"><a class="page-link text-muted" href="javascript:void(0)" onclick="loadReviewableOrderDetail(${endPage + 1})" >[다음]</a></li>
 						</c:if>
 						
-						<c:if test="${requestScope.pageNo != requestScope.totalPage}"> <!-- 맨처음과 반대임 마지막 페이지가 아니라면 마지막으로 가는 버튼 나타냄 -->
+						<c:if test="${requestScope.currentPage != requestScope.totalPage}">
 						  <li class="page-item"><a class="page-link text-muted" href="javascript:void(0)" onclick="loadReviewableOrderDetail(${totalPage})">[마지막]</a></li>
 						</c:if>
 					</ul>

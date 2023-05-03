@@ -28,6 +28,36 @@
     font-size: 15px;
 }
 
+.pagination > li > a
+{
+    background-color: white;
+    color: #ffba38;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination > .active > a
+{
+    color: white;
+    background-color: #ffba38 !Important;
+    border: solid 1px #ffba38 !Important;
+}
+
+.pagination > .active > a:hover
+{
+    background-color: #ffba38 !Important;
+    border: solid 1px #ffba38;
+}
+
+
 </style>
 
 
@@ -99,7 +129,7 @@
 							  <li class="page-item"><a class="page-link text-muted" href="javascript:void(0)" onclick="loadReviewedOrderDetail(${endPage + 1})" >[다음]</a></li>
 							</c:if>
 							
-							<c:if test="${requestScope.pageNo != requestScope.totalPage}"> <!-- 맨처음과 반대임 마지막 페이지가 아니라면 마지막으로 가는 버튼 나타냄 -->
+							<c:if test="${requestScope.currentPage != requestScope.totalPage}"> <!-- 맨처음과 반대임 마지막 페이지가 아니라면 마지막으로 가는 버튼 나타냄 -->
 							  <li class="page-item"><a class="page-link text-muted" href="javascript:void(0)" onclick="loadReviewedOrderDetail(${totalPage})">[마지막]</a></li>
 							</c:if>
 						</ul>
