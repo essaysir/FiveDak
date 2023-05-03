@@ -64,7 +64,7 @@ public interface InterProductDAO {
 	// 제품 상세 정보에서 리뷰 총 페이지 구해오기 
 	int getTotalReviewPage(Map<String, String> paraMap)throws SQLException  ;
 
-	
+
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -79,5 +79,12 @@ public interface InterProductDAO {
 	// 제품 상세 페이지에서 장바구니 담기시 CART 에 INSERT 또는 업데이트 시 
 	int insertCartlist(Map<String, String> paraMap) throws SQLException ;
 	
+	List<OrderDetailDTO> getReviewable(Map<String, String> paraMap) throws SQLException;
+
+	List<OrderDetailDTO> getReviewed(Map<String, String> paraMap) throws SQLException;
+
+	int getTotalReviewable(String userid) throws SQLException;
+
+	int getTotalReviewed(String userid) throws SQLException;
 
 }

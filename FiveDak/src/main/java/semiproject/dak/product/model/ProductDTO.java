@@ -1,5 +1,6 @@
 package semiproject.dak.product.model;
 
+import semiproject.dak.member.model.MembershipTierDTO;
 
 public class ProductDTO {
 	private int prodNum ; // 제품번호
@@ -21,7 +22,6 @@ public class ProductDTO {
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
 	private ReviewDTO reviewDTO; // 
-	
 	
 	public ReviewDTO getReviewDTO() {
 		return reviewDTO;
@@ -183,7 +183,5 @@ public class ProductDTO {
 
 		return ( prodAvgRating *100 ) / 5 ;
 	}
-	
-		
 	
 }
