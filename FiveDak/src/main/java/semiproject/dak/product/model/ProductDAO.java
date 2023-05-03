@@ -29,6 +29,7 @@ public class ProductDAO implements InterProductDAO {
 	private ResultSet rs;
 	private AES256 aes;
 	
+	
 	public ProductDAO() {
 		try {
 			Context initContext = new InitialContext();
@@ -496,6 +497,8 @@ public class ProductDAO implements InterProductDAO {
 		return checkout;
 	}
 
+
+
 	// 총 제품의 개수을 알아오는 메소드 
 	@Override
 	public Map<String,Integer> getTotalNum(Map<String, String> paraMap) throws SQLException {
@@ -703,11 +706,7 @@ public class ProductDAO implements InterProductDAO {
 		return list;
 	}
 
-	@Override
-	public List<String> getCategoryList() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	//  특정 prodNum에 해당하는 PDTO 가져오는 메소드
 	@Override
@@ -1003,7 +1002,7 @@ public class ProductDAO implements InterProductDAO {
 	            pstmt.setString(1, memberId);
 	            pstmt.setInt(2, currentPoints);
 	            pstmt.setInt(3, usePoint);
-	            pstmt.setInt(4, newPoints);
+	            pstmt.setInt(4, currentPoints - usePoint);
 	            pstmt.setString(5, orderSerial + " | 구매시 사용으로 인한 차감");
 	            pstmt.executeUpdate();
 	        }
@@ -1119,6 +1118,406 @@ public class ProductDAO implements InterProductDAO {
 
 	
 	
+	
+	
+	@Override
+	public int addReview(Map<String, String> paraMap)  throws SQLException {
+		int n1 = 0, n2 = 0, n3 = 0;
+		int isSuccess = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			conn.setAutoCommit(false); // 수동커밋으로 바꾼다.
+			
+			String sql = " insert into tbl_review(review_member_id, review_product_id, review_score, review_content, order_serial, review_date)"
+					   + " values( ?, ?, ?, ?, ?, default) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
+			pstmt.setDouble(3, Double.parseDouble(paraMap.get("rating")) / 2.0 );
+			pstmt.setString(4, paraMap.get("contents"));
+			
+			pstmt.setString(5, paraMap.get("orderSerial"));
+			
+			n1 = pstmt.executeUpdate();
+		//	System.out.println("n1 : " +n1);
+			
+			if(n1 == 1) {
+				
+				sql = " update tbl_order_detail set review_status = 2 "
+					+ " where order_detail_product_id = ? and fk_order_serial = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")));
+				pstmt.setString(2, paraMap.get("orderSerial"));
+				
+				n2 = pstmt.executeUpdate();
+				
+			//	System.out.println("n2 : " +n2);
+			}
+			
+			if(n2 == 1) {
+				
+				sql = " UPDATE tbl_product"
+					+ "    SET average_rating = ("
+					+ "        SELECT ROUND(AVG(review_score), 1) "
+					+ "        FROM tbl_review "
+					+ "        WHERE review_product_id = ? "
+					+ "    )"
+					+ "    WHERE product_id = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")) );
+				pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
+				
+				n3 = pstmt.executeUpdate();
+			//	System.out.println("n3 : " +n3);
+			}
+			
+			
+			
+			if (n1 * n2 * n3 > 0) {
+				
+				conn.commit();
+				
+				conn.setAutoCommit(true);
+				
+				
+				isSuccess = 1;
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			
+			conn.rollback();
+			
+			conn.setAutoCommit(true);
+			
+			isSuccess = 0;
+		} 
+		
+		finally {
+			close();
+		}
+		
+		return isSuccess;
+	}
+
+
+	@Override
+	public List<String> getCategoryList() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+			
+	
+	@Override
+	public List<OrderDetailDTO> getReviewable(Map<String, String> paraMap) throws SQLException {
+		
+
+		List<OrderDetailDTO> orderDetails = new ArrayList<>();
+		int page = Integer.parseInt(paraMap.get("page"));
+		int pageSize = 5;
+		String userid = paraMap.get("userid");
+		
+		
+	    int offset = (page - 1) * pageSize;
+	    
+	    String sql = " SELECT p.product_name, p.product_id , p.product_image_url, b.brand_name, to_char(o.order_date,'yyyy-mm-dd') as order_date, o.order_serial, od.order_quantity, od.price_per_unit "
+	    		+ "FROM tbl_order_detail od "
+	    		+ "INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+	    		+ "INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+	    		+ "INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+	    		+ "WHERE od.review_status = 1 and o.order_member_id = ? "
+	    		+ "ORDER BY o.order_date DESC "
+	    		+ "OFFSET ? ROWS "
+	    		+ "FETCH NEXT ? ROWS ONLY";
+	    
+	    try {
+	    	conn = ds.getConnection();
+	    	pstmt = conn.prepareStatement(sql);
+	    	pstmt.setString(1, userid);
+	    	pstmt.setInt(2, offset);
+	    	pstmt.setInt(3, pageSize);
+	    	
+	    	rs = pstmt.executeQuery();
+	    	while(rs.next()) {
+	    		 OrderDetailDTO orderDetail = new OrderDetailDTO();
+	    		 ProductDTO product = new ProductDTO();
+	    		 product.setProdName(rs.getString("PRODUCT_NAME"));
+	    		 product.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+	    		 product.setProdNum(rs.getInt("PRODUCT_ID"));
+	    		 BrandDTO brand = new BrandDTO();
+	    		 brand.setBrandName(rs.getString("BRAND_NAME"));
+	    		 product.setBrandDTO(brand);
+	    		 orderDetail.setOrderDetailProd(product);
+	    		 orderDetail.setOrderedDate(rs.getString("ORDER_DATE"));
+	    		 orderDetail.setOrderSerial(rs.getString("ORDER_SERIAL"));
+	    		 orderDetail.setOrderQuantity(rs.getInt("ORDER_QUANTITY"));
+	    		 orderDetail.setPricePerUnit(rs.getInt("PRICE_PER_UNIT"));
+	    		 orderDetails.add(orderDetail);
+	    	}
+	    	
+	    	
+	    } finally {
+			close();
+		}
+	    
+	    return orderDetails;
+	}
+
+	@Override
+	public List<OrderDetailDTO> getReviewed(Map<String, String> paraMap) throws SQLException {
+		List<OrderDetailDTO> orderDetails = new ArrayList<>();
+		int page = Integer.parseInt(paraMap.get("page"));
+		int pageSize = 5;
+		String userid = paraMap.get("userid");
+		
+		
+	    int offset = (page - 1) * pageSize;
+	    
+	    String sql = " SELECT p.product_name, p.product_id , p.product_image_url, b.brand_name, o.order_serial, to_char(r.review_date,'yyyy-mm-dd') as review_date,  od.order_quantity, od.price_per_unit "
+	    		+ " FROM tbl_order_detail od "
+	    		+ " INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+	    		+ " INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+	    		+ " INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+	    		+ " INNER JOIN tbl_review r ON o.order_serial = r.order_serial AND p.product_id = r.review_product_id "
+	    		+ " WHERE od.review_status = 2 AND o.order_member_id = ?"
+	    		+ " ORDER BY r.review_date DESC "
+	    		+ " OFFSET ? ROWS "
+	    		+ " FETCH NEXT ? ROWS ONLY";
+	    
+	    try {
+	    	conn = ds.getConnection();
+	    	pstmt = conn.prepareStatement(sql);
+	    	pstmt.setString(1, userid);
+	    	pstmt.setInt(2, offset);
+	    	pstmt.setInt(3, pageSize);
+	    	
+	    	rs = pstmt.executeQuery();
+	    	while(rs.next()) {
+	    		 OrderDetailDTO orderDetail = new OrderDetailDTO();
+	    		 ProductDTO product = new ProductDTO();
+	    		 product.setProdName(rs.getString("PRODUCT_NAME"));
+	    		 product.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+	    		 product.setProdNum(rs.getInt("PRODUCT_ID"));
+	    		 BrandDTO brand = new BrandDTO();
+	    		 brand.setBrandName(rs.getString("BRAND_NAME"));
+	    		 product.setBrandDTO(brand);
+	    		 orderDetail.setOrderDetailProd(product);
+	    		 orderDetail.setReviewedDate(rs.getString("REVIEW_DATE"));
+	    		 orderDetail.setOrderSerial(rs.getString("ORDER_SERIAL"));
+	    		 orderDetail.setOrderQuantity(rs.getInt("ORDER_QUANTITY"));
+	    		 orderDetail.setPricePerUnit(rs.getInt("PRICE_PER_UNIT"));
+	    		 orderDetails.add(orderDetail);
+	    	}
+	    	
+	    	
+	    } finally {
+			close();
+		}
+	    
+	    return orderDetails;
+	}
+
+	@Override
+	public int getTotalReviewable(String userid) throws SQLException {
+		 
+			int totalOrder = 0;
+			
+		    String sql = " SELECT count(*) "
+		    		+ "FROM tbl_order_detail od "
+		    		+ "INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+		    		+ "INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+		    		+ "INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+		    		+ "WHERE od.review_status = 1 and o.order_member_id = ? ";
+
+		    
+		    try {
+		    	conn = ds.getConnection();
+		    	pstmt = conn.prepareStatement(sql);
+		    	pstmt.setString(1, userid);
+		    	
+		    	rs = pstmt.executeQuery();
+		    	if(rs.next()) {
+		    		totalOrder = rs.getInt(1);
+		    		
+		    		
+		    	}
+		    	
+		    	
+		    } finally {
+				close();
+			}
+		    
+		    return totalOrder;
+	}
+
+	@Override
+	public int getTotalReviewed(String userid) throws SQLException {
+		
+		int totalOrder = 0;
+		
+	    String sql = " SELECT count(*) "
+	    		+ " FROM tbl_order_detail od "
+	    		+ " INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+	    		+ " INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+	    		+ " INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+	    		+ " INNER JOIN tbl_review r ON o.order_serial = r.order_serial AND p.product_id = r.review_product_id "
+	    		+ " WHERE od.review_status = 2 AND o.order_member_id = ?";
+
+	    
+	    try {
+	    	conn = ds.getConnection();
+	    	pstmt = conn.prepareStatement(sql);
+	    	pstmt.setString(1, userid);
+	    	
+	    	rs = pstmt.executeQuery();
+	    	if(rs.next()) {
+	    		totalOrder = rs.getInt(1);
+	    		
+	    		
+	    	}
+	    	
+	    	
+	    } finally {
+			close();
+		}
+	    
+	    return totalOrder;
+	}
+
+	@Override
+	public OrderDTO ProductOrderDetail(Map<String, String> paraMap) throws SQLException {
+		OrderDTO odto = new OrderDTO();
+
+		try {
+			conn = ds.getConnection();
+		
+			String sql = " SELECT B.brand_name, O.order_serial, P.product_name, P.product_image_url, P.product_id "
+					   + " from tbl_product P JOIN tbl_order_detail D "
+					   + " on P.product_id = D.order_detail_product_id JOIN tbl_order O "
+					   + " on O.order_serial = D.fk_order_serial "
+					   + " JOIN tbl_brand B on B.brand_id = product_brand_id "
+					   + " where P.product_id = ? and O.order_serial = ? ";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("product_id"));
+			pstmt.setString(2, paraMap.get("order_serial"));
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ProductDTO pdto = new ProductDTO();
+				pdto.setProdName(rs.getString("product_name"));
+				pdto.setProdImage1(rs.getString("product_image_url"));
+				pdto.setProdNum(rs.getInt("product_id"));
+				BrandDTO bdto = new BrandDTO();
+				bdto.setBrandName(rs.getString("brand_name"));
+				pdto.setBrandDTO(bdto);
+				
+				odto.setOrderSerial((rs.getString("order_serial")));
+				odto.setProd(pdto);
+			}
+			
+			
+		}finally {
+			close();
+		}
+		return odto;
+	}
+	
+	
+	@Override
+	public int reviewDel(Map<String, String> paraMap) throws SQLException {
+		int n1 = 0, n2 = 0, n3 = 0;
+	    int isSuccess = 0;
+
+	    try {
+	        conn = ds.getConnection();
+
+	        conn.setAutoCommit(false); // 수동커밋으로 바꾼다.
+
+	        String sql = " DELETE FROM tbl_review "
+	                   + " WHERE review_member_id = ? and review_product_id = ? ";
+	                  
+
+	        pstmt = conn.prepareStatement(sql);
+	        
+	        pstmt.setString(1, paraMap.get("userid"));
+	        pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
+
+	        n1 = pstmt.executeUpdate();
+
+	   //     System.out.println("n1 :" +n1);
+	        
+	        if (n1 == 1) {
+
+	            sql = " UPDATE tbl_order_detail SET review_status = 1 "
+	                + " WHERE order_detail_product_id = ? "
+	                + " AND fk_order_serial = ? ";
+
+	            pstmt = conn.prepareStatement(sql);
+
+	            pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")));
+	            pstmt.setString(2, paraMap.get("orderSerial"));
+
+	            n2 = pstmt.executeUpdate();
+	        //    System.out.println("n2 :" +n2);
+	        }
+
+	        if (n2 == 1) {
+
+	            sql = " UPDATE tbl_product "
+	                + " SET average_rating = ("
+	                + "     SELECT ROUND(AVG(review_score), 1) "
+	                + "     FROM tbl_review "
+	                + "     WHERE review_product_id = ? "
+	                + " ) "
+	                + " WHERE product_id = ? "; 
+
+	            pstmt = conn.prepareStatement(sql);
+
+	            pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")));
+	            pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
+
+	            n3 = pstmt.executeUpdate();
+	      //      System.out.println("n3 :" +n3);
+	        }
+
+	        if (n1 * n2 * n3 > 0) {
+
+	            conn.commit();
+
+	            conn.setAutoCommit(true);
+
+	            isSuccess = 1;
+
+	        }
+
+	    } catch (SQLException e) {
+
+	        conn.rollback();
+
+	        conn.setAutoCommit(true);
+
+	        isSuccess = 0;
+	    }
+
+	    finally {
+	        close();
+	    }
+
+	    return isSuccess;
+	}
+	
+
 	
 }
 	

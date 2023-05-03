@@ -75,6 +75,9 @@
 	    vertical-align: baseline;
 	}
     
+    .tier-image {
+    	display: inline-block;
+    }
   </style>
 </head>
 
@@ -88,6 +91,7 @@
       <div class="col-md-6">
         <div class="card my-page-card">
           <div class="card-body">
+          	<img class="tier-image" src="<%=ctxPath%>/images/${sessionScope.loginuser.mbrTier.tierImage }">
             <h4 class="card-title"><span class="font-weight-bold">${sessionScope.loginuser.mbrName}</span>님 반갑습니다.</h4>
             <p class="card-text">${sessionScope.loginuser.mbrTier.tierName }</p>
             <c:if test="${not empty sessionScope.loginuser.mbrTier.nextTierName}">
@@ -102,7 +106,7 @@
         <div class="card my-page-card">
           <div class="card-body">
             <p class="card-title">주문/배송</p>
-            <p class="card-text font-weight-bold"><span class="h3">${requestScope.order_count}</span>건</p>
+            <p class="card-text font-weight-bold"><span class="h3">${sessionScope.loginuser.mbrOrderCount}</span>건</p>
           </div>
         </div>
       </div>
@@ -156,15 +160,17 @@
 	                <li class="check">
 	                    <a href="" class="menu">활동관리</a>
 	                    <ul class="menu-list">
+	                        <li class="check"><a class="list" href="">1:1문의</a></li>
+	                        <li class="check"><a class="list" href="<%= request.getContextPath() %>/mypage/productReview.dak">상품후기</a></li>
 	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNA.dak">1:1문의</a></li>
 	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNAAnswer.dak">1:1문의 답변</a></li>
-	                        <li class="check"><a class="list" href="">상품후기</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/reviewlist.dak">상품후기</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">회원정보관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">정보수정</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/infoedit.dak">정보수정</a></li>
 	                    </ul>
 	                </li>
 	            </ul>

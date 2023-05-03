@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 
-
 public interface InterProductDAO {
 	
 	// 검색했을 경우에 총 페이지를 알아오는 메소드 
@@ -64,7 +63,13 @@ public interface InterProductDAO {
 	// 제품 상세 정보에서 리뷰 총 페이지 구해오기 
 	int getTotalReviewPage(Map<String, String> paraMap)throws SQLException  ;
 
+	OrderDTO ProductOrderDetail(Map<String, String> paraMap) throws SQLException;
+	
 
+	
+	int addReview(Map<String, String> paraMap)  throws SQLException;
+
+	
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +78,15 @@ public interface InterProductDAO {
 	CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException;
 	//최종 주문 완료시 테이블 insert 작업
 	int insertOrderInfo(Map<String, Object> orderMap) throws SQLException;;
+
+	List<OrderDetailDTO> getReviewable(Map<String, String> paraMap) throws SQLException;
+
+	List<OrderDetailDTO> getReviewed(Map<String, String> paraMap) throws SQLException;
+
+	int getTotalReviewable(String userid) throws SQLException;
+
+	int getTotalReviewed(String userid) throws SQLException;
 	
+	int reviewDel(Map<String, String> paraMap) throws SQLException;
 
 }
