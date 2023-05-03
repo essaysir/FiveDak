@@ -47,41 +47,38 @@ public class MemberFilter extends HttpFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
 		
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpSession session = httpRequest.getSession(false);
-        MemberDTO mdto = (MemberDTO)session.getAttribute("loginuser");
-        OrderDTO odto = new OrderDTO();
-        
+		/*
+		 * HttpServletRequest httpRequest = (HttpServletRequest) request; HttpSession
+		 * session = httpRequest.getSession(false); MemberDTO mdto =
+		 * (MemberDTO)session.getAttribute("loginuser"); OrderDTO odto = new OrderDTO();
+		 * 
+		 * 
+		 * if (session == null || session.getAttribute("loginuser") == null) {
+		 * HttpServletResponse httpResponse = (HttpServletResponse) response;
+		 * httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.dak"); }
+		 * else {
+		 * 
+		 * odto.setFk_orderMbrId(mdto.getMbrId());
+		 * 
+		 * String Order_Member_count = odto.getFk_orderMbrId();
+		 * 
+		 * InterMemberDAO mdao = new MemberDAO();
+		 * 
+		 * try { int order_count = mdao.CountOrder(Order_Member_count);
+		 * request.setAttribute("order_count",order_count); } catch (SQLException e) {
+		 * // TODO Auto-generated catch block e.printStackTrace(); }
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * }
+		 */
 		
-        if (session == null || session.getAttribute("loginuser") == null) {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.dak");
-        } 
-        else {
-        	
-        	odto.setFk_orderMbrId(mdto.getMbrId());
-        	
-            String Order_Member_count = odto.getFk_orderMbrId();
-
-            InterMemberDAO  mdao = new MemberDAO();
-            
-            try {
-				int order_count = mdao.CountOrder(Order_Member_count);
-	            request.setAttribute("order_count",order_count);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            
-           
-            
-
-            	
-        	
-        	
-        	chain.doFilter(request, response);
-        }
-		
+        chain.doFilter(request, response);
 		
 	}
 
