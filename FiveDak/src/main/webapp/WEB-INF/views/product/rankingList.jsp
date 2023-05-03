@@ -153,10 +153,10 @@
 											"<span class='prod_number'style='margin-top:20px;'>"+item.rno+"</span>"+
 										"</div>"+
 										"<div id='div_img' class='col-md-1'style='margin-left:10px;display:inline;'>"+
-											"<a href='<%= ctxPath%>/product/productDetail.dak?product_id="+item.product_id+"'><img src='/FiveDak/images/"+item.product_image_url+"' style='height:90px'/></a>"+
+											"<a href='<%= ctxPath%>/product/productDetail.dak?prodNum="+item.product_id+"'><img src='/FiveDak/images/"+item.product_image_url+"' style='height:90px'/></a>"+
 										"</div>"+
 										"<div class='col-md-5' style='display:inline;  padding-left:50px;'>"+
-											"<a href='<%= ctxPath%>/product/productDetail.dak?product_id="+item.product_id+"' style='vertical-align: top; text-decoration: none; color:#333333;' >["+item.brand_name+"]"+item.product_name+" </a>"+
+											"<a href='<%= ctxPath%>/product/productDetail.dak?prodNum="+item.product_id+"' style='vertical-align: top; text-decoration: none; color:#333333;' >["+item.brand_name+"]"+item.product_name+" </a>"+
 											"<div style='margin-top:30px;'>"+
 												"<span><i class='fa-solid fa-star' style='color:#FF7E32;'></i>"+item.average_rating+"</span>"+
 											"</div>"+

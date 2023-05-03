@@ -35,8 +35,8 @@ public class ReviewWriteAction extends AbstractController {
 			contents = contents.replaceAll(">", "&gt;");
 			contents = contents.replaceAll("\r\n", "<br>");
 			
-			System.out.println("orderSerial : " +orderSerial);
-			System.out.println("product_id : " +product_id);
+			//System.out.println("orderSerial : " +orderSerial);
+			//System.out.println("product_id : " +product_id);
 			Map<String, String> paraMap = new HashMap<>();
 			
 			
