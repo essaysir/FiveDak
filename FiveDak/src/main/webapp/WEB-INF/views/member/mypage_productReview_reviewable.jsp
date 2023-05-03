@@ -110,7 +110,7 @@
                          <div style="margin-bottom: 15px;">
                                <span id="serial_num"style="color:#666666;">${od.orderSerial}</span>
                          </div>
-                         <a id="product_id"href='<%= ctxPath%>/product/productDetail.dak?product_id=${od.orderDetailProd.prodNum}' style="color:#333;" >[${od.orderDetailProd.brandDTO.brandName}] ${od.orderDetailProd.prodName }</a>
+                         <a id="product_id"href='<%= ctxPath%>/product/productDetail.dak?prodNum=${od.orderDetailProd.prodNum}' style="color:#333;" >[${od.orderDetailProd.brandDTO.brandName}] ${od.orderDetailProd.prodName }</a>
                     </div>
                     <div class="col-md-3 text-center"style="padding-top:30px; margin-left:25px">
                        <span style="color:#666666;font-size:13pt; ">&nbsp;&nbsp;${od.orderedDate }</span>

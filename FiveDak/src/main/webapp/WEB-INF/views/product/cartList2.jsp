@@ -566,7 +566,7 @@
 								</div>
 								
 								<div>
-								    <img class="prod-cart-img" src="${cart.prod.prodImage1 }">
+								    <img class="prod-cart-img" src="<%=ctxPath%>/images/${cart.prod.prodImage1 }">
 								</div>
 								
 								<div class="col-5 prod-info-description mr-4">
