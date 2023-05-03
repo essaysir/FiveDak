@@ -171,8 +171,6 @@ $(document).ready(function(){
 	
 
 	$("span.button_orange").click(function(){
-		const title = $("input#title").val();
-		const content = $("textarea#content").val();
 		
 		const frm = document.boardWriteFrm;
 		frm.action = "InformBoardWriteEnd.dak";
@@ -197,12 +195,12 @@ $(document).ready(function(){
 	                <div class="title">
 	                    <dl>
 	                        <dt>제목</dt>
-	                        <dd><input id="title" type="text" placeholder="제목 입력"></dd>
+	                        <dd><input name="title" type="text" placeholder="제목 입력"></dd>
 	                    </dl>
 	                </div>
 	
 	                <div class="cont">
-	                    <textarea id="content" placeholder="내용 입력"></textarea>
+	                    <textarea name="content" placeholder="내용 입력"></textarea>
 	                </div>
 	            </div>
 	            

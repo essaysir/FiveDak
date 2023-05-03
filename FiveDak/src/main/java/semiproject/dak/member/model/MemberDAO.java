@@ -456,7 +456,7 @@ public class MemberDAO implements InterMemberDAO {
 				sql += " and point_change_type = 0 ";
 			}
 
-			sql += " order by point_date desc, point_history_id desc "
+			sql += " order by point_date desc "
 			    + "  ) "
 			    + " WHERE rn BETWEEN ? AND ? ";
 				
@@ -1079,16 +1079,14 @@ public class MemberDAO implements InterMemberDAO {
 
 			MemberDTO loginuser = ((MemberDTO)session.getAttribute("loginuser"));
 			
-			String sql = " SELECT m.*, t1.*, t2.tier_name AS next_tier_name, t2.amount_needed AS next_tier_amount, c.ordercount "
+			String sql = " SELECT m.*, t1.*, t2.tier_name AS next_tier_name, t2.amount_needed AS next_tier_amount "
 					+ "FROM tbl_member m "
 					+ "INNER JOIN membership_tier t1 ON m.member_tier_id = t1.tier_id "
 					+ "LEFT JOIN membership_tier t2 ON t1.tier_id + 1 = t2.tier_id "
-					+ " CROSS JOIN (SELECT count(*) as ordercount FROM tbl_order where order_member_id = ?) c "
 					+ "WHERE m.member_id = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, loginuser.getMbrId());
-			pstmt.setString(2, loginuser.getMbrId());
 			
 			rs = pstmt.executeQuery(); 
 			if(rs.next()) {
@@ -1109,8 +1107,8 @@ public class MemberDAO implements InterMemberDAO {
 				tierDTO.setNextTierName(rs.getString("NEXT_TIER_NAME"));
 				tierDTO.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
 				loginuser.setMbrTier(tierDTO);
-				loginuser.setMbrOrderCount(rs.getInt("ORDERCOUNT"));
 				session.setAttribute("loginuser", loginuser);
+
 			}
 					
 		} catch ( GeneralSecurityException | UnsupportedEncodingException e) {

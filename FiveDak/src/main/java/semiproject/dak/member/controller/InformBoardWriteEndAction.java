@@ -33,7 +33,7 @@ public class InformBoardWriteEndAction extends AbstractController {
 			
 			
 			InterMemberDAO mdao = new MemberDAO();
-			String seq = String.valueOf((Integer.parseInt(mdao.getSeqNo()) + 1));
+			String seq = mdao.getSeqNo();
 			
 			System.out.println(seq);
 			System.out.println(title);
@@ -55,7 +55,7 @@ public class InformBoardWriteEndAction extends AbstractController {
 				request.setAttribute("loc", loc);
 
 				super.setRedirect(false);
-				super.setViewPage("/WEB-INF/msg.jsp");
+				super.setViewPage("/WEB-INF/views/msg.jsp");
 			}
 			else {
 				message = "공지사항 등록이 실패하였습니다.";
@@ -65,7 +65,7 @@ public class InformBoardWriteEndAction extends AbstractController {
 				request.setAttribute("loc", loc);
 
 				super.setRedirect(false);
-				super.setViewPage("/WEB-INF/msg.jsp");
+				super.setViewPage("/WEB-INF/views/msg.jsp");
 			}
 			
 		}
