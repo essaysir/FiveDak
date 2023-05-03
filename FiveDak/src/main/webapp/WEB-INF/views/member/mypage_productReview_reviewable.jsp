@@ -61,6 +61,20 @@
 
 </style>
 
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		
+	});
+	
+	function goReviewWrite(product_id, orderSerial) {
+	      
+      
+      location.href= "reviewWrite.dak?product_id="+product_id+"&order_serial="+orderSerial;
+	      
+	   }
+
+</script>
 
 <p style="margin: 20px 0px 15px 0px; font-size:14pt;">작성 가능한 후기  
                   <span style="color: #FF7E32;">${totalReviewable }건 </span>

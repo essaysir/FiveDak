@@ -60,7 +60,36 @@
 
 </style>
 
+<script type="text/javascript">
 
+	function goReviewDel(product_id, orderSerial) {
+		
+		if(confirm("정말로 삭제하겠습니까?")) {
+			
+			$.ajax({
+				url:"<%= request.getContextPath()%>/mypage/reviewDelete.dak",
+				type:"post",
+				data:{"product_id":product_id
+					 ,"orderSerial":orderSerial},
+			    dataType:"json",
+			    success:function(json) {
+			    	if(json.n == 1) {
+		                  alert("제품후기 삭제가 성공되었습니다.");
+		                  location.href = "<%= ctxPath%>/mypage/reviewlist.dak";
+		               }
+		               else {
+		                  alert("제품후기 삭제가 실패했습니다.");
+		               }
+			    },
+			    error: function(request, status, error){
+	                   alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	               }
+			});
+			
+		}
+	}
+
+</script>
                
                
                   <div class="review-head">
@@ -86,7 +115,6 @@
                             <p class="message">작성 가능한 후기가 없습니다.</p>
                        </div> 
                        </c:if>
-                       
                        <c:if test="${requestScope.totalReviewed > 0}"> 
                        <c:forEach var="od" items="${reviewed}">
                        <div class="card-body body_1 row-md-12">
@@ -102,13 +130,13 @@
                           <div class="col-md-3 text-center" style="padding-top:30px;">
                              <span style="color:#666666; font-size:13pt; margin-left:25px ">${od.reviewedDate }</span>
                           </div> 
+                          
                           <div class="col-md-1"style="padding:30px 0 0 0; margin-left:15px">
-                               <span class="span_review_expire"> 기간만료</span>
+                               <button class="btn_review_write" onclick="goReviewDel('${od.orderDetailProd.prodNum}','${od.orderSerial}')">리뷰삭제</button>
                           </div>   
                        </div>
                        </c:forEach>
                        </c:if>
-                       
                        <div class="pageBar">
                  	  <c:if test="${requestScope.totalPage > 0}"> 
 						<ul class="pagination justify-content-center pagination-sm">
