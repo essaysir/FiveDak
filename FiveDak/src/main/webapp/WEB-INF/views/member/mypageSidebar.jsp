@@ -75,6 +75,9 @@
 	    vertical-align: baseline;
 	}
     
+    .tier-image {
+    	display: inline-block;
+    }
   </style>
 </head>
 
@@ -88,6 +91,7 @@
       <div class="col-md-6">
         <div class="card my-page-card">
           <div class="card-body">
+          	<img class="tier-image" src="<%=ctxPath%>/images/${sessionScope.loginuser.mbrTier.tierImage }">
             <h4 class="card-title"><span class="font-weight-bold">${sessionScope.loginuser.mbrName}</span>님 반갑습니다.</h4>
             <p class="card-text">${sessionScope.loginuser.mbrTier.tierName }</p>
             <c:if test="${not empty sessionScope.loginuser.mbrTier.nextTierName}">
@@ -102,7 +106,7 @@
         <div class="card my-page-card">
           <div class="card-body">
             <p class="card-title">주문/배송</p>
-            <p class="card-text font-weight-bold"><span class="h3">${requestScope.order_count}</span>건</p>
+            <p class="card-text font-weight-bold"><span class="h3">${sessionScope.loginuser.mbrOrderCount}</span>건</p>
           </div>
         </div>
       </div>
