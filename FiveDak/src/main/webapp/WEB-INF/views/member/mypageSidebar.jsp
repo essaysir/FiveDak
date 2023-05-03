@@ -158,13 +158,13 @@
 	                    <ul class="menu-list">
 	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNA.dak">1:1문의</a></li>
 	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNAAnswer.dak">1:1문의 답변</a></li>
-	                        <li class="check"><a class="list" href="">상품후기</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/reviewlist.dak">상품후기</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">회원정보관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">정보수정</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/infoedit.dak">정보수정</a></li>
 	                    </ul>
 	                </li>
 	            </ul>
