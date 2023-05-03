@@ -262,7 +262,7 @@
 				    <a class="nav-link header-link" onclick=""><i class="fa-solid fa-user fa-2x"></i></a>
 				  </li>
 				  <li class="nav-item col-3">
-				    <a class="nav-link active header-link" href="#"><i class="fa-solid fa-cart-shopping fa-2x"  ></i></a>
+				    <a class="nav-link active header-link" href="<%= ctxPath %>/cart/cartlist.dak"><i class="fa-solid fa-cart-shopping fa-2x"  ></i></a>
 				  </li>
 				  <li class="nav-item col-3" style="left: 10px;">
 				    <a class="nav-link header-link" href="#"><i class="fa-solid fa-receipt fa-2x"></i></a>

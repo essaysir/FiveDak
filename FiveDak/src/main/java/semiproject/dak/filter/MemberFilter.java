@@ -1,6 +1,8 @@
 package semiproject.dak.filter;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -13,18 +15,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import semiproject.dak.member.model.InterMemberDAO;
+import semiproject.dak.member.model.MemberDAO;
 import semiproject.dak.member.model.MemberDTO;
+import semiproject.dak.product.model.OrderDTO;
 
 /**
- * Servlet Filter implementation class MyPageFilter
+ * Servlet Filter implementation class MemberFilter
  */
-@WebFilter({"/mypage/*" , "/cart/*", "/order/*" })
-public class MyPageFilter extends HttpFilter implements Filter {
+@WebFilter("/mypage/*")
+public class MemberFilter extends HttpFilter implements Filter {
        
     /**
      * @see HttpFilter#HttpFilter()
      */
-    public MyPageFilter() {
+    public MemberFilter() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,19 +45,44 @@ public class MyPageFilter extends HttpFilter implements Filter {
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		
+		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpSession session = httpRequest.getSession(false);
+        MemberDTO mdto = (MemberDTO)session.getAttribute("loginuser");
+        OrderDTO odto = new OrderDTO();
         
+		
         if (session == null || session.getAttribute("loginuser") == null) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.dak");
-        } else {
-            chain.doFilter(request, response);
+        } 
+        else {
+        	
+        	odto.setFk_orderMbrId(mdto.getMbrId());
+        	
+            String Order_Member_count = odto.getFk_orderMbrId();
+
+            InterMemberDAO  mdao = new MemberDAO();
+            
+            try {
+				int order_count = mdao.CountOrder(Order_Member_count);
+	            request.setAttribute("order_count",order_count);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+           
+            
+
+            	
+        	
+        	
+        	chain.doFilter(request, response);
         }
-        
-        
-        
-        
+		
+		
 	}
 
 	/**
