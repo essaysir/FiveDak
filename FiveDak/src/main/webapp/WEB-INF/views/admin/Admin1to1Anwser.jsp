@@ -8,7 +8,9 @@
 	String ctxPath = request.getContextPath();
 %> 
    
-<jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
+<jsp:include page="/WEB-INF/views/header-final.jsp"/>
+
+<jsp:include page="/WEB-INF/views/member/mypageSidebar_admin.jsp"/>
 
 
 <style type="text/css">
@@ -32,7 +34,7 @@
 			const qnatitle = $(e.target).parent().find("td#QUESTION_TITLE").text();
 			const qnacreated_at = $(e.target).parent().find("td#QUESTION_CREATED_AT").text();
 					$.ajax({
-					  url:"<%=ctxPath%>/mypage/1to1QNAAnswerDetail.dak",
+					  url:"<%=ctxPath%>/admin/1to1QNAAnswerDetail.dak",
 					  type:"POST",
 					  data:{"qnaId":qnaId,
 						     "qnauserid": qnauserid,
@@ -52,7 +54,9 @@
 	});
 </script>
 
-		 
+
+<div class="col-md-9">
+      <!-- 오른쪽에 들어갈 내용 -->		 
 <div>
 	
 	<h2 style="float:left;">1대1 문의 답변</h2>
