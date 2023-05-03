@@ -23,7 +23,7 @@ public interface InterProductDAO {
 	List<ProductDTO> selectByRank(Map<String, String> paraMap)   throws SQLException ;
 	
 	// Ajax(JSON)를 사용하여 상품목록을 "더보기" 방식으로 페이징 처리 해주기위해 전체개수 알아오기 
-	int totalCount();
+	int totalCount()    throws SQLException ;
 
 	
 	List<CartDTO> getCartList(String userid) throws SQLException;
@@ -50,7 +50,7 @@ public interface InterProductDAO {
 	List<ProductDTO> getOrderDetail(String order_serial) throws SQLException ;
 
 	// 카테고리 종류 모두 가져오는 메소드 
-	List<String> getCategoryList() throws SQLException ;
+	List<CategoryDTO> getCategoryList() throws SQLException ;
 
 	// 특정 prodNum에 해당하는 PDTO 가져오는 메소드
 	ProductDTO prodInfo(Map<String, String> paraMap) throws SQLException;

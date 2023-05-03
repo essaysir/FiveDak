@@ -704,9 +704,31 @@ public class ProductDAO implements InterProductDAO {
 	}
 
 	@Override
-	public List<String> getCategoryList() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<CategoryDTO> getCategoryList() throws SQLException {
+		List<CategoryDTO> cdtolist = new ArrayList<>();
+		try {
+			conn = ds.getConnection();
+			String sql = " select category_id , category_name from tbl_category ";
+					
+			pstmt = conn.prepareStatement(sql);
+	
+			rs = pstmt.executeQuery();
+			
+			while ( rs.next()) {
+				CategoryDTO cdto = new CategoryDTO() ;
+				cdto.setCateId(rs.getInt("category_id"));
+				cdto.setCateName(rs.getString("category_name"));
+				
+				cdtolist.add(cdto);
+			}
+			
+		}finally {
+			close();
+		}
+		
+	
+	
+		return cdtolist ; 
 	}
 
 	//  특정 prodNum에 해당하는 PDTO 가져오는 메소드
