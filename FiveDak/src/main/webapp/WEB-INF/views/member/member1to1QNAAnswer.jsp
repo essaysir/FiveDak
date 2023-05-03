@@ -14,9 +14,10 @@
 
 <style type="text/css">
 
-
-
-
+tr.Show1to1Detail:hover{
+	background-color: #dcdcdc;
+	cursor: pointer;
+}
 
 </style>
 

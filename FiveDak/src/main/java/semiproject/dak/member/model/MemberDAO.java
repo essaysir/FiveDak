@@ -1129,7 +1129,13 @@ public class MemberDAO implements InterMemberDAO {
 		try {
 			conn = ds.getConnection();
 			
-			String sql = " select notice_id.nextval from tbl_notice ";
+			String sql = " SELECT notice_id "
+					   + " FROM( "
+					   + "    SELECT "
+					   + "        notice_id "
+					   + "    FROM tbl_notice "
+					   + "    ORDER BY ROWNUM DESC "
+					   + " ) WHERE ROWNUM = 1 ";
 			
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -1152,14 +1158,13 @@ public class MemberDAO implements InterMemberDAO {
 		try {
 			conn = ds.getConnection(); 
 			
-			String sql = " insert into tbl_notice(notice_id, notice_title, notice_content) "
-					   + " values(?, ?, ?) ";
+			String sql = " insert into tbl_notice(notice_title, notice_content, NOTICE_CREATED_AT) "
+					   + " values(?, ?, TRUNC(SYSDATE)) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, paraMap.get("seq"));
-			pstmt.setString(2, paraMap.get("title"));
-			pstmt.setString(3, paraMap.get("content"));
+			pstmt.setString(1, paraMap.get("title"));
+			pstmt.setString(2, paraMap.get("content"));
 			
 			n = pstmt.executeUpdate();
 			
@@ -1279,7 +1284,7 @@ public class MemberDAO implements InterMemberDAO {
 				
 				String id = paraMap.get("id");
 				
-				if(id != "admin") {
+				if(!"admin".equalsIgnoreCase(id)) {
 					sql += " where QNA_MEMBER_ID = ? ";
 				}
 				
@@ -1287,7 +1292,7 @@ public class MemberDAO implements InterMemberDAO {
 				
 				pstmt.setString(1, "5");
 				
-				if(id != "admin") {
+				if(!"admin".equalsIgnoreCase(id)) {
 					pstmt.setString(2, id);
 				}
 				
@@ -1323,7 +1328,7 @@ public class MemberDAO implements InterMemberDAO {
 				
 				String id = paraMap.get("id");
 				
-				if(id != "admin") {
+				if(!"admin".equalsIgnoreCase(id)) {
 					sql += " where QNA_MEMBER_ID = ? ";
 				}
 				sql += "               order by QUESTION_CREATED_AT asc "
@@ -1335,7 +1340,7 @@ public class MemberDAO implements InterMemberDAO {
 				
 				int ShowPage = Integer.parseInt(paraMap.get("ShowPage"));	
 				
-				if(id != "admin") {
+				if(!"admin".equalsIgnoreCase(id)) {
 					pstmt.setString(1, id);
 					pstmt.setInt(2, (ShowPage * 5) - (5 - 1) );
 					pstmt.setInt(3, (ShowPage * 5) );
