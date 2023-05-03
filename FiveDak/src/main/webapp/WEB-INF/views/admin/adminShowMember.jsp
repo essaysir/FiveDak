@@ -24,13 +24,7 @@
 		
 		// *** 특정 회원을 클릭하면 그 회원의 상세정보를 보여주도록 한다. *** //
 		$("tr.ShowMemberDetail").click((e) => {
-			
-			// 알아와야 할 ID 구해오기
-			//alert($(e.target).parent().find(".userid").text());    // e.target 은 tr 부분이 아닌 tr 안에 있는 td 부분을 말한다.
-																   // parent() 를 붙이면 부모 를 나타냄 
-			   													   // find(."userid") 는 userid 클래스를 찾는다.
-																   // text() 는 그 사람의 아이디값을 나타낼 수 있다.
-			   
+
 			const MemberId = $(e.target).parent().find("span#ShowMemberID2").text();
 			location.href = "<%=ctxPath%>/admin/adminShowMemberDetail.dak?MemberId="+MemberId;
 			// 절대 경로    														

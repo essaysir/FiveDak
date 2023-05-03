@@ -1,5 +1,6 @@
 package semiproject.dak.product.model;
 
+import semiproject.dak.member.model.MembershipTierDTO;
 
 public class ProductDTO {
 	private int prodNum ; // 제품번호
@@ -190,6 +191,9 @@ public class ProductDTO {
 		return 100 - (prodDiscount * 100)/prodPrice;
 	}
 	
-		
+	public double getAveragePercent() {
+
+		return ( prodAvgRating *100 ) / 5 ;
+	}
 	
 }
