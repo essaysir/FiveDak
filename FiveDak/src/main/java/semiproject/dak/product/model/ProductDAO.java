@@ -113,7 +113,7 @@ public class ProductDAO implements InterProductDAO {
 							" ON P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "+
 							" JOIN tbl_brand B  "+
 							" ON P.PRODUCT_BRAND_ID = B.brand_id "+
-							" WHERE P.PRODUCT_NAME like '%' || ? || '%' "+
+							" WHERE P.PRODUCT_NAME like '%' || ? || '%'  or C.CATEGORY_NAME like '%' || ? || '%' or B.BRAND_NAME like '%' || ? || '%' "+
 							" )V "+
 							" WHERE RNO BETWEEN ?  AND ?  "
 							+  "ORDER BY RNO ASC ";
@@ -127,8 +127,11 @@ public class ProductDAO implements InterProductDAO {
 			
 			// pstmt.setString(1, paraMap.get("orderBy"));
 			pstmt.setString(1, paraMap.get("searchWord"));
-			pstmt.setInt(2, (sizePerPage*currentShowPageNo)-(sizePerPage-1));
-			pstmt.setInt(3, sizePerPage*currentShowPageNo);
+			pstmt.setString(2, paraMap.get("searchWord"));
+			pstmt.setString(3, paraMap.get("searchWord"));
+			
+			pstmt.setInt(4, (sizePerPage*currentShowPageNo)-(sizePerPage-1));
+			pstmt.setInt(5, sizePerPage*currentShowPageNo);
 			
 			rs = pstmt.executeQuery();
 			
@@ -1603,6 +1606,36 @@ public class ProductDAO implements InterProductDAO {
 	    }
 
 	    return isSuccess;
+	}
+
+	// 제품 등록 해주기 
+	@Override
+	public int insertProduct(ProductDTO pdto) throws SQLException {
+		int n = 0 ;
+		 	try {
+			conn = ds.getConnection();
+			
+			
+	        String sql = " Insert into tbl_product ( PRODUCT_NAME , PRODUCT_CATEGORY_ID , PRODUCT_BRAND_ID , PRODUCT_PRICE  "
+	        		+    " ,  PRODUCT_SALES , PRODUCT_DISCOUNT , AVERAGE_RATING , PRODUCT_IMAGE_URL )  "
+	                   + " values ( ? , ? , ? , ? , ? , ?  , ?  , ? ) ";
+	                   
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, pdto.getProdNum() );
+	        pstmt.setInt(2, pdto.getFk_prodCateNum());
+	        pstmt.setInt(3, pdto.getFk_prodBrandNum());
+	        pstmt.setInt(4, pdto.getProdPrice());
+	        pstmt.setInt(5, 0 );
+	        pstmt.setInt(6, pdto.getProdDiscount());
+	        pstmt.setInt(7, 0 );
+	        pstmt.setString(8, pdto.getProdImage1());
+	        
+	        n = pstmt.executeUpdate();
+	        
+		 	}finally {
+		 		close();
+		 	}
+		return n ;
 	}
 	
 

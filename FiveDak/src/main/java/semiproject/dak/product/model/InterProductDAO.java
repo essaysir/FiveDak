@@ -94,4 +94,7 @@ public interface InterProductDAO {
 	
 	int reviewDel(Map<String, String> paraMap) throws SQLException;
 
+	// 제품 등록하는 메소드 
+	int insertProduct(ProductDTO pdto) throws SQLException;
+
 }

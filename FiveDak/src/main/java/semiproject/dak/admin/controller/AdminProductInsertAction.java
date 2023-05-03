@@ -1,6 +1,6 @@
 package semiproject.dak.admin.controller;
 
-import java.io.IOException;
+import java.io.IOException;import java.security.ProtectionDomain;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -12,9 +12,11 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import semiproject.dak.common.controller.AbstractController;
+import semiproject.dak.product.model.BrandDTO;
 import semiproject.dak.product.model.CategoryDTO;
 import semiproject.dak.product.model.InterProductDAO;
 import semiproject.dak.product.model.ProductDAO;
+import semiproject.dak.product.model.ProductDTO;
 
 public class AdminProductInsertAction extends AbstractController {
 
@@ -51,6 +53,9 @@ public class AdminProductInsertAction extends AbstractController {
 			  }
 			
 			String prodName = mtrequest.getParameter("prodName") ;
+			prodName = prodName.replaceAll("<", "&lt;");
+			prodName = prodName.replaceAll(">","&gt;");
+			
 			String cateId = mtrequest.getParameter("cateId");
 			String brandName = mtrequest.getParameter("brandName");
 			String prodStock = mtrequest.getParameter("prodStock");
@@ -59,6 +64,21 @@ public class AdminProductInsertAction extends AbstractController {
 			
 			String pimage1 = mtrequest.getFilesystemName("pimage1");
 			
+			
+			ProductDTO pdto = new ProductDTO();
+			pdto.setProdName(prodName);
+			pdto.setFk_prodCateNum(Integer.parseInt(cateId));
+			pdto.setProdStock(Integer.parseInt(prodStock));
+			pdto.setProdPrice(Integer.parseInt(prodPrice));
+			pdto.setProdSales(Integer.parseInt(prodSales));
+			BrandDTO bdto = new BrandDTO();
+			bdto.setBrandName(brandName);
+			pdto.setBrandDTO(bdto);
+			
+			
+			InterProductDAO pdao = new ProductDAO();
+			
+			int n = pdao.insertProduct(pdto);
 			
 			
 			
