@@ -6,13 +6,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import semiproject.dak.common.controller.AbstractController;
-import semiproject.dak.member.model.MemberDTO;
 import semiproject.dak.product.model.InterOrderDAO;
 import semiproject.dak.product.model.OrderDAO;
 import semiproject.dak.product.model.OrderDTO;
@@ -50,7 +48,7 @@ public class AdminShowOrderAction extends AbstractController {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("order_id", odto.getOrderId());
 				jsonObj.put("order_member_id", odto.getFk_orderMbrId());
-				jsonObj.put("order_serial", odto.getOrder_serial());
+				jsonObj.put("order_serial", odto.getOrderSerial());
 				jsonObj.put("order_total_price", odto.getOrderTotalPrice());
 				jsonObj.put("shipping_address", odto.getOrderAddress());
 				jsonObj.put("tracking_number", odto.getOrderTrackNo());

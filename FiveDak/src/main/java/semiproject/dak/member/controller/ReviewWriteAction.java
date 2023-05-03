@@ -11,8 +11,6 @@ import semiproject.dak.member.model.MemberDTO;
 import semiproject.dak.product.model.InterProductDAO;
 import semiproject.dak.product.model.OrderDTO;
 import semiproject.dak.product.model.ProductDAO;
-import semiproject.dak.product.model.ProductDTO;
-import semiproject.dak.product.model.ReviewDTO;
 
 public class ReviewWriteAction extends AbstractController {
 
@@ -28,7 +26,7 @@ public class ReviewWriteAction extends AbstractController {
 			HttpSession session = request.getSession();
 			MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
 			
-			String order_serial = request.getParameter("order_serial");
+			String orderSerial = request.getParameter("orderSerial");
 			String product_id = request.getParameter("product_id");
 			String userid = loginuser.getMbrId();
 			String rating = request.getParameter("rating");
@@ -37,11 +35,13 @@ public class ReviewWriteAction extends AbstractController {
 			contents = contents.replaceAll(">", "&gt;");
 			contents = contents.replaceAll("\r\n", "<br>");
 			
+			System.out.println("orderSerial : " +orderSerial);
+			System.out.println("product_id : " +product_id);
 			Map<String, String> paraMap = new HashMap<>();
 			
 			
 			
-			paraMap.put("order_serial", order_serial);
+			paraMap.put("orderSerial", orderSerial);
 			paraMap.put("product_id", product_id);
 			paraMap.put("userid", userid);
 			paraMap.put("rating", rating);
@@ -66,6 +66,7 @@ public class ReviewWriteAction extends AbstractController {
 			String product_id = request.getParameter("product_id");
 			String order_serial = request.getParameter("order_serial");
 			
+		
 			
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("product_id", product_id);

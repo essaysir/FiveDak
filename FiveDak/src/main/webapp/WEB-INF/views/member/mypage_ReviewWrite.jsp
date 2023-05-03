@@ -211,6 +211,7 @@ div > ul > li {
 			if ($(this).val() == "10") {
 				$("span#star_content").html("5점 최고에요");
 			}
+			$("input#insertvalue").val($(this).val());
 		});
 	}	
 	
@@ -235,13 +236,18 @@ div > ul > li {
 	
 	
 	 function goRegister(){
+	 
+     if ( $("input[name='insertvalue']").val() == "") {
+    	 alert("제품 평균별점을 선택해주세요");
+     }		 
+     else{
 		 
 	 const frm = document.reviewRegister
 	 frm.action = "<%= ctxPath%>/mypage/reviewWrite.dak";
 	 frm.method = "post";
 	 frm.submit();
 	 }
-		
+ }	
 
 
 </script>
@@ -275,6 +281,7 @@ div > ul > li {
                     <input type="radio" id="rating2" name="rating" value="2"><label for="rating2" title="1점"></label>
                     <input type="radio" id="rating1" name="rating" value="1"><label class="half" for="rating1" title="0.5점"></label>
                 </fieldset>
+                <input type="hidden" name="insertvalue" id="insertvalue" value="" />
 			</div>
 				<div style="text-align: center; margin-bottom: 30px;">
                 	<span id=star_content></span>
