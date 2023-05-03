@@ -72,7 +72,12 @@ public interface InterProductDAO {
 	//결제 위한 체크아웃 데이터
 	CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException;
 	//최종 주문 완료시 테이블 insert 작업
-	int insertOrderInfo(Map<String, Object> orderMap) throws SQLException;;
+	int insertOrderInfo(Map<String, Object> orderMap) throws SQLException;
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	
+	// 제품 상세 페이지에서 장바구니 담기시 CART 에 INSERT 또는 업데이트 시 
+	int insertCartlist(Map<String, String> paraMap) throws SQLException ;
 	
 
 }

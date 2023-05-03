@@ -1114,6 +1114,72 @@ public class ProductDAO implements InterProductDAO {
 	        throw e;
 	    }
 	}
+
+	// 제품 상세 페이지에서 장바구니 담기시 CART 에 INSERT 또는 업데이트 시 
+	@Override
+	public int insertCartlist(Map<String, String> paraMap) throws SQLException {
+		int n1 = 0 , n2 = 0 ;
+		int cartId = 0;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT COUNT(*) FROM TBL_CART  "
+					+ " WHERE CART_PRODUCT_ID = ? AND CART_MEMBER_ID = ? " ;
+	
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("prodNum") );
+			pstmt.setString(2, paraMap.get("userid") );
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			n1 = rs.getInt(1);
+			
+			if ( n1 == 1 ) {
+				sql = " update tbl_cart set cart_quantity = ?  , cart_insert_time = sysdate "
+					+ " WHERE CART_PRODUCT_ID = ? AND CART_MEMBER_ID = ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, paraMap.get("oqty"));
+				pstmt.setString(2, paraMap.get("prodNum"));
+				pstmt.setString(3, paraMap.get("userid"));
+				
+				n2 = pstmt.executeUpdate();
+				
+				
+			}
+			else {
+				sql = " INSERT INTO TBL_CART ( cart_member_id , cart_product_id , cart_quantity , cart_insert_time ) "
+						+ " VALUES ( ? , ? , ? , default ) " ;
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, paraMap.get("userid"));
+				pstmt.setInt(2, Integer.parseInt(paraMap.get("prodNum")));
+				pstmt.setInt(3, Integer.parseInt(paraMap.get("oqty")));
+				
+				n2 = pstmt.executeUpdate();
+			}
+			
+			if ( n2 == 1) {
+				sql =     " SELECT CART_ID FROM TBL_CART  "
+						+ " WHERE CART_PRODUCT_ID = ? AND CART_MEMBER_ID = ? " ;
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, Integer.parseInt(paraMap.get("prodNum"))) ;
+				pstmt.setString(2, paraMap.get("userid"));
+				
+				rs = pstmt.executeQuery();
+				if ( rs.next() ) {
+					cartId = rs.getInt(1);
+				}
+			}
+		}finally {
+			close();
+		}
+		
+		return cartId ;
+	
+	
+	}
 	
 	
 
