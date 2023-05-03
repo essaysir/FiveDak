@@ -1130,16 +1130,17 @@ public class ProductDAO implements InterProductDAO {
 			
 			conn.setAutoCommit(false); // 수동커밋으로 바꾼다.
 			
-			String sql = " insert into tbl_review(review_member_id, review_product_id, review_score, review_content, order_serial, review_date)"
-					   + " values( ?, ?, ?, ?, ?, default) ";
+			String sql = " insert into tbl_review(review_member_id, review_product_id, review_score, review_content, order_serial, rimage, rimage1, review_date)"
+					   + " values( ?, ?, ?, ?, ?, ?, ?, default) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, paraMap.get("userid"));
 			pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
 			pstmt.setDouble(3, Double.parseDouble(paraMap.get("rating")) / 2.0 );
 			pstmt.setString(4, paraMap.get("contents"));
-			
 			pstmt.setString(5, paraMap.get("orderSerial"));
+			pstmt.setString(6, paraMap.get("rimage"));
+			pstmt.setString(7, paraMap.get("rimage"));
 			
 			n1 = pstmt.executeUpdate();
 		//	System.out.println("n1 : " +n1);
@@ -1156,7 +1157,7 @@ public class ProductDAO implements InterProductDAO {
 				
 				n2 = pstmt.executeUpdate();
 				
-			//	System.out.println("n2 : " +n2);
+		//		System.out.println("n2 : " +n2);
 			}
 			
 			if(n2 == 1) {
@@ -1175,7 +1176,7 @@ public class ProductDAO implements InterProductDAO {
 				pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
 				
 				n3 = pstmt.executeUpdate();
-			//	System.out.println("n3 : " +n3);
+		//		System.out.println("n3 : " +n3);
 			}
 			
 			

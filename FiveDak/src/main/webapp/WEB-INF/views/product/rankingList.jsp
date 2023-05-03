@@ -169,7 +169,7 @@
 										"</div>"+
 										"<div class='col-md-2 text-right' style='margin-top:30px;'>"+
 											"<ul style='list-style-type: none; margin-right: 30px;'>"+
-												"<li><a href='#'><i class='fa-solid fa-cart-shopping cart_icon'></i></a> &nbsp;|&nbsp; <a href='#'><i class='fa-regular fa-heart'></i></a></li>"+
+												"<li><a href='goCart()'><i class='fa-solid fa-cart-shopping cart_icon'></i></a> &nbsp;|&nbsp; <a href='#'><i class='fa-regular fa-heart'></i></a></li>"+
 											"</ul>"+
 										"</div>"+
 									"</li>"+				
@@ -199,6 +199,54 @@
             }
 		});					        
 	}// end of function displayHIT() -----------------------------------------------------------
+	
+	function goCart(){
+	       // === 주문량에 대한 유효성 검사하기 === //
+	         var frm = document.cartOrderFrm;
+	         var regExp = /^[0-9]+$/;  // 숫자만 체크하는 정규표현식
+	         var oqty = frm.oqty.value;
+	         var bool = regExp.test(oqty);
+	         
+	         if(!bool) {
+	            // 숫자 이외의 값이 들어온 경우 
+	            alert("주문갯수는 1개 이상이어야 합니다.");
+	            frm.oqty.value = "1";
+	            frm.oqty.focus();
+	            return; // 종료 
+	         }
+	         
+	         // 문자형태로 숫자로만 들어온 경우
+	         oqty = parseInt(oqty);
+	         if(oqty < 1) {
+	            alert("주문갯수는 1개 이상이어야 합니다.");
+	            frm.oqty.value = "1";
+	            frm.oqty.focus();
+	            return; // 종료 
+	         }
+	         
+	          $.ajax({
+	            url:"<%=request.getContextPath() %>/product/insertCart.dak",
+	            data:{ "oqty":oqty 
+	               , "prodNum":'${requestScope.pdto.prodNum}'
+	               } ,
+	            type:"POST",
+	            async:false ,
+	            dataType:"json",
+	            success:function(json) {
+	               if ( json.result == "true" ){
+	                  alert("장바구니에 제품이 추가되셨습니다.");
+	               }
+	               else {
+	                  alert("오류가 발생했습니다.");
+	               }
+	               
+	            },
+	               error: function(request, status, error){
+	                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	               }
+	          
+	          
+	          }); // end of $.ajax 
 	
 
 </script>
