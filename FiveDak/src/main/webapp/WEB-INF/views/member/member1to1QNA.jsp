@@ -7,8 +7,6 @@
 	String ctxPath = request.getContextPath();
 %> 
     
-<jsp:include page="/WEB-INF/views/header-final.jsp"/>
-
 <jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
 
 
