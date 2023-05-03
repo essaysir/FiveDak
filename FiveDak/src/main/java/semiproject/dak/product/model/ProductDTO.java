@@ -1,6 +1,5 @@
 package semiproject.dak.product.model;
 
-import semiproject.dak.member.model.MembershipTierDTO;
 
 public class ProductDTO {
 	private int prodNum ; // 제품번호
@@ -27,10 +26,9 @@ public class ProductDTO {
 
 	private ReviewDTO reviewDTO;
 
-	
 
 
-	
+
 	public ReviewDTO getReviewDTO() {
 		return reviewDTO;
 	}
@@ -168,6 +166,7 @@ public class ProductDTO {
 	}
 
 
+	
 
 	public int getOrderNo() {
 		return orderNo;
