@@ -68,10 +68,10 @@
 	});
 
 	
-	function goReviewWrite(product_id, order_serial) {
+	function goReviewWrite(product_id, orderSerial) {
 		
 		
-		location.href= "reviewWrite.dak?product_id="+product_id+"&order_serial="+order_serial;
+		location.href= "reviewWrite.dak?product_id="+product_id+"&orderSerial="+orderSerial;
 		
 	}
 	
@@ -106,7 +106,7 @@
 					  	  </div>	
 						  <div class="contents col-md-5" style="padding: 5px 0 10px 0px;">
 						  	  <div style="margin-bottom: 15px;">
-						  	  		<span id="serial_num"style="color:#666666;">${ord.order_serial}</span>
+						  	  		<span id="serial_num"style="color:#666666;">${ord.orderSerial}</span>
 						  	  </div>
 						  	  <a id="product_id"href='<%= ctxPath%>/product/productDetail.dak?product_id=${ord.prod.prodNum}' style="color:#333;" >[${ord.prod.brandDTO.brandName}]${ord.prod.prodName}</a>
 						  </div>
@@ -114,7 +114,7 @@
 							  <span style="color:#666666;font-size:13pt; ">&nbsp;&nbsp;${ord.orderDate}</span>
 						  </div> 
 						  <div class="col-md-1"style="padding:30px 0 0 0; margin-left:15px">
-						  	  <button type="button" id="btnCommentOK" class="btn_review_write" onclick="goReviewWrite('${ord.prod.prodNum}','${ord.order_serial}')"><i class="fa-solid fa-pen"></i> 후기작성</button>
+						  	  <button type="button" id="btnCommentOK" class="btn_review_write" onclick="goReviewWrite('${ord.prod.prodNum}','${ord.orderSerial}')"><i class="fa-solid fa-pen"></i> 후기작성</button>
 						  </div>   
 					  </div>
 					</div>
@@ -153,7 +153,7 @@
 							  	  </div>	
 								  <div class="contents col-md-5" style="padding: 5px 0 10px 10px;">
 								  	  <div style="margin-bottom: 15px;">
-								  	  		<span style="color:#666666;">${ord.order_serial}</span>
+								  	  		<span style="color:#666666;">${ord.orderSerial}</span>
 								  	  </div>
 								  	  <a href='<%= ctxPath%>/product/productDetail.dak?product_id=${ord.prod.prodNum}' style="color:#333; ">[${ord.prod.brandDTO.brandName}]${ord.prod.prodName}</a>
 								  </div>

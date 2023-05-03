@@ -211,7 +211,7 @@ public class OrderDAO implements InterOrderDAO{
 				OrderDTO odto = new OrderDTO();
 				odto.setFk_orderMbrId(rs.getString("ORDER_MEMBER_ID"));
 				odto.setOrderId(rs.getInt("ORDER_ID")); 
-				odto.setOrder_serial(rs.getString("ORDER_SERIAL"));
+				odto.setOrderSerial(rs.getString("ORDER_SERIAL"));
 				odto.setOrderTotalPrice(rs.getInt("ORDER_TOTAL_PRICE"));
 				odto.setOrderAddress(rs.getString("SHIPPING_ADDRESS"));
 				odto.setOrderTrackNo(rs.getString("TRACKING_NUMBER"));
@@ -312,7 +312,7 @@ public class OrderDAO implements InterOrderDAO{
 			if ( rs.next()) {
 				odto = new OrderDTO();
 				odto.setFk_orderMbrId(rs.getString("ORDER_MEMBER_ID"));
-				odto.setOrder_serial(rs.getString("ORDER_SERIAL"));
+				odto.setOrderSerial(rs.getString("ORDER_SERIAL"));
 				odto.setOrderTotalPrice(rs.getInt("ORDER_TOTAL_PRICE"));
 				odto.setCombineAddress(rs.getString("ORDER_ADDRESS"));
 				odto.setRecipMobile(rs.getString("RECIPIENT_MOBILE"));

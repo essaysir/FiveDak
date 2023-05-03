@@ -254,11 +254,11 @@ div > ul > li {
 				</div>
 				<div class="contents col-auto" style="padding: 5px 0 10px 60px;">
 			  	    <div style="margin-bottom: 15px;">
-			  	  		<span style="color:#666666;">${odto.order_serial}</span>
+			  	  		<span style="color:#666666;">${odto.orderSerial}</span>
 			  	    </div>
 				  	    <a href="#" style="color:#333; ">[${odto.prod.brandDTO.brandName}]${odto.prod.prodName}</a>
 				  	    <input type="hidden" name="product_id" value="${odto.prod.prodNum}"/>
-				  	    <input type="hidden" name="order_serial" value="${odto.order_serial}"/>
+				  	    <input type="hidden" name="orderSerial" value="${odto.orderSerial}"/>
 			    </div>
 			</div>
 			<div class="rating_bar" style="border-top:solid 1px #ccc; text-align:center; color:#222222; padding-top:30px; position:relative; top:20px;">

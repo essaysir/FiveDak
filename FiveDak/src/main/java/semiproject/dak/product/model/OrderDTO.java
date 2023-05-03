@@ -3,7 +3,7 @@ package semiproject.dak.product.model;
 
 public class OrderDTO {
 	private int orderId ; // 주문 번호
-	private String order_serial ; // 주문 시리얼 번호
+	private String orderSerial ; // 주문 시리얼 번호
 	private String fk_orderMbrId; // 주문자 아이디
 	private String orderDate ; // 주문 날짜
 	private int orderTotalPrice ; // 주문 총 금액
@@ -63,12 +63,12 @@ public class OrderDTO {
 		this.orderStatus_name = orderStatus_name;
 		this.combineAddress = combineAddress ;
 	}
-	public String getOrder_serial() {
-		return order_serial;
+	public String getOrderSerial() {
+		return orderSerial;
 	}
 
-	public void setOrder_serial(String order_serial) {
-		this.order_serial = order_serial;
+	public void setOrderSerial(String orderSerial) {
+		this.orderSerial = orderSerial;
 	}
 	public String getCombineAddress() {
 		return combineAddress;

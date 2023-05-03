@@ -29,6 +29,7 @@ public class ProductDAO implements InterProductDAO {
 	private ResultSet rs;
 	private AES256 aes;
 	
+	
 	public ProductDAO() {
 		try {
 			Context initContext = new InitialContext();
@@ -1062,7 +1063,7 @@ public class ProductDAO implements InterProductDAO {
 			while(rs.next()) {
 				OrderDTO odto = new OrderDTO();
 				odto.setOrderDate(rs.getString(3));
-				odto.setOrder_serial((rs.getString(7)));
+				odto.setOrderSerial((rs.getString(7)));
 				ProductDTO pdto = new ProductDTO();
 				pdto.setProdName(rs.getString(1));
 				pdto.setProdImage1(rs.getString(4));
@@ -1120,7 +1121,7 @@ public class ProductDAO implements InterProductDAO {
 				bdto.setBrandName(rs.getString("brand_name"));
 				pdto.setBrandDTO(bdto);
 				
-				odto.setOrder_serial((rs.getString("order_serial")));
+				odto.setOrderSerial((rs.getString("order_serial")));
 				odto.setProd(pdto);
 			}
 			
@@ -1224,7 +1225,88 @@ public class ProductDAO implements InterProductDAO {
 	}
 
 
-	
+	@Override
+	public int removeReview(Map<String, String> paraMap)  throws SQLException {
+		
+		int n1 = 0, n2 = 0, n3 = 0;
+	    int isSuccess = 0;
+
+	    try {
+	        conn = ds.getConnection();
+
+	        conn.setAutoCommit(false); // 수동커밋으로 바꾼다.
+
+	        String sql = " DELETE FROM tbl_review "
+	                   + " WHERE review_member_id = ? "
+	                   + "   AND review_product_id = ? "
+	                   + "   AND review_content = ? "
+	                   + "   AND review_score = ? ";
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, paraMap.get("userid"));
+	        pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
+	        pstmt.setString(3, paraMap.get("contents"));
+	        pstmt.setDouble(4, Double.parseDouble(paraMap.get("rating")));
+
+	        n1 = pstmt.executeUpdate();
+
+	        if (n1 == 1) {
+
+	            sql = " UPDATE tbl_order_detail SET review_status = 1 "
+	                + " WHERE order_detail_product_id = ? "
+	                + "   AND fk_order_serial = ? ";
+
+	            pstmt = conn.prepareStatement(sql);
+
+	            pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")));
+	            pstmt.setString(2, paraMap.get("order_serial"));
+
+	            n2 = pstmt.executeUpdate();
+	        }
+
+	        if (n2 == 1) {
+
+	            sql = " UPDATE tbl_product "
+	                + " SET average_rating = ("
+	                + "     SELECT ROUND(AVG(review_score), 1) "
+	                + "     FROM tbl_review "
+	                + "     WHERE review_product_id = ? "
+	                + " ) "
+	                + " WHERE product_id = ? ";
+
+	            pstmt = conn.prepareStatement(sql);
+
+	            pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")));
+	            pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
+
+	            n3 = pstmt.executeUpdate();
+	        }
+
+	        if (n1 * n2 * n3 > 0) {
+
+	            conn.commit();
+
+	            conn.setAutoCommit(true);
+
+	            isSuccess = 1;
+
+	        }
+
+	    } catch (SQLException e) {
+
+	        conn.rollback();
+
+	        conn.setAutoCommit(true);
+
+	        isSuccess = 0;
+	    }
+
+	    finally {
+	        close();
+	    }
+
+	    return isSuccess;
+	}
 	
 
 	
