@@ -39,7 +39,7 @@
       color:#FF7E32;
    }
    
-   span.span_review_expire {
+   button.span_review_expire {
       display: inline-block;
       border: solid 1px #d9d9d9;
       color: #d9d9d9;
@@ -66,14 +66,8 @@
 	   loadReviewedOrderDetail(1);
       
    });
-
    
-   function goReviewWrite(product_id, order_serial) {
-      
-      
-      location.href= "reviewWrite.dak?product_id="+product_id+"&order_serial="+order_serial;
-      
-   }
+   
    
    
    function loadReviewableOrderDetail(page) { 

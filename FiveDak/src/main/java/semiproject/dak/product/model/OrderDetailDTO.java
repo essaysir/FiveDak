@@ -1,3 +1,4 @@
+
 package semiproject.dak.product.model;
 
 public class OrderDetailDTO {
@@ -70,8 +71,6 @@ public class OrderDetailDTO {
 	public void setPricePerUnit(int pricePerUnit) {
 		this.pricePerUnit = pricePerUnit;
 	}
-     
-     
 
    
    
