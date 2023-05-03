@@ -12,42 +12,7 @@ import semiproject.dak.product.model.*;
 
 public class ProductReviewAction extends AbstractController {
 
-<<<<<<< HEAD
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		String product_id = request.getParameter("product_id");
-		
-		System.out.println();
-		
-		HttpSession session = request.getSession();
-		MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
-		
-		InterProductDAO pdao = new ProductDAO();
-		
-		
-		String userid = loginuser.getMbrId();
-		
-		List<ProductDTO> prodList = pdao.productReview(userid);
-		
-		boolean isLogin = super.checkLogin(request);
-		
-		if(!isLogin) {
-			 
-			request.setAttribute("message", "장바구니에 담으려면 먼저 로그인 부터 하세요!!");
-	         request.setAttribute("loc", "javascript:history.back()");
-           
-        super.setRedirect(false);
-        super.setViewPage("/WEB-INF/msg.jsp");
-           
-        return;
-		
-		}
-		
-		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/views/member/mypage_productReview.jsp");
-	}
-=======
+
    @Override
    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
       
@@ -74,6 +39,6 @@ public class ProductReviewAction extends AbstractController {
    
       
    }
->>>>>>> branch 'main' of https://github.com/novocado/FiveDak.git
+
 
 }
