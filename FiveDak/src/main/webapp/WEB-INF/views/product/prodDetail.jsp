@@ -91,7 +91,7 @@
     		  success:function(result) {
     			  
     			  if(result.trim() == 'false') {
-	             		$("section#review").html('<h2 class="my-5" style="color:red;">등록된 리뷰가 존재하지 않습니다.</h2>');
+	             		$("section#review").html('<h3 style="font-weight:bold; font-size:12pt;">구매후기</h3><h2 class="my-5">등록된 리뷰가 존재하지 않습니다.</h2>');
 	              } 
     			  else {
 	             		$("section#review").html(result);

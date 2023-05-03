@@ -346,6 +346,16 @@ public class OrderDAO implements InterOrderDAO{
 			
 			n = pstmt.executeUpdate();
 			
+			if ( Integer.parseInt(paraMap.get("orderStatus")) == 4 ) {
+				sql = " update tbl_order_detail  "
+					+ "  set REVIEW_STATUS =  2 "
+					+ "  where FK_ORDER_SERIAL ? " ;
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, paraMap.get("order_serial"));
+				
+				n = pstmt.executeUpdate();
+			}
 		}finally {
 			close();
 		}

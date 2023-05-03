@@ -831,7 +831,7 @@ public class ProductDAO implements InterProductDAO {
 					+ " , review_id, review_member_id, review_product_id , review_score, review_content  "
 					+ " , review_date "
 					+ " from tbl_review "
-					+ " where review_product_id = 24 "
+					+ " where review_product_id = ? "
 					+ " )V "
 					+ " WHERE RNO BETWEEN ? AND ? ";
 			
@@ -839,9 +839,9 @@ public class ProductDAO implements InterProductDAO {
 			
 			int pageNum = Integer.parseInt(paraMap.get("pageNum"));
 			
-			// pstmt.setString(1, paraMap.get("prodNum"));
-			pstmt.setInt(1, (5*pageNum)-(5-1));
-			pstmt.setInt(2,  5* pageNum);
+			pstmt.setString(1, paraMap.get("prodNum"));
+			pstmt.setInt(2, (5*pageNum)-(5-1));
+			pstmt.setInt(3,  5* pageNum);
 			
 			rs= pstmt.executeQuery();
 			
