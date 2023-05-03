@@ -3,6 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%
+    String ctxPath = request.getContextPath();
+%>
+
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>
 
 
@@ -98,7 +102,7 @@
         <div class="card my-page-card">
           <div class="card-body">
             <p class="card-title">주문/배송</p>
-            <p class="card-text font-weight-bold"><span class="h3">4</span>건</p>
+            <p class="card-text font-weight-bold"><span class="h3">${requestScope.order_count}</span>건</p>
           </div>
         </div>
       </div>
@@ -146,13 +150,14 @@
 	                <li class="check">
 	                    <a href="" class="menu">혜택관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">포인트</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/point.dak">포인트</a></li>
 	                    </ul>
 	                </li>
 	                <li class="check">
 	                    <a href="" class="menu">활동관리</a>
 	                    <ul class="menu-list">
-	                        <li class="check"><a class="list" href="">1:1문의</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNA.dak">1:1문의</a></li>
+	                        <li class="check"><a class="list" href="<%= ctxPath %>/mypage/1to1QNAAnswer.dak">1:1문의 답변</a></li>
 	                        <li class="check"><a class="list" href="">상품후기</a></li>
 	                    </ul>
 	                </li>

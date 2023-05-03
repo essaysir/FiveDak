@@ -57,6 +57,14 @@ public interface InterProductDAO {
 
 	// 제품 상세 정보에서 보여줄 영양소 가져오기 
 	NutritionDTO nutritionInfo(String prodNum) throws SQLException ;
+
+	// 제품 상세 정보에서 보여줄 리뷰 리스트 가져오기 
+	List<ReviewDTO> getReviewList(Map<String, String> paraMap) throws SQLException ;
+
+	// 제품 상세 정보에서 리뷰 총 페이지 구해오기 
+	int getTotalReviewPage(Map<String, String> paraMap)throws SQLException  ;
+
+
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////
