@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1245,7 +1244,7 @@ public class MemberDAO implements InterMemberDAO {
 				
 				conn = ds.getConnection();
 				
-				String sql = " insert into TBL_QNA(QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT)"
+				String sql = " insert into TBL_QNA(QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT) "
 						   + " values(?, ?, ?, sysdate) ";
 
 				
@@ -1275,22 +1274,26 @@ public class MemberDAO implements InterMemberDAO {
 				
 				conn = ds.getConnection();
 				
+				String sql = " select ceil(count(*) / ? ) "   //보여줄 페이지 개수를 넣는 위치홀더
+						   + " from tbl_qna  ";
+				
 				String id = paraMap.get("id");
 				
-				String sql = " select ceil(count(*) / ? ) "   //보여줄 페이지 개수를 넣는 위치홀더
-						   + " from tbl_qna  "
-						   + " where QNA_MEMBER_ID = ? ";
-									
+				if(id != "admin") {
+					sql += " where QNA_MEMBER_ID = ? ";
+				}
+				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1,"5");
-				pstmt.setString(2, id);
+				pstmt.setString(1, "5");
+				
+				if(id != "admin") {
+					pstmt.setString(2, id);
+				}
 				
 				rs = pstmt.executeQuery();
 				
-				
 				rs.next();   // 이건 무조건 필요한 것이다.
-				
 				
 				Show1to1TotalPage =  rs.getInt(1);
 				
@@ -1312,25 +1315,36 @@ public class MemberDAO implements InterMemberDAO {
 			
 			try {
 				conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
-				
+			
 				String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
 						   + " from (  select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
 						   + "        from ( select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-						   + "               from tbl_qna "
-						   + "               where QNA_MEMBER_ID = ? "
-						   + "               order by QUESTION_CREATED_AT asc "
-						   + "               ) A "
-						   + "      ) B "
-						   + "where RNO BETWEEN ? and ? ";
+						   + "               from tbl_qna ";
+				
+				String id = paraMap.get("id");
+				
+				if(id != "admin") {
+					sql += " where QNA_MEMBER_ID = ? ";
+				}
+				sql += "               order by QUESTION_CREATED_AT asc "
+					 + "               ) A "
+					 + "      ) B "
+					 + "where RNO BETWEEN ? and ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				int ShowPage = Integer.parseInt(paraMap.get("ShowPage"));	
-				String id = paraMap.get("id");
 				
-				pstmt.setString(1, id);
-				pstmt.setInt(2, (ShowPage * 5) - (5 - 1) );
-				pstmt.setInt(3, (ShowPage * 5) );
+				if(id != "admin") {
+					pstmt.setString(1, id);
+					pstmt.setInt(2, (ShowPage * 5) - (5 - 1) );
+					pstmt.setInt(3, (ShowPage * 5) );
+				}
+				else {
+					pstmt.setInt(1, (ShowPage * 5) - (5 - 1) );
+					pstmt.setInt(2, (ShowPage * 5) );
+				}
+				
 				// 우편 배달부
 				rs = pstmt.executeQuery();
 				

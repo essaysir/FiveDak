@@ -75,12 +75,13 @@ public interface InterMemberDAO {
 
 	// QNA 보내기 
 	int goQNA(Map<String, String> paraMap)  throws SQLException;
+	
+	// 문의하기 페이징바 처리
+	int Show1to1TotalPage(Map<String, String> paraMap) throws SQLException;
 
 	// 문의하기 한것돌 가져오기 
 	List<MemberQNADTO> selectQNAList(Map<String, String> paraMap) throws SQLException;
 
-	// 문의하기 페이징바 처리
-	int Show1to1TotalPage(Map<String, String> paraMap) throws SQLException;
 	
 }
 	
