@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import semiproject.dak.security.AES256;
@@ -178,7 +179,8 @@ public class MemberDAO implements InterMemberDAO {
 			String sql = " SELECT  MEMBER_NUM , MEMBER_ID , MEMBER_NAME , MEMBER_MOBILE , MEMBER_EMAIL , "+
 					"		   MEMBER_POINT , MEMBER_GENDER , MEMBER_BIRTH , MEMBER_POSTCODE , MEMBER_ADDRESS , "+
 					"		   MEMBER_DETAIL_ADDRESS , MEMBER_TIER_ID , MEMBER_REG_DATE , pwdchangegap "+
-					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, TIER_NAME, AMOUNT_NEEDED, REWARD_PERCENTAGE, TIER_IMAGE "+
+					"        , nvl(lastlogin_time , trunc( months_between(sysdate, registerday) , 0 )) AS lastlogin_gap, MEMBER_PURCHASE_AMOUNT, T.TIER_NAME, T.AMOUNT_NEEDED, T.REWARD_PERCENTAGE, T.TIER_IMAGE, "+
+					" T2.tier_name AS next_tier_name, T2.amount_needed AS next_tier_amount "+
 					" FROM  "+
 					" ( "+
 					" select MEMBER_NUM , MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_MOBILE, MEMBER_POSTCODE, MEMBER_ADDRESS, MEMBER_DETAIL_ADDRESS "+
@@ -193,7 +195,8 @@ public class MemberDAO implements InterMemberDAO {
 					" select trunc( months_between(sysdate, max(LOGIN_TIME)) , 0 ) AS lastlogin_time  "+
 					" from member_login_history  "+
 					" where LOGIN_MEMBER_ID = ? "+
-					" )H JOIN membership_tier T ON M.MEMBER_TIER_ID = T.TIER_ID ";
+					" )H JOIN membership_tier T ON M.MEMBER_TIER_ID = T.TIER_ID "+
+					" LEFT JOIN membership_tier T2 ON T.tier_id + 1 = T2.tier_id ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, loginMap.get("userid"));
@@ -226,6 +229,8 @@ public class MemberDAO implements InterMemberDAO {
 				mbrTier.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
 				mbrTier.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
 				mbrTier.setTierImage(rs.getString("TIER_IMAGE"));
+				mbrTier.setNextTierName(rs.getString("NEXT_TIER_NAME"));
+				mbrTier.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
 				mdto.setMbrTier(mbrTier);
 				
 				
@@ -908,7 +913,7 @@ public class MemberDAO implements InterMemberDAO {
 			String sql = " select * "
 					   + " FROM "
 					   + " ( "
-					   + "    select notice_id, notice_title, notice_created_at "
+					   + "    select notice_id, notice_title, notice_content, to_char(notice_created_at,'yyyy-mm-dd') "
 					   + "    from "
 					   + "    ( "
 					   + "        select * "
@@ -923,20 +928,19 @@ public class MemberDAO implements InterMemberDAO {
 			}
 			*/
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " and " + colname + " like '%'|| ? || '%' ";
+				sql += " where " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
 			
-			sql += " order by notice_id desc "
-				 + "    ) V "
+			sql += " order by notice_id desc) V "
 				 + " ) T "
 				 + " where notice_id between ? and ? ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo")); 	// 조회하고자하는 페이지번호
-			int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));			// 한페이지당 보여줄 행의 개수
+			int sizePerPage = 10;			// 한페이지당 보여줄 행의 개수
 			
 		/*
 		    === 페이징 처리 공식 ===
@@ -958,11 +962,13 @@ public class MemberDAO implements InterMemberDAO {
 			while(rs.next()) {
 				NoticeBoardDTO board = new NoticeBoardDTO();
 				
-				board.setNote_id(Integer.parseInt(rs.getString(1)));
+				board.setNote_id(rs.getInt(1));
 				board.setNote_title(rs.getString(2));
-				board.setNote_created_at(rs.getString(3));
-				//userid, name, email, gender
-				//notice_id, notice_title, notice_created_at
+				board.setNote_content(rs.getString(3));
+				board.setNote_created_at(rs.getString(4));
+				
+				
+				
 				boardList.add(board);
 				
 			} // end of while(rs.next())----------------------------------------
@@ -984,17 +990,22 @@ public class MemberDAO implements InterMemberDAO {
 			conn = ds.getConnection();
 			
 			String sql = " select ceil(count(*)/?) "
-					   + " from tbl_notice"
-					   + " where notice_id != 0 "; 
+					   + " from tbl_notice "; 
 			
 			String colname = paraMap.get("searchField");
 			String searchText = paraMap.get("searchText");
-
+			/*
+			if("email".equals(colname)) {
+				// 검색대상이 email인 경우
+				searchText = aes.encrypt(searchText);
+			}
+			*/
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " and " + colname + " like '%'|| ? || '%' ";
+				sql += " where " + colname + " like '%'|| ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
+			
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -1017,6 +1028,7 @@ public class MemberDAO implements InterMemberDAO {
 		return boardTotalPage;
 	}
 
+	// 게시판 내용 보기
 	@Override
 	public NoticeBoardDTO informBoardView(String note_id) throws SQLException {
 		
@@ -1025,7 +1037,7 @@ public class MemberDAO implements InterMemberDAO {
 		try {
 			conn = ds.getConnection();
 			
-			String sql = " select NOTICE_ID, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CREATED_AT "
+			String sql = " select NOTICE_ID, NOTICE_TITLE, NOTICE_CONTENT, to_char(NOTICE_CREATED_AT,'yyyy-mm-dd') "
 					   + " from tbl_notice "
 		 		       + " where NOTICE_ID = ? "; 
 			
@@ -1042,7 +1054,7 @@ public class MemberDAO implements InterMemberDAO {
 			if(rs.next()) {
 				boardContents = new NoticeBoardDTO();
 				
-				boardContents.setNote_id(Integer.parseInt(rs.getString(1)));
+				boardContents.setNote_id(rs.getInt(1));
 				boardContents.setNote_title(rs.getString(2));
 				boardContents.setNote_content(rs.getString(3));
 				boardContents.setNote_created_at(rs.getString(4));
@@ -1054,6 +1066,131 @@ public class MemberDAO implements InterMemberDAO {
 		}
 		
 		return boardContents;
+	}
+
+	@Override
+	public void updateMemberSession(HttpSession session) throws SQLException {
+		
+		
+		try {
+			
+			conn = ds.getConnection(); 
+
+			MemberDTO loginuser = ((MemberDTO)session.getAttribute("loginuser"));
+			
+			String sql = " SELECT m.*, t1.*, t2.tier_name AS next_tier_name, t2.amount_needed AS next_tier_amount "
+					+ "FROM tbl_member m "
+					+ "INNER JOIN membership_tier t1 ON m.member_tier_id = t1.tier_id "
+					+ "LEFT JOIN membership_tier t2 ON t1.tier_id + 1 = t2.tier_id "
+					+ "WHERE m.member_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, loginuser.getMbrId());
+			
+			rs = pstmt.executeQuery(); 
+			if(rs.next()) {
+				loginuser.setMbrMobile(aes.decrypt(rs.getString("MEMBER_MOBILE")));
+				loginuser.setMbrEmail(aes.decrypt(rs.getString("MEMBER_EMAIL")));
+				loginuser.setMbrPoint(rs.getInt("MEMBER_POINT"));
+				loginuser.setMbrGender(rs.getString("MEMBER_GENDER"));
+				loginuser.setMbrBirth(rs.getString("MEMBER_BIRTH"));
+				loginuser.setMbrPostcode(rs.getString("MEMBER_POSTCODE"));
+				loginuser.setMbrAddress(rs.getString("MEMBER_ADDRESS"));
+				loginuser.setMbrDetailAddress(rs.getString("MEMBER_DETAIL_ADDRESS"));
+				loginuser.setMbrPurchaseAmount(rs.getInt("MEMBER_PURCHASE_AMOUNT"));
+				MembershipTierDTO tierDTO = new MembershipTierDTO();
+				tierDTO.setTierId(rs.getInt("TIER_ID"));
+				tierDTO.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
+				tierDTO.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
+				tierDTO.setTierImage("TIER_IMAGE");
+				tierDTO.setNextTierName(rs.getString("NEXT_TIER_NAME"));
+				tierDTO.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
+				loginuser.setMbrTier(tierDTO);
+				session.setAttribute("loginuser", loginuser);
+
+			}
+					
+		} catch ( GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		
+	}
+
+	// 글번호 시퀀스
+	@Override
+	public String getSeqNo() throws SQLException {
+		
+		String seq = "";
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " select notice_id.nextval from tbl_notice ";
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			rs.next();
+			
+			seq = rs.getString(1);
+			
+		} finally {
+			close();
+		}
+		
+		return seq;
+	}
+
+	// 공지사항 등록
+	@Override
+	public int boardWrite(Map<String, String> paraMap) throws SQLException {
+		int n = 0;
+		
+		try {
+			conn = ds.getConnection(); 
+			
+			String sql = " insert into tbl_notice(notice_id, notice_title, notice_content) "
+					   + " values(?, ?, ?) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("seq"));
+			pstmt.setString(2, paraMap.get("title"));
+			pstmt.setString(3, paraMap.get("content"));
+			
+			n = pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+		return n;
+	}
+
+	// 공지사항 삭제
+	@Override
+	public int boardDelete(String noticeId) throws SQLException {
+		
+		int n = 0;
+		
+		try {
+			conn = ds.getConnection(); 
+			
+			String sql = " delete from tbl_notice where notice_id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, noticeId);
+			
+			n = pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+		return n;
 	}
 
 

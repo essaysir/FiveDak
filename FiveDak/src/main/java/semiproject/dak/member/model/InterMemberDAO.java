@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 public interface InterMemberDAO {
 
 	//Register Method
@@ -56,6 +58,17 @@ public interface InterMemberDAO {
 	// 게시판 내용 보기
 	NoticeBoardDTO informBoardView(String note_id) throws SQLException;
 
+	// 멤버 세션 갱신
+	void updateMemberSession(HttpSession session) throws SQLException;
+
+	// 공지사항 글번호
+	String getSeqNo() throws SQLException;
+
+	// 공지사항 등록
+	int boardWrite(Map<String, String> paraMap) throws SQLException;
+
+	// 공지사항 삭제
+	int boardDelete(String noticeId) throws SQLException;
 
 
 

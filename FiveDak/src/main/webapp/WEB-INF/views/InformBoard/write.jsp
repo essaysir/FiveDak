@@ -95,7 +95,7 @@
 .board_write .title,
 .board_write .info {
     padding: 15px;
-        border-bottom: 1px solid #999;
+    border-bottom: 1px solid #999;
 }
 
 .board_write .info {
@@ -169,7 +169,7 @@
                 <div class="title">
                     <dl>
                         <dt>제목</dt>
-                        <dd><input type="text" placeholder="제목 입력" /></dd>
+                        <dd><input type="text" placeholder="제목 입력"></dd>
                     </dl>
                 </div>
 
@@ -178,7 +178,7 @@
                 </div>
             </div>
             <div class="bt_wrap">
-                <a class="on">등록</a>
+                <a href="<%= ctxPath%>/CSC/informBoardView.dak" class="on">등록</a>
                 <a href="<%= ctxPath%>/CSC/informBoardList.dak">취소</a>
             </div>
         </div>

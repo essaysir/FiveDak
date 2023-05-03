@@ -149,25 +149,11 @@
     line-height: 160%;
     font-size: 16px;
 }
-
+.cont {
+	height: 300px;
+}
 
 </style>
-
-<script type="text/javascript">
-	$(document).ready(function(){
-		
-		
-		// 수정 버튼을 클릭하면 게시물을 수정한다.
-		$("a.goEdit").click((e) => {
-		//	alert($(e.target).parent().find(".userid").text());
-			const num = $(e.target).find("dd.num").text();
-			
-			location.href="<%= ctxPath%>/CSC/informBoardEdit.dak?num="+num;
-		});
-		
-	});
-	
-</script>
 
 <body>
     <div class="board_wrap">
@@ -201,7 +187,7 @@
                 <div class="info">
                     <dl>
                         <dt>번호</dt>
-                        <dd class="num">${ndto.note_id}</dd>
+                        <dd>${ndto.note_id}</dd>
                     </dl>
                     <dl>
                         <dt>작성일</dt>
@@ -216,7 +202,9 @@
             </div>
             <div class="bt_wrap">
                 <a href="<%= ctxPath%>/CSC/informBoardList.dak" class="on">목록</a>
-                <a class="goEdit">수정</a>
+                <c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.mbrId == 'admin'}">
+                	<a href="<%= ctxPath%>/CSC/informBoardEdit.dak">수정</a>
+            	</c:if>
             </div>
         </div>
     </div>
