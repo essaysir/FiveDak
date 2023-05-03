@@ -1,5 +1,6 @@
 package semiproject.dak.product.model;
 
+import semiproject.dak.member.model.MembershipTierDTO;
 
 public class ProductDTO {
 	private int prodNum ; // 제품번호
@@ -20,12 +21,16 @@ public class ProductDTO {
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
+<<<<<<< HEAD
 
 	private OrderDTO orderDTO ; // 오더 DTO
 
 	private ReviewDTO reviewDTO;
 
 	
+=======
+	private ReviewDTO reviewDTO; // 
+>>>>>>> branch 'main' of https://github.com/novocado/FiveDak.git
 	
 	public ReviewDTO getReviewDTO() {
 		return reviewDTO;
@@ -195,6 +200,9 @@ public class ProductDTO {
 		return 100 - (prodDiscount * 100)/prodPrice;
 	}
 	
-		
+	public double getAveragePercent() {
+
+		return ( prodAvgRating *100 ) / 5 ;
+	}
 	
 }

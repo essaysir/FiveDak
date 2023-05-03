@@ -840,6 +840,81 @@ public class ProductDAO implements InterProductDAO {
 	
 		return ndto ;
 	}
+
+	// 제품 상세 정보에서 보여줄 리뷰 리스트 가져오기 
+	@Override
+	public List<ReviewDTO> getReviewList(Map<String, String> paraMap) throws SQLException {
+		List<ReviewDTO> arraylist = new ArrayList<>();
+		try {
+			conn = ds.getConnection(); 
+			
+			String sql = " SELECT RNO, review_id, review_member_id, review_product_id , review_score, review_content , review_date "
+					+ " FROM "
+					+ " ( "
+					+ " select row_number() over (order by review_date DESC) AS RNO   "
+					+ " , review_id, review_member_id, review_product_id , review_score, review_content  "
+					+ " , review_date "
+					+ " from tbl_review "
+					+ " where review_product_id = 24 "
+					+ " )V "
+					+ " WHERE RNO BETWEEN ? AND ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			int pageNum = Integer.parseInt(paraMap.get("pageNum"));
+			
+			// pstmt.setString(1, paraMap.get("prodNum"));
+			pstmt.setInt(1, (5*pageNum)-(5-1));
+			pstmt.setInt(2,  5* pageNum);
+			
+			rs= pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ReviewDTO rdto = new ReviewDTO();
+				rdto.setReview_id(rs.getInt("review_id"));
+				rdto.setReview_member_id(rs.getString("review_member_id"));
+				rdto.setReview_product_id(rs.getInt("review_product_id"));
+				rdto.setReview_score(rs.getDouble("review_score"));
+				rdto.setReview_content(rs.getString("review_content"));
+				rdto.setReview_date(rs.getDate("review_date"));
+				
+				arraylist.add(rdto);
+			}
+			
+		}finally {
+			close();
+		}
+		
+		return arraylist ;
+	}
+
+	// 제품 상세 정보에서 리뷰 총 페이지 구해오기 
+	@Override
+	public int getTotalReviewPage(Map<String, String> paraMap) throws SQLException {
+		int totalPage = 0 ;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " SELECT ceil(count(*)/ 5 ) "+
+					"        from tbl_review "+
+					"        where review_product_id = 24 " ;
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			// pstmt.setString(1, paraMap.get("prodNum") );
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			totalPage = rs.getInt(1);
+			
+		}finally {
+			close();
+		}
+		
+		return totalPage ;
+	}
 	
 	
 
@@ -974,7 +1049,7 @@ public class ProductDAO implements InterProductDAO {
 	            pstmt.setString(1, memberId);
 	            pstmt.setInt(2, currentPoints);
 	            pstmt.setInt(3, usePoint);
-	            pstmt.setInt(4, newPoints);
+	            pstmt.setInt(4, currentPoints - usePoint);
 	            pstmt.setString(5, orderSerial + " | 구매시 사용으로 인한 차감");
 	            pstmt.executeUpdate();
 	        }
@@ -1084,6 +1159,183 @@ public class ProductDAO implements InterProductDAO {
 	        }
 	        throw e;
 	    }
+	}
+	
+	
+	@Override
+	public List<OrderDetailDTO> getReviewable(Map<String, String> paraMap) throws SQLException {
+		
+
+		List<OrderDetailDTO> orderDetails = new ArrayList<>();
+		int page = Integer.parseInt(paraMap.get("page"));
+		int pageSize = 5;
+		String userid = paraMap.get("userid");
+		
+		
+	    int offset = (page - 1) * pageSize;
+	    
+	    String sql = " SELECT p.product_name, p.product_id , p.product_image_url, b.brand_name, to_char(o.order_date,'yyyy-mm-dd') as order_date, o.order_serial, od.order_quantity, od.price_per_unit "
+	    		+ "FROM tbl_order_detail od "
+	    		+ "INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+	    		+ "INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+	    		+ "INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+	    		+ "WHERE od.review_status = 1 and o.order_member_id = ? "
+	    		+ "ORDER BY o.order_date DESC "
+	    		+ "OFFSET ? ROWS "
+	    		+ "FETCH NEXT ? ROWS ONLY";
+	    
+	    try {
+	    	conn = ds.getConnection();
+	    	pstmt = conn.prepareStatement(sql);
+	    	pstmt.setString(1, userid);
+	    	pstmt.setInt(2, offset);
+	    	pstmt.setInt(3, pageSize);
+	    	
+	    	rs = pstmt.executeQuery();
+	    	while(rs.next()) {
+	    		 OrderDetailDTO orderDetail = new OrderDetailDTO();
+	    		 ProductDTO product = new ProductDTO();
+	    		 product.setProdName(rs.getString("PRODUCT_NAME"));
+	    		 product.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+	    		 product.setProdNum(rs.getInt("PRODUCT_ID"));
+	    		 BrandDTO brand = new BrandDTO();
+	    		 brand.setBrandName(rs.getString("BRAND_NAME"));
+	    		 product.setBrandDTO(brand);
+	    		 orderDetail.setOrderDetailProd(product);
+	    		 orderDetail.setOrderedDate(rs.getString("ORDER_DATE"));
+	    		 orderDetail.setOrderSerial(rs.getString("ORDER_SERIAL"));
+	    		 orderDetail.setOrderQuantity(rs.getInt("ORDER_QUANTITY"));
+	    		 orderDetail.setPricePerUnit(rs.getInt("PRICE_PER_UNIT"));
+	    		 orderDetails.add(orderDetail);
+	    	}
+	    	
+	    	
+	    } finally {
+			close();
+		}
+	    
+	    return orderDetails;
+	}
+
+	@Override
+	public List<OrderDetailDTO> getReviewed(Map<String, String> paraMap) throws SQLException {
+		List<OrderDetailDTO> orderDetails = new ArrayList<>();
+		int page = Integer.parseInt(paraMap.get("page"));
+		int pageSize = 5;
+		String userid = paraMap.get("userid");
+		
+		
+	    int offset = (page - 1) * pageSize;
+	    
+	    String sql = " SELECT p.product_name, p.product_id , p.product_image_url, b.brand_name, o.order_serial, to_char(r.review_date,'yyyy-mm-dd') as review_date,  od.order_quantity, od.price_per_unit "
+	    		+ " FROM tbl_order_detail od "
+	    		+ " INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+	    		+ " INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+	    		+ " INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+	    		+ " INNER JOIN tbl_review r ON o.order_serial = r.order_serial AND p.product_id = r.review_product_id "
+	    		+ " WHERE od.review_status = 2 AND o.order_member_id = ?"
+	    		+ " ORDER BY r.review_date DESC "
+	    		+ " OFFSET ? ROWS "
+	    		+ " FETCH NEXT ? ROWS ONLY";
+	    
+	    try {
+	    	conn = ds.getConnection();
+	    	pstmt = conn.prepareStatement(sql);
+	    	pstmt.setString(1, userid);
+	    	pstmt.setInt(2, offset);
+	    	pstmt.setInt(3, pageSize);
+	    	
+	    	rs = pstmt.executeQuery();
+	    	if(rs.next()) {
+	    		 OrderDetailDTO orderDetail = new OrderDetailDTO();
+	    		 ProductDTO product = new ProductDTO();
+	    		 product.setProdName(rs.getString("PRODUCT_NAME"));
+	    		 product.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+	    		 product.setProdNum(rs.getInt("PRODUCT_ID"));
+	    		 BrandDTO brand = new BrandDTO();
+	    		 brand.setBrandName(rs.getString("BRAND_NAME"));
+	    		 product.setBrandDTO(brand);
+	    		 orderDetail.setOrderDetailProd(product);
+	    		 orderDetail.setReviewedDate(rs.getString("REVIEW_DATE"));
+	    		 orderDetail.setOrderSerial(rs.getString("ORDER_SERIAL"));
+	    		 orderDetail.setOrderQuantity(rs.getInt("ORDER_QUANTITY"));
+	    		 orderDetail.setPricePerUnit(rs.getInt("PRICE_PER_UNIT"));
+	    		 orderDetails.add(orderDetail);
+	    	}
+	    	
+	    	
+	    } finally {
+			close();
+		}
+	    
+	    return orderDetails;
+	}
+
+	@Override
+	public int getTotalReviewable(String userid) throws SQLException {
+		 
+			int totalOrder = 0;
+			
+		    String sql = " SELECT count(*) "
+		    		+ "FROM tbl_order_detail od "
+		    		+ "INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+		    		+ "INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+		    		+ "INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+		    		+ "WHERE od.review_status = 1 and o.order_member_id = ? ";
+
+		    
+		    try {
+		    	conn = ds.getConnection();
+		    	pstmt = conn.prepareStatement(sql);
+		    	pstmt.setString(1, userid);
+		    	
+		    	rs = pstmt.executeQuery();
+		    	if(rs.next()) {
+		    		totalOrder = rs.getInt(1);
+		    		
+		    		
+		    	}
+		    	
+		    	
+		    } finally {
+				close();
+			}
+		    
+		    return totalOrder;
+	}
+
+	@Override
+	public int getTotalReviewed(String userid) throws SQLException {
+		
+		int totalOrder = 0;
+		
+	    String sql = " SELECT count(*) "
+	    		+ " FROM tbl_order_detail od "
+	    		+ " INNER JOIN tbl_order o ON od.fk_order_serial = o.order_serial "
+	    		+ " INNER JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+	    		+ " INNER JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+	    		+ " INNER JOIN tbl_review r ON o.order_serial = r.order_serial AND p.product_id = r.review_product_id "
+	    		+ " WHERE od.review_status = 2 AND o.order_member_id = ?";
+
+	    
+	    try {
+	    	conn = ds.getConnection();
+	    	pstmt = conn.prepareStatement(sql);
+	    	pstmt.setString(1, userid);
+	    	
+	    	rs = pstmt.executeQuery();
+	    	if(rs.next()) {
+	    		totalOrder = rs.getInt(1);
+	    		
+	    		
+	    	}
+	    	
+	    	
+	    } finally {
+			close();
+		}
+	    
+	    return totalOrder;
 	}
 	
 	

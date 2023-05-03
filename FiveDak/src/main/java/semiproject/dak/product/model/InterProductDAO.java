@@ -60,6 +60,14 @@ public interface InterProductDAO {
 
 	// 제품 상세 정보에서 보여줄 영양소 가져오기 
 	NutritionDTO nutritionInfo(String prodNum) throws SQLException ;
+
+	// 제품 상세 정보에서 보여줄 리뷰 리스트 가져오기 
+	List<ReviewDTO> getReviewList(Map<String, String> paraMap) throws SQLException ;
+
+	// 제품 상세 정보에서 리뷰 총 페이지 구해오기 
+	int getTotalReviewPage(Map<String, String> paraMap)throws SQLException  ;
+
+
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +76,13 @@ public interface InterProductDAO {
 	CheckoutDTO getCheckOutData(int[] cartIds, HttpServletRequest request) throws SQLException;
 	//최종 주문 완료시 테이블 insert 작업
 	int insertOrderInfo(Map<String, Object> orderMap) throws SQLException;;
-	
+
+	List<OrderDetailDTO> getReviewable(Map<String, String> paraMap) throws SQLException;
+
+	List<OrderDetailDTO> getReviewed(Map<String, String> paraMap) throws SQLException;
+
+	int getTotalReviewable(String userid) throws SQLException;
+
+	int getTotalReviewed(String userid) throws SQLException;
 
 }

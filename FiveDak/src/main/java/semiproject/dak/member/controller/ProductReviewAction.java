@@ -12,6 +12,7 @@ import semiproject.dak.product.model.*;
 
 public class ProductReviewAction extends AbstractController {
 
+<<<<<<< HEAD
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -46,5 +47,33 @@ public class ProductReviewAction extends AbstractController {
 		super.setRedirect(false);
 		super.setViewPage("/WEB-INF/views/member/mypage_productReview.jsp");
 	}
+=======
+   @Override
+   public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+      
+      
+      HttpSession session = request.getSession();
+      MemberDTO loginuser = (MemberDTO) session.getAttribute("loginuser");
+      
+      InterProductDAO pdao = new ProductDAO();
+      
+      
+      String userid = loginuser.getMbrId();
+      String page = "1";
+      Map<String, String> paraMap = new HashMap<>();
+      paraMap.put("userid", userid);
+      paraMap.put("page", page);
+      
+      List<OrderDetailDTO> Reviewable = pdao.getReviewable(paraMap);
+      List<OrderDetailDTO> Reviewed = pdao.getReviewed(paraMap);
+      
+      request.setAttribute("Reviewable", Reviewable);
+      request.setAttribute("Reviewed", Reviewed);
+      
+      super.setViewPage("/WEB-INF/views/member/mypage_productReview.jsp");
+   
+      
+   }
+>>>>>>> branch 'main' of https://github.com/novocado/FiveDak.git
 
 }
