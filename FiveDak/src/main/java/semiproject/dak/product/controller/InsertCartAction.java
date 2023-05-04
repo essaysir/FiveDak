@@ -21,15 +21,15 @@ public class InsertCartAction extends AbstractController {
 		String method = request.getMethod();
 		
 		if ( "post".equalsIgnoreCase(method)) {
+			
+			
 			HttpSession session = request.getSession();
-			
 			MemberDTO loginuser = (MemberDTO)session.getAttribute("loginuser");
-			String userid = loginuser.getMbrId();
-			
+			String userid = loginuser.getMbrId();	
+				
 			InterProductDAO pdao = new ProductDAO();
 			String prodNum = request.getParameter("prodNum");
 			String oqty = request.getParameter("oqty");
-			System.out.println(oqty);
 			Map<String,String> paraMap = new HashMap<>();
 			paraMap.put("prodNum", prodNum);
 			paraMap.put("userid", userid);
@@ -49,6 +49,7 @@ public class InsertCartAction extends AbstractController {
 	         
 	        super.setRedirect(false);
 	        super.setViewPage("/WEB-INF/views/jsonview.jsp");
+			
 		}// end of if 
 		
 		else {
