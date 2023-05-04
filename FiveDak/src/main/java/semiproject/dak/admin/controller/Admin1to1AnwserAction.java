@@ -1,4 +1,4 @@
-package semiproject.dak.member.controller;
+package semiproject.dak.admin.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,13 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import semiproject.dak.common.controller.AbstractController;
-import semiproject.dak.member.model.AdminQNADTO;
 import semiproject.dak.member.model.InterMemberDAO;
 import semiproject.dak.member.model.MemberDAO;
 import semiproject.dak.member.model.MemberDTO;
 import semiproject.dak.member.model.MemberQNADTO;
 
-public class Member1to1QNAAnswerAction extends AbstractController {
+public class Admin1to1AnwserAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -29,7 +28,6 @@ public class Member1to1QNAAnswerAction extends AbstractController {
 		
 		// 페이징 처리를 위한 것 
 		String ShowPage = request.getParameter("ShowPage");
-		
 		
 		// 페이징 처리를 하기 위한 것 
 		if(ShowPage == null) {
@@ -53,15 +51,12 @@ public class Member1to1QNAAnswerAction extends AbstractController {
 		paraMap.put("id",id);
 		
 		
-		int Show1to1TotalPage = mdao.Show1to1TotalPage(paraMap);
+		int Show1to1TotalPageAdmin = mdao.Show1to1TotalPageAdmin(paraMap);
 		
-		System.out.println(Show1to1TotalPage);
 		
 		List<MemberQNADTO> QNAList = mdao.selectQNAList(paraMap);    // 메소드 생성
 		
-		System.out.println(QNAList);
 	
-		
 		request.setAttribute("QNAList", QNAList);
 		request.setAttribute("ShowPage", ShowPage);
 		
@@ -80,7 +75,7 @@ public class Member1to1QNAAnswerAction extends AbstractController {
 		 	pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+(pageNo-1)+"'>[이전페이지]</a></li>"; 
 	  	 }
 		
-		 while( !(loop > blockSize || pageNo > Show1to1TotalPage)) { 
+		 while( !(loop > blockSize || pageNo > Show1to1TotalPageAdmin)) { 
 			
 			if(pageNo == Integer.parseInt(ShowPage)) {
 				pageBar += "<li class='page-item active'><a style='background-color: #FF7E32; color:black; border-color : #FF7E32;' class='page-link' href= '#'>" + pageNo + "</a></li>";    
@@ -96,22 +91,19 @@ public class Member1to1QNAAnswerAction extends AbstractController {
 		 } // end of while()~ 
 		
 		
-		 if(pageNo <= Show1to1TotalPage) {
+		 if(pageNo <= Show1to1TotalPageAdmin) {
 			pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+pageNo+"'>[다음페이지]</a></li>"; 
 		 }
 
-		 pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+Show1to1TotalPage+"'>&gt;&gt;</a></li>"; 
+		 pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+Show1to1TotalPageAdmin+"'>&gt;&gt;</a></li>"; 
 		
 		
 		
 		 request.setAttribute("pageBar", pageBar);		
-		 
-		
 
 		
-		
 		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/views/member/member1to1QNAAnswer.jsp");
+		super.setViewPage("/WEB-INF/views/admin/Admin1to1Anwser.jsp");
 
 	}
 

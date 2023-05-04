@@ -1010,7 +1010,7 @@ public class MemberDAO implements InterMemberDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, paraMap.get("sizePerPage"));
+			pstmt.setString(1, "10");
 			
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
 				pstmt.setString(2, searchText);
@@ -1314,7 +1314,7 @@ public class MemberDAO implements InterMemberDAO {
 		
 		// 문의하기 한것돌 가져오기 
 		@Override
-		public List<MemberQNADTO> selectQNAList(Map<String, String> paraMap) throws SQLException {
+		public List<MemberQNADTO> selectQNAListAdmin(Map<String, String> paraMap) throws SQLException {
 			
 			List<MemberQNADTO> QNAList = new ArrayList<>();
 			
@@ -1374,7 +1374,144 @@ public class MemberDAO implements InterMemberDAO {
 			return QNAList;
 		}
 
+		
+		// 문의하기 페이징바 처리 
+	      @Override
+	      public int Show1to1TotalPageAdmin(Map<String, String> paraMap) throws SQLException {
+	         
+	         int Show1to1TotalPage = 0;
+	         
+	         try {
+	            
+	            conn = ds.getConnection();
+	            
+	            String sql = " select ceil(count(*) / ? ) "   //보여줄 페이지 개수를 넣는 위치홀더
+	                     + " from tbl_qna  ";
+	            
+	            String id = paraMap.get("id");
+	            
+	            if(!"admin".equalsIgnoreCase(id)) {
+	               sql += " where QNA_MEMBER_ID = ? ";
+	            }
+	            
+	            pstmt = conn.prepareStatement(sql);
+	            
+	            pstmt.setString(1, "5");
+	            
+	            if(!"admin".equalsIgnoreCase(id)) {
+	               pstmt.setString(2, id);
+	            }
+	            
+	            rs = pstmt.executeQuery();
+	            
+	            rs.next();   // 이건 무조건 필요한 것이다.
+	            
+	            Show1to1TotalPage =  rs.getInt(1);
+	            
+	            
+	         }finally { 
+	            close();
+	         }
+	            
+	            
+	         return Show1to1TotalPage;
+	         
+	      }
 
 
+	   // 문의하기 한것돌 가져오기 
+	      @Override
+	      public List<MemberQNADTO> selectQNAList(Map<String, String> paraMap) throws SQLException {
+	         
+	         List<MemberQNADTO> QNAList = new ArrayList<>();
+	         
+	         try {
+	            conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
+	         
+	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
+	                     + " from (  select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
+	                     + "        from ( select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
+	                     + "               from tbl_qna ";
+	            
+	            String id = paraMap.get("id");
+	            
+	            if(!"admin".equalsIgnoreCase(id)) {
+	               sql += " where QNA_MEMBER_ID = ? ";
+	            }
+	            sql += "               order by QUESTION_CREATED_AT asc "
+	                + "               ) A "
+	                + "      ) B "
+	                + "where RNO BETWEEN ? and ? ";
+	            
+	            pstmt = conn.prepareStatement(sql);
+	            
+	            int ShowPage = Integer.parseInt(paraMap.get("ShowPage"));   
+	            
+	            if(!"admin".equalsIgnoreCase(id)) {
+	               pstmt.setString(1, id);
+	               pstmt.setInt(2, (ShowPage * 5) - (5 - 1) );
+	               pstmt.setInt(3, (ShowPage * 5) );
+	            }
+	            else {
+	               pstmt.setInt(1, (ShowPage * 5) - (5 - 1) );
+	               pstmt.setInt(2, (ShowPage * 5) );
+	            }
+	            
+	            // 우편 배달부
+	            rs = pstmt.executeQuery();
+	            
+	            
+	            while(rs.next()) {     // 다음이 있으면 실행 
+	               
+	               MemberQNADTO qnadto = new MemberQNADTO();
+	               qnadto.setQNA_ID(rs.getInt("QNA_ID"));
+	               qnadto.setQNA_MEMBER_ID(rs.getString("QNA_MEMBER_ID"));
+	               qnadto.setQUESTION_TITLE(rs.getString("QUESTION_TITLE"));
+	               qnadto.setQUESTION_CONTENT(rs.getString("QUESTION_CONTENT"));
+	               qnadto.setQUESTION_CREATED_AT(rs.getString("QUESTION_CREATED_AT"));
+	               
+	               QNAList.add(qnadto);
+	            }  // end of while(rs.next())
+	            
+	            
+	         } finally {
+	            close();
+	         }
+	         
+	         return QNAList;
+	      }
+
+
+	    // 문의하기 답변하기 
+		@Override
+		public int AdmingoQNA(Map<String, String> paraMap) throws SQLException {
+			
+			int n = 0;
+			
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " insert into tbl_qna_answer(QNA_ID, ANSWER_MEMBER_ID, ANSWER_CONTENT, ANSWER_CREATED_AT)"
+						   + " values(?, ?, ?, sysdate) ";
+
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, paraMap.get("NumberNONO"));
+				pstmt.setString(2, paraMap.get("id"));
+				pstmt.setString(3, paraMap.get("contents"));
+
+				n = pstmt.executeUpdate();
+
+				
+			}finally {
+				close();
+			}
+			
+			return n;
+
+			
+			
+		}
 
 }

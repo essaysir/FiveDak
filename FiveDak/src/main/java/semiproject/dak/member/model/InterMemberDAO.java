@@ -83,5 +83,18 @@ public interface InterMemberDAO {
 	List<MemberQNADTO> selectQNAList(Map<String, String> paraMap) throws SQLException;
 
 	
+	
+	// 문의하기 페이징바 처리 
+	int Show1to1TotalPageAdmin(Map<String, String> paraMap) throws SQLException;
+	
+	// 문의하기 한것돌 가져오기 
+	List<MemberQNADTO> selectQNAListAdmin(Map<String, String> paraMap) throws SQLException;
+
+	// 문의하기 답변하기 
+	int AdmingoQNA(Map<String, String> paraMap)  throws SQLException;
+
+	
+	
+	
 }
 	
