@@ -1,6 +1,7 @@
 package semiproject.dak.member.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,21 +13,46 @@ import semiproject.dak.member.model.AdminQNADTO;
 import semiproject.dak.member.model.InterMemberDAO;
 import semiproject.dak.member.model.MemberDAO;
 import semiproject.dak.member.model.MemberDTO;
+import semiproject.dak.member.model.MemberQNADTO;
 
 public class Member1to1QNAAnswerDetailAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		HttpSession session = request.getSession();
+  		
+		MemberDTO userid = (MemberDTO) session.getAttribute("loginuser");  // 세션값 가져오기 
+		
+		String id = userid.getMbrId();  // 세션값 String 타입으로 저장 
+		
+		
+
+		InterMemberDAO mdao = new MemberDAO();
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		paraMap.put("id",id);
+		
+		
+		List<MemberQNADTO> QNAList = mdao.selectQNAList(paraMap);    // 메소드 생성
+		
+		System.out.println(QNAList);
+	
+		request.setAttribute("QNAList", QNAList);
+		
+		
+			
+		
+		
+		
+		super.setRedirect(false);
+		super.setViewPage("/WEB-INF/views/member/member1to1QNADetail.jsp");
+		
 		String method = request.getMethod();		// "GET" 또는 "POST"
 		
 		if("post".equalsIgnoreCase(method)) {	// POST 이라면   이따 post 로 바꾸기
 			
-			HttpSession session = request.getSession();
-	  		
-			MemberDTO userid = (MemberDTO) session.getAttribute("loginuser");  // 세션값 가져오기 
-			
-			String id = userid.getMbrId();  // 세션값 String 타입으로 저장 
 			
 			
 			String qnaId = request.getParameter("qnaId");
@@ -43,7 +69,6 @@ public class Member1to1QNAAnswerDetailAction extends AbstractController {
             }
             
             else {
-            	InterMemberDAO mdao = new MemberDAO();
             	AdminQNADTO adminQnaDTO = mdao.getAdminQna(qnaId);
             	
             	request.setAttribute("adminQnaDTO", adminQnaDTO);
