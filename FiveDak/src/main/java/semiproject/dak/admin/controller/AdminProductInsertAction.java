@@ -51,6 +51,7 @@ public class AdminProductInsertAction extends AbstractController {
 				  super.setViewPage("/WEB-INF/views/msg.jsp");
 				  return ;
 			  }
+			InterProductDAO pdao = new ProductDAO();
 			
 			String prodName = mtrequest.getParameter("prodName") ;
 			prodName = prodName.replaceAll("<", "&lt;");
@@ -58,29 +59,38 @@ public class AdminProductInsertAction extends AbstractController {
 			
 			String cateId = mtrequest.getParameter("cateId");
 			String brandName = mtrequest.getParameter("brandName");
+			int brandNum = pdao.getBrandNum(brandName);
 			String prodStock = mtrequest.getParameter("prodStock");
 			String prodPrice = mtrequest.getParameter("prodPrice");
-			String prodSales = mtrequest.getParameter("prodSales");
-			
+			String prodDiscount = mtrequest.getParameter("prodDiscount");
 			String pimage1 = mtrequest.getFilesystemName("pimage1");
 			
 			
+			/*
+			 * String pimage2 = mtrequest.getFilesystemName("pimage2"); if ( pimage2 !=
+			 * null) {
+			 * 
+			 * }
+			 */
 			ProductDTO pdto = new ProductDTO();
 			pdto.setProdName(prodName);
 			pdto.setFk_prodCateNum(Integer.parseInt(cateId));
 			pdto.setProdStock(Integer.parseInt(prodStock));
 			pdto.setProdPrice(Integer.parseInt(prodPrice));
-			pdto.setProdSales(Integer.parseInt(prodSales));
+			pdto.setProdDiscount(Integer.parseInt(prodDiscount));
+			pdto.setFk_prodBrandNum(brandNum);
+			pdto.setProdImage1(pimage1);
+			
 			BrandDTO bdto = new BrandDTO();
 			bdto.setBrandName(brandName);
 			pdto.setBrandDTO(bdto);
 			
 			
-			InterProductDAO pdao = new ProductDAO();
 			
 			int n = pdao.insertProduct(pdto);
 			
-			
+			super.setRedirect(false);
+			super.setViewPage("/admin/adminProductSearch.dak?searchType=&searchWord=&currentShowPageNo=");
 			
 			
 		}

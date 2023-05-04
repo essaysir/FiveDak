@@ -131,7 +131,7 @@
                   	 <td><input class="infoData"  name="prodPrice" type="number" placeholder="제품의 정가를 입력하세요" /><span class="error">입력하세요</span>
                   	 </td>
                   	 <th class="MemberShowDetailth">제품 판매가</th>
-                  	 <td><input class="infoData"  name="prodSales" type="number" placeholder="제품의 판매가를 입력하세요"/><span class="error">입력하세요</span>
+                  	 <td><input class="infoData"  name="prodDiscount" type="number" placeholder="제품의 판매가를 입력하세요"/><span class="error">입력하세요</span>
                   	 </td>
                   </tr>
                   

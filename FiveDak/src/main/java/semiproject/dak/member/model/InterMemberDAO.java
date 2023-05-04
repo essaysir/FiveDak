@@ -89,6 +89,13 @@ public interface InterMemberDAO {
 
 	List<OrderDTO> getOrdersByDateRange(Map<String, String> paraMap) throws SQLException;
 
+	// 문의하기 답변 보기 
+	AdminQNADTO getAdminQna(String qnaId)   throws SQLException ;
+
+	// 현재 총 QNA 등록된 질문들의 갯수 가져오기 
+	int getTotalQna()  throws SQLException  ;
+
+
 	
 	
 	

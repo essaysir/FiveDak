@@ -1340,15 +1340,18 @@ public class MemberDAO implements InterMemberDAO {
 	         try {
 	            conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
 	         
-	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + " from (  select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + "        from ( select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + "               from tbl_qna ";
-	            
+	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT , ANSWER_ID "
+	            		+ " from (   "
+	            		+ " select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT  , ANSWER_ID"
+	            		+ " from  "
+	            		+ " ( select Q.QNA_ID, Q.QNA_MEMBER_ID, Q.QUESTION_TITLE, Q.QUESTION_CONTENT, Q.QUESTION_CREATED_AT  , A.ANSWER_ID  "
+	            		+ " from tbl_qna Q LEFT JOIN TBL_QNA_ANSWER A "
+	            		+ " ON Q.QNA_ID = A.QNA_ID  ";
+	             
 	            String id = paraMap.get("id");
 	            
 	            if(!"admin".equalsIgnoreCase(id)) {
-	               sql += " where QNA_MEMBER_ID = ? ";
+	               sql += " WHERE Q.QNA_MEMBER_ID = ? ";
 	            }
 	            sql += "               order by QUESTION_CREATED_AT asc "
 	                + "               ) A "
@@ -1381,6 +1384,12 @@ public class MemberDAO implements InterMemberDAO {
 	               qnadto.setQUESTION_TITLE(rs.getString("QUESTION_TITLE"));
 	               qnadto.setQUESTION_CONTENT(rs.getString("QUESTION_CONTENT"));
 	               qnadto.setQUESTION_CREATED_AT(rs.getString("QUESTION_CREATED_AT"));
+	               if ( rs.getString("ANSWER_ID") == null) {
+	            	   qnadto.setQUESTION_STATUS("미답변");
+	               }
+	               else {
+	            	   qnadto.setQUESTION_STATUS("답변완료");
+	               }
 	               
 	               QNAList.add(qnadto);
 	            }  // end of while(rs.next())
@@ -1424,6 +1433,67 @@ public class MemberDAO implements InterMemberDAO {
 			
 			
 		}
+
+
+		// 관리자 답변 보여주는 메소드
+		@Override
+		public AdminQNADTO getAdminQna(String qnaId) throws SQLException {
+			AdminQNADTO qnadto = null ;
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " select ANSWER_ID , QNA_ID , ANSWER_MEMBER_ID, ANSWER_CONTENT , ANSWER_CREATED_AT  "
+						+ " from tbl_qna_answer  where QNA_ID = ?  ";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, qnaId);
+				rs = pstmt.executeQuery();
+				if ( rs.next()) {
+					qnadto = new AdminQNADTO();
+					qnadto.setANSWER_ID(rs.getInt("ANSWER_ID"));
+					qnadto.setANSWER_MEMBER_ID(rs.getString("ANSWER_MEMBER_ID"));
+					qnadto.setANSWER_CONTENT(rs.getString("ANSWER_CONTENT"));
+					qnadto.setANSWER_CREATED_AT(rs.getString("ANSWER_CREATED_AT"));
+				}
+				
+			}finally {
+				close();
+			}
+			
+			return qnadto ;
+		}
+
+		@Override
+		public int getTotalQna() throws SQLException {
+			int n = 0 ;
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " SELECT COUNT(*) AS NOANSWERCOUNT "
+						+ " FROM TBL_QNA Q "
+						+ " LEFT JOIN TBL_QNA_ANSWER A "
+						+ " ON Q.QNA_ID = A.QNA_ID "
+						+ " WHERE A.QNA_ID IS NULL " ;
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					n = rs.getInt(1);
+				}
+				
+				
+			}finally {
+				close();
+			}
+			
+			return n ;
+		}
+
+	
+
+	
 
 		@Override
 		public int getOrderListTotalPage(Map<String, String> paraMap) throws SQLException {
@@ -1554,7 +1624,5 @@ public class MemberDAO implements InterMemberDAO {
 			return orders;
 		}
 
-		
-		
 
 }

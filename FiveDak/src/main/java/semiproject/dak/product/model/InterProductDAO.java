@@ -94,4 +94,7 @@ public interface InterProductDAO {
 	// 제품 등록하는 메소드 
 	int insertProduct(ProductDTO pdto) throws SQLException;
 
+	// 제품 등록을 위해 BrandNum 가져오기 
+	int getBrandNum(String brandName)  throws SQLException ;
+
 }
