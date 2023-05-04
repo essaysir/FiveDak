@@ -1340,15 +1340,18 @@ public class MemberDAO implements InterMemberDAO {
 	         try {
 	            conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
 	         
-	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + " from (  select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + "        from ( select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + "               from tbl_qna ";
-	            
+	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT , ANSWER_ID "
+	            		+ " from (   "
+	            		+ " select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT  , ANSWER_ID"
+	            		+ " from  "
+	            		+ " ( select Q.QNA_ID, Q.QNA_MEMBER_ID, Q.QUESTION_TITLE, Q.QUESTION_CONTENT, Q.QUESTION_CREATED_AT  , A.ANSWER_ID  "
+	            		+ " from tbl_qna Q LEFT JOIN TBL_QNA_ANSWER A "
+	            		+ " ON Q.QNA_ID = A.QNA_ID  ";
+	             
 	            String id = paraMap.get("id");
 	            
 	            if(!"admin".equalsIgnoreCase(id)) {
-	               sql += " where QNA_MEMBER_ID = ? ";
+	               sql += " WHERE Q.QNA_MEMBER_ID = ? ";
 	            }
 	            sql += "               order by QUESTION_CREATED_AT asc "
 	                + "               ) A "
@@ -1381,6 +1384,12 @@ public class MemberDAO implements InterMemberDAO {
 	               qnadto.setQUESTION_TITLE(rs.getString("QUESTION_TITLE"));
 	               qnadto.setQUESTION_CONTENT(rs.getString("QUESTION_CONTENT"));
 	               qnadto.setQUESTION_CREATED_AT(rs.getString("QUESTION_CREATED_AT"));
+	               if ( rs.getString("ANSWER_ID") == null) {
+	            	   qnadto.setQUESTION_STATUS("미답변");
+	               }
+	               else {
+	            	   qnadto.setQUESTION_STATUS("답변완료");
+	               }
 	               
 	               QNAList.add(qnadto);
 	            }  // end of while(rs.next())

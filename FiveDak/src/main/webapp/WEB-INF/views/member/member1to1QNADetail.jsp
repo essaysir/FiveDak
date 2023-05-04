@@ -54,7 +54,7 @@
 			 	<thead class="thead-light">
 			 		<tr>
 			 			<th> 관리자의 답변</th>
-			 			<th style="text-align: right;">글 번호 : ${adminQnaDTO.ANSWER_ID}</th>
+			 			<th style="text-align: right;"></th>
 			 		</tr>
 			 		<tr style="">	
 					 	<td>작성자 : ADMIN </td>
