@@ -939,8 +939,12 @@ button.btn_review_write {
                                                         </div><!--// column  -->
                                                         <div class="column price text-left"><span class="num"><fmt:formatNumber type="number" value="${orderdetail.pricePerUnit * orderdetail.orderQuantity}"  pattern="#,###"/></span>원</div>
                                                         <div class="column dlv">
+                                                        	<c:if test="${orderdetail.reviewStatus eq 1 || orderdetail.reviewStatus eq 0}">
                                                         	<button type="button" id="btnCommentOK" class="btn_review_write" onclick="goReviewWrite('${orderdetail.orderDetailProd.prodNum}','${order.orderSerial }')"><i class="fa-solid fa-pen"></i> 후기작성</button>
-                                                            <!-- <em class="btn-option btn-default"><span class="text-grey3">작성완료</span></em> -->
+                                                        	</c:if>
+                                                        	<c:if test="${orderdetail.reviewStatus eq 2 }">
+                                                            <em class="btn-option btn-default"><span class="text-grey3">작성완료</span></em>
+                                                            </c:if>
                                                                                     </div>
                                                     </div>
                                                 </div><!--// prd-info-area -->
