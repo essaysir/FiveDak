@@ -1,14 +1,4 @@
-var maxLength = 20;
-	// 글자수를 체크하고 생략 부호("...")를 붙여주는 함수
-	  function truncateText() {
-	    $('td.prodName').each(function() {
-	      var text = $(this).text();
-	      if (text.length > maxLength) {
-	        var truncatedText = text.substring(0, maxLength) + '...';
-	        $(this).text(truncatedText);
-	      }
-	    });
-	  } // END OF  FUNCTION TRUNCATETEXT() {<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>

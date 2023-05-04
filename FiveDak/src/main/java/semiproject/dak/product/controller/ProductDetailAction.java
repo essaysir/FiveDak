@@ -14,6 +14,7 @@ import semiproject.dak.product.model.ProductDTO;
 
 public class ProductDetailAction extends AbstractController {
 
+
    @Override
    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
       String prodNum = request.getParameter("prodNum");
@@ -37,6 +38,7 @@ public class ProductDetailAction extends AbstractController {
       super.setViewPage("/WEB-INF/views/product/prodDetail.jsp");
       
       
+
 
    }
 

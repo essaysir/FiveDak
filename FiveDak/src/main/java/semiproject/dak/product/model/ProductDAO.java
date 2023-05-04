@@ -659,15 +659,62 @@ public class ProductDAO implements InterProductDAO {
 		return n;
 	}
 	
+	//관리자 페이지에서 특정 제품 번호에 해당하는 제품의 상세정보 가져오기 
+	   @Override
+	   public ProductDTO selectOneProduct(String prodNum) throws SQLException {
+	   
+	         ProductDTO pdto = null;
+	         
+	         try {
+	            conn = ds.getConnection();
+	            
+	            String sql=" select product_id, product_name, product_image_url, category_id, category_name, brand_id, brand_name, product_price, product_discount, product_stock, product_sales, average_rating, sysdate "
+	                    + " from tbl_product P join tbl_brand B "
+	                    + " on P.PRODUCT_BRAND_ID = B.brand_id "
+	                    + " join tbl_category C "
+	                    + " on P.PRODUCT_CATEGORY_ID = C.CATEGORY_ID "
+	                    + " where product_id = ? ";
+	                      
+	            pstmt = conn.prepareStatement(sql);
+	            
+	            pstmt.setString(1, prodNum);
+	            
+	            rs = pstmt.executeQuery();
+	         
+	            if(rs.next()) {
+	               pdto = new ProductDTO();
+	               pdto.setProdNum(rs.getInt("PRODUCT_ID"));
+	               pdto.setProdName(rs.getString("PRODUCT_NAME"));
+	               pdto.setProdImage1(rs.getString("PRODUCT_IMAGE_URL"));
+	               pdto.setProdPrice(rs.getInt("PRODUCT_PRICE"));
+	               pdto.setProdDiscount(rs.getInt("PRODUCT_DISCOUNT"));
+	               pdto.setProdStock(rs.getInt("PRODUCT_STOCK"));
+	               pdto.setProdSales(rs.getInt("PRODUCT_SALES"));
+	               pdto.setProdAvgRating(rs.getDouble("AVERAGE_RATING"));
+	               
+	               CategoryDTO cdto = new CategoryDTO();
+	               cdto.setCateId(rs.getInt("CATEGORY_ID"));
+	            cdto.setCateName(rs.getString("CATEGORY_NAME")); 
+	            pdto.setCateDTO(cdto);
+	         
+	               BrandDTO bdto = new BrandDTO();
+	               bdto.setBrandId(rs.getInt("BRAND_ID"));
+	               bdto.setBrandName(rs.getString("BRAND_NAME"));
+	               pdto.setBrandDTO(bdto);
+	            }   
+	         
+	         }finally {
+	            close();
+	         }
+	         return pdto;
+	            
+	         
+	   }
+	   
+	   
+	           	
 	
-	// 특정 제품 번호에 해당하는 제품의 상세정보 가져오기 
-	@Override
-	public ProductDTO selectOneProduct(String prodNum) throws SQLException {
 	
-		
-		return null;
-	}
-
 	
 
 
@@ -1638,6 +1685,46 @@ public class ProductDAO implements InterProductDAO {
 		
 		return BrandNum ;
 	}
+
+	  //관리자 페이지에서 제품정보를 수정하는 메소드   
+		@Override
+		public int updateProduct(ProductDTO pdto) throws SQLException {
+
+			int result = 0;
+
+			try {
+				conn = ds.getConnection();   
+
+				String sql = " update tbl_product set product_name = ? "
+						   + "       				 , product_category_id = ? " 
+						   + "		 				 , product_brand_id = ? "  
+						   + "                       , product_price = ? "
+						   + "                       , product_discount = ? "
+						   + "                       , product_stock = ? "
+						   + " where product_id = ? ";
+
+				pstmt = conn.prepareStatement(sql);
+
+
+				System.out.println(pdto.getFk_prodCateNum());
+				System.out.println(pdto.getFk_prodBrandNum());
+
+				pstmt.setString(1, pdto.getProdName());		
+				pstmt.setInt(2, pdto.getFk_prodCateNum()); 
+				pstmt.setInt(3, pdto.getFk_prodBrandNum()); 
+				pstmt.setInt(4, pdto.getProdPrice());
+				pstmt.setInt(5, pdto.getProdDiscount());
+				pstmt.setInt(6, pdto.getProdStock());
+				pstmt.setInt(7, pdto.getProdNum());
+
+				result = pstmt.executeUpdate();
+
+			} finally {
+				close();
+			}
+
+			return result;
+		}
 	
 
 	

@@ -72,19 +72,19 @@ public class AdminShowMemberAction extends AbstractController {
 		 int loop = 1; 	
 		 int pageNo  = ( ( Integer.parseInt(ShowPage) - 1)/blockSize ) * blockSize + 1;
 		
-		 pageBar += "<li class='page-item'><a class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage=1'>&lt;&lt;</a></li>"; 
+		 pageBar += "<li class='page-item'><a style='color: #FF7E32;' class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage=1'>&lt;&lt;</a></li>"; 
 		
 		 if(pageNo != 1) {
-		 	pageBar += "<li class='page-item'><a class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+(pageNo-1)+"'>[이전페이지]</a></li>"; 
+		 	pageBar += "<li class='page-item'><a style='color: #FF7E32;' class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+(pageNo-1)+"'>[이전페이지]</a></li>"; 
 	  	 }
 		
 		 while( !(loop > blockSize || pageNo > ShowMemberTotalPage)) { 
 			
 			if(pageNo == Integer.parseInt(ShowPage)) {
-				pageBar += "<li class='page-item active'><a style='background-color: #FF7E32; color:black; border-color : #FF7E32;' class='page-link' href= '#'>" + pageNo + "</a></li>";    
+				pageBar += "<li class='page-item active'><a style='background-color: #FF7E32; color:white; border-color : #FF7E32;' class='page-link' href= '#'>" + pageNo + "</a></li>";    
 			}																
 			else {
-				pageBar += "<li class='page-item'><a style='color:black;' class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+pageNo+"'>" + pageNo + "</a></li>"; 
+				pageBar += "<li class='page-item'><a style='color: #FF7E32;' class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+pageNo+"'>" + pageNo + "</a></li>"; 
 			}
 			
 			loop++;  
@@ -95,10 +95,10 @@ public class AdminShowMemberAction extends AbstractController {
 		
 		
 		 if(pageNo <= ShowMemberTotalPage) {
-			pageBar += "<li class='page-item'><a class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+pageNo+"'>[다음페이지]</a></li>"; 
+			pageBar += "<li class='page-item'><a style='color: #FF7E32;' class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+pageNo+"'>[다음페이지]</a></li>"; 
 		 }
 
-		 pageBar += "<li class='page-item'><a class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+ShowMemberTotalPage+"'>&gt;&gt;</a></li>"; 
+		 pageBar += "<li class='page-item'><a style='color: #FF7E32;' class='page-link' href='adminShowMember.dak?MemberSearch="+MemberSearch+"&ShowPage="+ShowMemberTotalPage+"'>&gt;&gt;</a></li>"; 
 		
 		
 		

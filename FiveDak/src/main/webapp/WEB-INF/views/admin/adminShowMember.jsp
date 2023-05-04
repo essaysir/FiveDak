@@ -78,7 +78,7 @@
 			  </tr>
 			  <tbody>
 			  	<c:forEach var="showMember" items="${requestScope.memberShowList}" varStatus="loop">
-					 <tr class="ShowMemberDetail"  <c:if test="${loop.first}">style="background-color:  #FF7E32 ;"</c:if>>
+					 <tr class="ShowMemberDetail"  <c:if test="${loop.first}">style="background-color:  #ffa64d ;"</c:if>>
 					 	
 					 	<td id="ShowMemberNo">${showMember.mbrNum}</td>
 					 	<td id="ShowMemberID2">${showMember.mbrId}</td>
