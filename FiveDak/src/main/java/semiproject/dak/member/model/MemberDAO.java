@@ -1446,7 +1446,7 @@ public class MemberDAO implements InterMemberDAO {
 	            if(!"admin".equalsIgnoreCase(id)) {
 	               sql += " WHERE Q.QNA_MEMBER_ID = ? ";
 	            }
-	            sql += "               order by QUESTION_CREATED_AT asc "
+	            sql += "               order by QUESTION_CREATED_AT desc "
 	                + "               ) A "
 	                + "      ) B "
 	                + "where RNO BETWEEN ? and ? ";

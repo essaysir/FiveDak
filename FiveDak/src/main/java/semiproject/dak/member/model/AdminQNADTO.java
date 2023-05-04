@@ -7,7 +7,7 @@ public class AdminQNADTO {
 	private String ANSWER_MEMBER_ID;
 	private String ANSWER_CONTENT;
 	private String ANSWER_CREATED_AT;
-	private String ANSWER_STATUS ;
+	private String ANSWER_STATUS;
 	
 	public String getANSWER_STATUS() {
 		return ANSWER_STATUS;
