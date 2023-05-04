@@ -1421,6 +1421,64 @@ public class MemberDAO implements InterMemberDAO {
 			
 		}
 
+		// 관리자 답변 보여주는 메소드
+		@Override
+		public AdminQNADTO getAdminQna(String qnaId) throws SQLException {
+			AdminQNADTO qnadto = null ;
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " select ANSWER_ID , QNA_ID , ANSWER_MEMBER_ID, ANSWER_CONTENT , ANSWER_CREATED_AT  "
+						+ " from tbl_qna_answer  where QNA_ID = ?  ";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, qnaId);
+				rs = pstmt.executeQuery();
+				if ( rs.next()) {
+					qnadto = new AdminQNADTO();
+					qnadto.setANSWER_ID(rs.getInt("ANSWER_ID"));
+					qnadto.setANSWER_MEMBER_ID(rs.getString("ANSWER_MEMBER_ID"));
+					qnadto.setANSWER_CONTENT(rs.getString("ANSWER_CONTENT"));
+					qnadto.setANSWER_CREATED_AT(rs.getString("ANSWER_CREATED_AT"));
+				}
+				
+			}finally {
+				close();
+			}
+			
+			return qnadto ;
+		}
+
+		@Override
+		public int getTotalQna() throws SQLException {
+			int n = 0 ;
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " SELECT COUNT(*) AS NOANSWERCOUNT "
+						+ " FROM TBL_QNA Q "
+						+ " LEFT JOIN TBL_QNA_ANSWER A "
+						+ " ON Q.QNA_ID = A.QNA_ID "
+						+ " WHERE A.QNA_ID IS NULL " ;
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					n = rs.getInt(1);
+				}
+				
+				
+			}finally {
+				close();
+			}
+			
+			return n ;
+		}
+
+	
+
 	
 		
 		

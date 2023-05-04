@@ -49,22 +49,27 @@
 		
 		<div style="border: solid 1px black; width:100%; margin-bottom: 20px;"></div>		
 		
-				
-		<table class="table">
-		 	<thead class="thead-light">
-		 		<tr>
-		 			<th>제목 : ${requestScope.qnatitle}</th>
-		 			<th style="text-align: right;">글 번호 : ${requestScope.qnaId}</th>
-		 		</tr>
-		 		<tr style="">	
-				 	<td>작성자 : ${requestScope.qnauserid}</td>
-				 	<td style="text-align: right;">작성일자 : ${requestScope.qnacreated_at}</td>	
-				</tr>
-			</thead>			
-		</table>		 	
+		<c:if test="${not empty adminQnaDTO}">		
+			<table class="table">
+			 	<thead class="thead-light">
+			 		<tr>
+			 			<th> 관리자의 답변</th>
+			 			<th style="text-align: right;">글 번호 : ${adminQnaDTO.ANSWER_ID}</th>
+			 		</tr>
+			 		<tr style="">	
+					 	<td>작성자 : ADMIN </td>
+					 	<td style="text-align: right;">작성일자 : ${adminQnaDTO.ANSWER_CREATED_AT}</td>	
+					</tr>
+				</thead>			
+			</table>		 	
+		</c:if>
 
-
-		<div style="border-top: solid 1px black; padding: 20px; margin-bottom: 100px;">${requestScope.qnacontent}</div>
+		<c:if test="${empty adminQnaDTO }">
+			<h2 style="color:navy"> 아직 답변이 등록되지 않았습니다.</h2>
+			<h2 style="color:navy"> 조금만 기다려주시면 감사하겠습니다. </h2>
+			<h2 style="color:navy"> 빠른 시일내에 답변 드리겠습니다.</h2>
+		</c:if>
+		<div style="border-top: solid 1px black; padding: 20px; margin-bottom: 100px;">${adminQnaDTO.ANSWER_CONTENT}</div>
 				
 				
 				
