@@ -822,12 +822,12 @@ public class ProductDAO implements InterProductDAO {
 				rdto.setReview_score(rs.getDouble("review_score"));
 				rdto.setReview_content(rs.getString("review_content"));
 				rdto.setReview_date(rs.getDate("review_date"));
-				if ( rs.getString("RIMAGE") != null ) {
+				if ( rs.getString("RIMAGE") != "noimage.png" ) {
 					rdto.setPimage(rs.getString("RIMAGE"));
 				}
 				
-				if ( rs.getString("RIMAGE1") != null ) {
-					rdto.setPimage(rs.getString("RIMAGE1"));
+				if ( rs.getString("RIMAGE1") != "noimage.png" ) {
+					rdto.setPimage1(rs.getString("RIMAGE1"));
 				}
 				
 				arraylist.add(rdto);

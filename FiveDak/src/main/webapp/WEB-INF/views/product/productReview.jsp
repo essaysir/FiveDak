@@ -4,19 +4,21 @@
 <% String ctxPath = request.getContextPath(); %>
 <h3 style="font-weight:bold; font-size:12pt;">구매후기</h3>
 
-<div class="reviewBox">
+<div class="reviewBox" style="margin:auto;">
 	<c:forEach var="rdto" items="${requestScope.reviewlist}">
-	         <div class="reviewContent">
-	            <c:if test="${rdto.pimage != null}">
-	            	<img src="<%=ctxPath%>/images/${rdto.pimage}" style="width:150px; height: 80px;"/>
+	         <div style="float:left" class="reviewContent">
+	            <c:if test="${ rdto.pimage != 'noimage.png' }">
+	            	<img clase="image" src="<%=ctxPath%>/images/${rdto.pimage}" style="width:150px; height: 148px;"/>
 	            </c:if>
-	            <c:if test="${rdto.pimage1 != null}">
-	            	<img src="<%=ctxPath%>/images/${rdto.pimage1}" style="width:150px; height: 80px;"/>
+	            <c:if test="${ rdto.pimage1 != 'noimage.png'}">
+	            	<img src="<%=ctxPath%>/images/${rdto.pimage1}" style="width:150px; height: 148px;"/>
 	            </c:if>
-	            <span>평점 : ${rdto.review_score}</span><br>
-	            <span>닉네임 : ${rdto.review_member_id }  | 날짜 :${rdto.review_date}  </span><br>
-	            <span>${rdto.review_content }</span>
 	         </div>
+	         <ul class="list-group" style="font-weight: bold; margin:auto;">
+				  <li style="width:40%;" class="list-group-item">평점 : ${rdto.review_score}</li>
+				  <li style="width:40%;" class="list-group-item">닉네임 : ${rdto.review_member_id }  | 날짜 :${rdto.review_date}  </li>
+				  <li style="width:40%;" class="list-group-item">${rdto.review_content }</li>
+			</ul>
 	</c:forEach>
 </div>
 

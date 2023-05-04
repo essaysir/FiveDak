@@ -312,7 +312,7 @@
    
    
       <div >
-         <button type="button" class="joinbtn position-relative" style="left:-20px; margin-left:20px;" href="<%= ctxPath %>/register.dak"><span>회원가입</span></button>
+         <button type="button" class="joinbtn position-relative" style="left:-20px; margin-left:20px;" href="<%= ctxPath %>/register.dak">회원가입</button>
       </div>
       
 
