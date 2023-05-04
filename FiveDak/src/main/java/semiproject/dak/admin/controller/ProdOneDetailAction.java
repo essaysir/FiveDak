@@ -10,17 +10,19 @@ import semiproject.dak.product.model.ProductDTO;
 
 public class ProdOneDetailAction extends AbstractController {
 
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String prodNum = request.getParameter("prodNum");
-		
-		InterProductDAO pdao = new ProductDAO();
-		
-		ProductDTO pdto = pdao.selectOneProduct(prodNum);
-		
-		super.setRedirect(false);
-		super.setViewPage("/WEB-INF/views/admin/productDetail.jsp");
+   @Override
+   public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+      String prodNum = request.getParameter("prodNum");
+      
+      InterProductDAO pdao = new ProductDAO();
+      
+      ProductDTO pdto = pdao.selectOneProduct(prodNum);
+   //   System.out.println(pdto);
+   //   System.out.println(pdto.getBrandDTO().getBrandName());
+      request.setAttribute("pdto", pdto);
+      super.setRedirect(false);
+      super.setViewPage("/WEB-INF/views/admin/productDetail.jsp");
 
-	}
+   }
 
 }
