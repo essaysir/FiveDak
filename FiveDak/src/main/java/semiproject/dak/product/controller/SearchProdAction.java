@@ -101,12 +101,12 @@ public class SearchProdAction extends AbstractController {
 		// pageNo 는 페이지 바에서 첫번째로 보여지는 번호이다.
 		
 		// **** [맨처음][이전] 만들기 ***** //
-		
-		pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
-				+ "searchWord="+searchWord+"&currentShowPageNo="
-				+1+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
-				+"'>맨처음</a></li>" ;
-				
+		if (  Integer.parseInt(currentShowPageNo) != 1 ) {
+			pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
+					+ "searchWord="+searchWord+"&currentShowPageNo="
+					+1+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
+					+"'>맨처음</a></li>" ;
+		}		
 		
 		if( pageNo != 1) {
 				pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
@@ -140,12 +140,12 @@ public class SearchProdAction extends AbstractController {
 					+pageNo+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
 					+"'>다음</a></li>" ;
 		}
-		
-		pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
-				+"searchWord="+searchWord+"&currentShowPageNo="
-				+totalPage+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
-				+"'>마지막</a></li>" ;
-		
+		if ( Integer.parseInt(currentShowPageNo) != totalPage ) {
+			pageBar += "<li class='page-item'><a class='page-link' href='searchProd.dak?"
+					+"searchWord="+searchWord+"&currentShowPageNo="
+					+totalPage+"&sizePerPage="+sizePerPage+"&orderBy="+orderBy+"&orderWay="+orderWay
+					+"'>마지막</a></li>" ;
+		}
 		
 		request.setAttribute("pageBar", pageBar);
 		
