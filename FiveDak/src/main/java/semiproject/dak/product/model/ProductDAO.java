@@ -793,11 +793,12 @@ public class ProductDAO implements InterProductDAO {
 			conn = ds.getConnection(); 
 			
 			String sql = " SELECT RNO, review_id, review_member_id, review_product_id , review_score, review_content , review_date "
+					+ " , RIMAGE , RIMAGE1"
 					+ " FROM "
 					+ " ( "
 					+ " select row_number() over (order by review_date DESC) AS RNO   "
 					+ " , review_id, review_member_id, review_product_id , review_score, review_content  "
-					+ " , review_date "
+					+ " , review_date , RIMAGE , RIMAGE1 "
 					+ " from tbl_review "
 					+ " where review_product_id = ? "
 					+ " )V "
@@ -821,6 +822,13 @@ public class ProductDAO implements InterProductDAO {
 				rdto.setReview_score(rs.getDouble("review_score"));
 				rdto.setReview_content(rs.getString("review_content"));
 				rdto.setReview_date(rs.getDate("review_date"));
+				if ( rs.getString("RIMAGE") != null ) {
+					rdto.setPimage(rs.getString("RIMAGE"));
+				}
+				
+				if ( rs.getString("RIMAGE1") != null ) {
+					rdto.setPimage(rs.getString("RIMAGE1"));
+				}
 				
 				arraylist.add(rdto);
 			}
@@ -1199,7 +1207,6 @@ public class ProductDAO implements InterProductDAO {
 			pstmt.setString(6, paraMap.get("rimage"));
 			pstmt.setString(7, paraMap.get("rimage1"));
 			n1 = pstmt.executeUpdate();
-			System.out.println("인서트n1  : " +n1);
 			
 			if(n1 == 1) {
 				
@@ -1212,7 +1219,6 @@ public class ProductDAO implements InterProductDAO {
 				
 				n2 = pstmt.executeUpdate();
 				
-				System.out.println("인서트n2 : " +n2);
 			}
 			
 			if(n2 == 1) {
@@ -1230,7 +1236,6 @@ public class ProductDAO implements InterProductDAO {
 				pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
 				
 				n3 = pstmt.executeUpdate();
-				System.out.println("인서트n3 : " +n3);
 			}
 			
 			
@@ -1506,7 +1511,6 @@ public class ProductDAO implements InterProductDAO {
 	        
 	        n1 = pstmt.executeUpdate();
 
-	        System.out.println("n1 :" +n1);
 	        
 	        if (n1 == 1) {
 
@@ -1520,7 +1524,6 @@ public class ProductDAO implements InterProductDAO {
 	            pstmt.setString(2, paraMap.get("orderSerial"));
 
 	            n2 = pstmt.executeUpdate();
-	            System.out.println("n2 :" +n2);
 	        }
 
 	        if (n2 == 1) {
@@ -1539,7 +1542,6 @@ public class ProductDAO implements InterProductDAO {
 	            pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
 
 	            n3 = pstmt.executeUpdate();
-	            System.out.println("n3 :" +n3);
 	        }
 
 	        if (n1 * n2 * n3 > 0) {
