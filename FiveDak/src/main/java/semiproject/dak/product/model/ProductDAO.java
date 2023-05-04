@@ -841,12 +841,12 @@ public class ProductDAO implements InterProductDAO {
 			
 			String sql = " SELECT ceil(count(*)/ 5 ) "+
 					"        from tbl_review "+
-					"        where review_product_id = 24 " ;
+					"        where review_product_id = ? " ;
 			
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			// pstmt.setString(1, paraMap.get("prodNum") );
+			pstmt.setString(1, paraMap.get("prodNum") );
 			
 			rs = pstmt.executeQuery();
 			
