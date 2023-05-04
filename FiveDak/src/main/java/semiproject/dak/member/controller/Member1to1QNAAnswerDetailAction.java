@@ -53,11 +53,6 @@ public class Member1to1QNAAnswerDetailAction extends AbstractController {
 		
 		if("post".equalsIgnoreCase(method)) {	// POST 이라면   이따 post 로 바꾸기
 			
-			HttpSession session = request.getSession();
-	  		
-			MemberDTO userid = (MemberDTO) session.getAttribute("loginuser");  // 세션값 가져오기 
-			
-			String id = userid.getMbrId();  // 세션값 String 타입으로 저장 
 			
 			
 			String qnaId = request.getParameter("qnaId");
@@ -74,7 +69,6 @@ public class Member1to1QNAAnswerDetailAction extends AbstractController {
             }
             
             else {
-            	InterMemberDAO mdao = new MemberDAO();
             	AdminQNADTO adminQnaDTO = mdao.getAdminQna(qnaId);
             	
             	request.setAttribute("adminQnaDTO", adminQnaDTO);
