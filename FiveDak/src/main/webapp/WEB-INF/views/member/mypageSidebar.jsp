@@ -144,7 +144,7 @@
 	                    <a href="" class="menu">주문관리</a>
 	                    <ul class="menu-list">
 	                        <li class="check">
-	                        	<a class="list" href="">주문내역</a>
+	                        	<a class="list" href="<%= request.getContextPath() %>/mypage/orderlist.dak">주문내역</a>
 	                        </li>
 	                        <li class="check">
 	                        	<a class="list" href="">취소/반품 내역</a>
