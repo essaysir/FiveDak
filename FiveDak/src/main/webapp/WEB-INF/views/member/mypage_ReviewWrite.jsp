@@ -251,7 +251,7 @@ div > ul > li {
 
 
 </script>
-	<form name="reviewRegister">
+	<form name="reviewRegister"  enctype="multipart/form-data">
 		<div class="" style="margin-left:40px; border-bottom: solid 1px #ccc;">
 			<h2 style="padding-bottom: 10px; margin: 20px 0px 20px 0px; color:#333; border-bottom : solid 1px #333;">후기작성</h2>
 			<div class="row">
@@ -262,7 +262,7 @@ div > ul > li {
 			  	    <div style="margin-bottom: 15px;">
 			  	  		<span style="color:#666666;">${odto.orderSerial}</span>
 			  	    </div>
-				  	    <a href="#" style="color:#333; ">[${odto.prod.brandDTO.brandName}]${odto.prod.prodName}</a>
+				  	    <a href="<%= ctxPath%>/product/productDetail.dak?prodNum=${odto.prod.prodNum}" style="color:#333; ">[${odto.prod.brandDTO.brandName}]${odto.prod.prodName}</a>
 				  	    <input type="hidden" name="product_id" value="${odto.prod.prodNum}"/>
 				  	    <input type="hidden" name="orderSerial" value="${odto.orderSerial}"/>
 			    </div>
@@ -297,11 +297,9 @@ div > ul > li {
                                 <i class="fa-solid fa-camera"></i>&nbsp;사진 첨부<span style="color: #666; font-size:13px;"></span>
                                 <div style="margin-top:20px;">
                                   <button type="button" id="fileadd1to1" class="image_button" style="width: 100px; height: 100px;"><i class="fa-solid fa-plus" style="color:#ccc"></i></button> 
-                               <input type="file" accept="image/*" id="fileInput1" style="display:none">
+                               <input type="file" accept="image/*" id="fileInput1" name="rimage" style="display:none">
                                <button type="button" id="fileadd1to2" class="image_button" style="width: 100px; height: 100px;"><i class="fa-solid fa-plus" style="color:#ccc"></i></button> 
-                               <input type="file" accept="image/*" id="fileInput2" style="display:none">
-                               <button type="button" id="fileadd1to3" class="image_button" style="width: 100px; height: 100px;"><i class="fa-solid fa-plus" style="color:#ccc"></i></button> 
-                               <input type="file" accept="image/*" id="fileInput3" style="display:none">
+                               <input type="file" accept="image/*" id="fileInput2" name="rimage1"  style="display:none">
                                      <span style="margin-top: 10px;">- 최대 15MB 이하의 이미지 파일만 첨부 가능합니다.</span>
                                 </div>
                              </div>

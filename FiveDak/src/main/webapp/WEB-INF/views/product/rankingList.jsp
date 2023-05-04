@@ -169,7 +169,7 @@
 										"</div>"+
 										"<div class='col-md-2 text-right' style='margin-top:30px;'>"+
 											"<ul style='list-style-type: none; margin-right: 30px;'>"+
-												"<li><a href='#'><i class='fa-solid fa-cart-shopping cart_icon'></i></a> &nbsp;|&nbsp; <a href='#'><i class='fa-regular fa-heart'></i></a></li>"+
+												"<li><a href='#' onclick='goCart("+item.product_id+")'><i class='fa-solid fa-cart-shopping cart_icon'></i></a> &nbsp;|&nbsp; <a href='#'><i class='fa-regular fa-heart'></i></a></li>"+
 											"</ul>"+
 										"</div>"+
 									"</li>"+				
@@ -200,7 +200,36 @@
 		});					        
 	}// end of function displayHIT() -----------------------------------------------------------
 	
-
+	function goCart(prodNum){
+	    
+	         
+	         const oqty ="1";
+	         
+	          $.ajax({
+	            url:"<%=request.getContextPath() %>/product/insertCart.dak",
+	            data:{ "oqty":oqty 
+	               , "prodNum":prodNum
+	               } ,
+	            type:"POST",
+	            async:false ,
+	            dataType:"json",
+	            success:function(json) {
+	               if ( json.result == "true" ){
+	                  alert("장바구니에이 추가되셨습니다.");
+	               }
+	               else {
+	                  alert("오류가 발생했습니다.");
+	               }
+	               
+	            },
+	               error: function(request, status, error){
+	                  alert("장바구니에 담으려면 먼저 로그인 부터 하세요!!");
+	               }
+	          
+	          
+	          }); // end of $.ajax 
+	
+	}
 </script>
 
 		<div class="row my_ranking" >
