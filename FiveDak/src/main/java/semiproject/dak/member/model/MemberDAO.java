@@ -1108,7 +1108,7 @@ public class MemberDAO implements InterMemberDAO {
 				tierDTO.setTierId(rs.getInt("TIER_ID"));
 				tierDTO.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
 				tierDTO.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
-				tierDTO.setTierImage("TIER_IMAGE");
+				tierDTO.setTierImage(rs.getString("TIER_IMAGE"));
 				tierDTO.setNextTierName(rs.getString("NEXT_TIER_NAME"));
 				tierDTO.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
 				loginuser.setMbrTier(tierDTO);
