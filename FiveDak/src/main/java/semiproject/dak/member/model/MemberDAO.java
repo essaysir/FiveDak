@@ -17,6 +17,10 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import semiproject.dak.product.model.BrandDTO;
+import semiproject.dak.product.model.OrderDTO;
+import semiproject.dak.product.model.OrderDetailDTO;
+import semiproject.dak.product.model.ProductDTO;
 import semiproject.dak.security.AES256;
 import semiproject.dak.security.SecretMyKey;
 import semiproject.dak.security.Sha256;
@@ -1421,6 +1425,7 @@ public class MemberDAO implements InterMemberDAO {
 			
 		}
 
+
 		// 관리자 답변 보여주는 메소드
 		@Override
 		public AdminQNADTO getAdminQna(String qnaId) throws SQLException {
@@ -1480,7 +1485,135 @@ public class MemberDAO implements InterMemberDAO {
 	
 
 	
-		
-		
+
+		@Override
+		public int getOrderListTotalPage(Map<String, String> paraMap) throws SQLException {
+			int totalOrder = 0;
+			
+			try {
+				
+				conn = ds.getConnection();
+				
+				
+				String sql = " SELECT COUNT(*) FROM tbl_order "
+						+ " WHERE order_member_id = ? AND order_date >= ? AND order_date <= ? ";
+
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, paraMap.get("userid"));
+				pstmt.setString(2, paraMap.get("startdate"));
+				pstmt.setString(3, paraMap.get("enddate"));
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					totalOrder = rs.getInt(1);
+				}
+				
+				
+				
+				
+			}finally { 
+				close();
+			}
+				
+				
+			return totalOrder;
+		}
+
+		@Override
+		public List<OrderDTO> getOrdersByDateRange(Map<String, String> paraMap) throws SQLException {
+			List<OrderDTO> orders = new ArrayList<>();
+			
+			
+			try {
+				conn = ds.getConnection();
+				String sql = " SELECT o.order_serial, to_char(o.order_date,'yyyy-mm-dd') as order_date , o.order_total_price , o.recipient_name, o.shipping_postcode, o.shipping_address, o.shipping_detail_address, o.recipient_mobile, o.order_message, o.order_status, od.order_detail_product_id, od.order_quantity, od.price_per_unit, od.review_status, p.product_name, p.product_image_url, p.product_brand_id, b.brand_name "
+						+ "FROM tbl_order o "
+						+ "JOIN tbl_order_detail od ON o.order_serial = od.fk_order_serial "
+						+ "JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+						+ "JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+						+ "WHERE o.order_date >= ? AND o.order_date <= ? and o.order_member_id = ? "
+						+ "AND o.order_serial IN ( "
+						+ "  SELECT order_serial FROM ( "
+						+ "    SELECT order_serial, ROW_NUMBER() OVER (ORDER BY order_serial DESC) AS row_num "
+						+ "    FROM tbl_order "
+						+ "    WHERE order_date >= ? AND order_date <= ? and order_member_id = ? "
+						+ "  ) "
+						+ "  WHERE row_num BETWEEN 0 AND 5 "
+						+ ") "
+						+ "ORDER BY o.order_serial DESC ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				
+				pstmt.setString(1, paraMap.get("startdate"));
+				pstmt.setString(2, paraMap.get("enddate"));
+				pstmt.setString(3, paraMap.get("userid"));
+				pstmt.setString(4, paraMap.get("startdate"));
+				pstmt.setString(5, paraMap.get("enddate"));
+				pstmt.setString(6, paraMap.get("userid"));
+				
+				rs = pstmt.executeQuery();
+				String currentOrderSerial = "";
+				OrderDTO currentOrder = null;
+				List<OrderDetailDTO> orderDetails = null;
+				
+				
+				while(rs.next()) {
+					String orderSerial = rs.getString("order_serial");
+					
+					if(!currentOrderSerial.equals(orderSerial)) {
+						if (currentOrder != null) {
+		                    currentOrder.setOrderdetailList(orderDetails);
+		                    orders.add(currentOrder);
+		                }
+						currentOrderSerial = orderSerial;
+						currentOrder = new OrderDTO();
+						orderDetails = new ArrayList<>();
+						currentOrder.setOrderSerial(orderSerial);
+				        currentOrder.setOrderDate(rs.getString("order_date"));
+				        currentOrder.setOrderTotalPrice(rs.getInt("order_total_price"));
+				        currentOrder.setRecipName(rs.getString("recipient_name"));
+				        currentOrder.setOrderPostcode(rs.getString("shipping_postcode"));
+				        currentOrder.setOrderAddress(rs.getString("shipping_address"));
+				        currentOrder.setOrderDetailAddress(rs.getString("shipping_detail_address"));
+				        currentOrder.setRecipMobile(rs.getString("recipient_mobile"));
+				        currentOrder.setOrderMessage(rs.getString("order_message"));
+				        currentOrder.setOrderStatus(rs.getInt("order_status"));
+					}
+					
+					
+				    OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+				    
+				    orderDetailDTO.setOrderQuantity(rs.getInt("order_quantity"));
+				    orderDetailDTO.setPricePerUnit(rs.getInt("price_per_unit"));
+				    orderDetailDTO.setReviewStatus(rs.getInt("review_status"));
+				    
+				    ProductDTO prod = new ProductDTO();
+				    prod.setProdNum(rs.getInt("order_detail_product_id"));
+				    prod.setProdName(rs.getString("product_name"));
+				    prod.setProdImage1(rs.getString("product_image_url"));
+				    BrandDTO brand = new BrandDTO();
+				    brand.setBrandName(rs.getString("brand_name"));
+				    prod.setBrandDTO(brand);
+				    orderDetailDTO.setOrderDetailProd(prod);
+				    
+				    orderDetails.add(orderDetailDTO);
+				}
+				if (currentOrder != null) {
+		            currentOrder.setOrderdetailList(orderDetails);
+		            orders.add(currentOrder);
+		        }
+				
+				
+			} finally {
+				close();
+			}
+			
+			
+			return orders;
+		}
+
 
 }
