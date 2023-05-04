@@ -1197,10 +1197,9 @@ public class ProductDAO implements InterProductDAO {
 			pstmt.setString(4, paraMap.get("contents"));
 			pstmt.setString(5, paraMap.get("orderSerial"));
 			pstmt.setString(6, paraMap.get("rimage"));
-			pstmt.setString(7, paraMap.get("rimage"));
-			
+			pstmt.setString(7, paraMap.get("rimage1"));
 			n1 = pstmt.executeUpdate();
-		//	System.out.println("n1 : " +n1);
+			System.out.println("인서트n1  : " +n1);
 			
 			if(n1 == 1) {
 				
@@ -1208,13 +1207,12 @@ public class ProductDAO implements InterProductDAO {
 					+ " where order_detail_product_id = ? and fk_order_serial = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
-				
 				pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")));
 				pstmt.setString(2, paraMap.get("orderSerial"));
 				
 				n2 = pstmt.executeUpdate();
 				
-		//		System.out.println("n2 : " +n2);
+				System.out.println("인서트n2 : " +n2);
 			}
 			
 			if(n2 == 1) {
@@ -1228,12 +1226,11 @@ public class ProductDAO implements InterProductDAO {
 					+ "    WHERE product_id = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
-				
 				pstmt.setInt(1, Integer.parseInt(paraMap.get("product_id")) );
 				pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")) );
 				
 				n3 = pstmt.executeUpdate();
-		//		System.out.println("n3 : " +n3);
+				System.out.println("인서트n3 : " +n3);
 			}
 			
 			
@@ -1498,17 +1495,18 @@ public class ProductDAO implements InterProductDAO {
 	        conn.setAutoCommit(false); // 수동커밋으로 바꾼다.
 
 	        String sql = " DELETE FROM tbl_review "
-	                   + " WHERE review_member_id = ? and review_product_id = ? ";
+	                   + " WHERE review_member_id = ? and review_product_id = ? and order_serial = ? ";
 	                  
 
 	        pstmt = conn.prepareStatement(sql);
 	        
 	        pstmt.setString(1, paraMap.get("userid"));
 	        pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
-
+	        pstmt.setString(3, paraMap.get("orderSerial"));
+	        
 	        n1 = pstmt.executeUpdate();
 
-	   //     System.out.println("n1 :" +n1);
+	        System.out.println("n1 :" +n1);
 	        
 	        if (n1 == 1) {
 
@@ -1522,7 +1520,7 @@ public class ProductDAO implements InterProductDAO {
 	            pstmt.setString(2, paraMap.get("orderSerial"));
 
 	            n2 = pstmt.executeUpdate();
-	        //    System.out.println("n2 :" +n2);
+	            System.out.println("n2 :" +n2);
 	        }
 
 	        if (n2 == 1) {
@@ -1541,7 +1539,7 @@ public class ProductDAO implements InterProductDAO {
 	            pstmt.setInt(2, Integer.parseInt(paraMap.get("product_id")));
 
 	            n3 = pstmt.executeUpdate();
-	      //      System.out.println("n3 :" +n3);
+	            System.out.println("n3 :" +n3);
 	        }
 
 	        if (n1 * n2 * n3 > 0) {
