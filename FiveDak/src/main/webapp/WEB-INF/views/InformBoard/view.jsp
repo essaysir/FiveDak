@@ -152,8 +152,31 @@
 .cont {
 	height: 300px;
 }
+.button1 {width:100px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #999; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; border-radius: 3px; background-color: #fff;}
+.button2 {width:100px; margin-right:10px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #c82370; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; border-radius: 3px; background-color: #ff7E32;}
+span.button_gray {color:#555; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;}
+span.button_orange {color:#fff; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
+.button2 span:hover {text-decoration: none!important; background: #ff7232!important; padding:13px 20px 14px 20px; }
+.button1 span:hover {text-decoration: none!important; background: #fafafa!important; padding:13px 20px 14px 20px; }
 
 </style>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+
+	$("span.button_orange").click(function(){
+		
+		const frm = document.boardViewFrm;
+		frm.action = "informBoardEdit.dak";
+		frm.method = "post";
+		frm.submit();
+	});
+	
+});
+
+</script>
 
 <body>
     <div class="board_wrap">
@@ -162,50 +185,62 @@
             <p>공지사항을 안내해드립니다.</p>
         </div>
         <div class="board_view_wrap">
-            <div class="board_view">
-            <c:if test="${empty requestScope.ndto}">
-			   <div class="title">
-                </div>
-                <div class="info">
-                    <dl>
-                        <dt>번호</dt>
-                        <dd></dd>
-                    </dl>
-                    <dl>
-                        <dt>작성일</dt>
-                        <dd></dd>
-                    </dl>
-                </div>
-                <div class="cont">
-                </div>
-			</c:if>
-
-			<c:if test="${not empty requestScope.ndto}">
-                <div class="title">
-                    ${ndto.note_title}
-                </div>
-                <div class="info">
-                    <dl>
-                        <dt>번호</dt>
-                        <dd>${ndto.note_id}</dd>
-                    </dl>
-                    <dl>
-                        <dt>작성일</dt>
-                        <dd>${ndto.note_created_at}</dd>
-                    </dl>
-                </div>
-                <div class="cont">
-                    ${ndto.note_content}
-                </div>
-            </c:if>
+        
+	        <form name="boardViewFrm">
+	            <div class="board_view">
+	            <c:if test="${empty requestScope.ndto}">
+				   <div class="title">
+	                </div>
+	                <div class="info">
+	                    <dl>
+	                        <dt>번호</dt>
+	                        <dd></dd>
+	                    </dl>
+	                    <dl>
+	                        <dt>작성일</dt>
+	                        <dd></dd>
+	                    </dl>
+	                </div>
+	                <div class="cont">
+	                </div>
+				</c:if>
+	
+				<c:if test="${not empty requestScope.ndto}">
+	                <div class="title">
+	                    ${ndto.note_title}
+	                </div>
+	                <div class="info">
+	                    <dl>
+	                        <dt>번호</dt>
+	                        <dd>${ndto.note_id}</dd>
+	                    </dl>
+	                    <dl>
+	                        <dt>작성일</dt>
+	                        <dd>${ndto.note_created_at}</dd>
+	                    </dl>
+	                </div>
+	                <div class="cont">
+	                    ${ndto.note_content}
+	                </div>
+	            </c:if>
+            	</div>
+            </form>
             
-            </div>
-            <div class="bt_wrap">
+            <%-- <div class="bt_wrap">
                 <a href="<%= ctxPath%>/CSC/informBoardList.dak" class="on">목록</a>
                 <c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.mbrId == 'admin'}">
-                	<a href="<%= ctxPath%>/CSC/informBoardEdit.dak">수정</a>
+                	<a href="<%= ctxPath%>/CSC/InformBoardEdit.dak">수정</a>
             	</c:if>
-            </div>
+            </div> --%>
+            
+            <div class="bt_wrap" style="list-style: none">
+            	<button type="button" class="button1" name="button1" onClick="location.href='informBoardList.dak'"><span class="button_gray">목록</span></button>
+            	
+		      	<c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.mbrId == 'admin'}">
+		         	<button type="button" class="button2" name="button2"><span class="button_orange">수정</span></button>
+		      	</c:if>
+		   	</div> 
+            
         </div>
     </div>
 

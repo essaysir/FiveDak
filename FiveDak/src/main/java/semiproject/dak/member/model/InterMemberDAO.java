@@ -93,6 +93,9 @@ public interface InterMemberDAO {
 	// 문의하기 답변하기 
 	int AdmingoQNA(Map<String, String> paraMap)  throws SQLException;
 
+	// 공지사항 수정
+	int boardEdit(Map<String, String> paraMap) throws SQLException;
+
 	
 	
 	

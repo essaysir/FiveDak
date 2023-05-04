@@ -50,12 +50,12 @@
     color: #fff;
 }
 
-.button1 {width:187px; margin-right:2px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #999; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #fff;}
-.button2 {width:187px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #c82370; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #ff7E32;}
-span.button_gray {color:#555; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;}
-span.button_orange {color:#fff; width:187px; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
-.button2 span:hover {text-decoration: none!important; background: #ff7232!important; width:187px; padding:13px 20px 14px 20px; }
-.button1 span:hover {text-decoration: none!important; background: #fafafa!important; width:187px; padding:13px 20px 14px 20px; }
+.button1 {width:100px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #999; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; border-radius: 3px; background-color: #fff;}
+.button2 {width:100px; margin-right:10px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #c82370; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; border-radius: 3px; background-color: #ff7E32;}
+span.button_gray {color:#555; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;}
+span.button_orange {color:#fff; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
+.button2 span:hover {text-decoration: none!important; background: #ff7232!important; padding:13px 20px 14px 20px; }
+.button1 span:hover {text-decoration: none!important; background: #fafafa!important; padding:13px 20px 14px 20px; }
 
 .board_page {
     margin-top: 30px;
@@ -173,7 +173,7 @@ $(document).ready(function(){
 	$("span.button_orange").click(function(){
 		
 		const frm = document.boardWriteFrm;
-		frm.action = "InformBoardWriteEnd.dak";
+		frm.action = "informBoardWriteEnd.dak";
 		frm.method = "post";
 		frm.submit();
 	});

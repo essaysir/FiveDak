@@ -914,7 +914,7 @@ public class MemberDAO implements InterMemberDAO {
 			String sql = " select * "
 					   + " FROM "
 					   + " ( "
-					   + "    select notice_id, notice_title, notice_content, to_char(notice_created_at,'yyyy-mm-dd') "
+					   + "    select rownum AS RNO, notice_id, notice_title, notice_content, to_char(notice_created_at,'yyyy-mm-dd') "
 					   + "    from "
 					   + "    ( "
 					   + "        select * "
@@ -928,15 +928,16 @@ public class MemberDAO implements InterMemberDAO {
 				searchWord = aes.encrypt(searchWord);
 			}
 			*/
+			
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " where " + colname + " like '%' || ? || '%' ";
+				sql += " and " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
 			
 			sql += " order by notice_id desc) V "
 				 + " ) T "
-				 + " where notice_id between ? and ? ";
+				 + " WHERE RNO between ? and ? ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -963,10 +964,10 @@ public class MemberDAO implements InterMemberDAO {
 			while(rs.next()) {
 				NoticeBoardDTO board = new NoticeBoardDTO();
 				
-				board.setNote_id(rs.getInt(1));
-				board.setNote_title(rs.getString(2));
-				board.setNote_content(rs.getString(3));
-				board.setNote_created_at(rs.getString(4));
+				board.setNote_id(rs.getInt(2));
+				board.setNote_title(rs.getString(3));
+				board.setNote_content(rs.getString(4));
+				board.setNote_created_at(rs.getString(5));
 				
 				
 				
@@ -1002,7 +1003,7 @@ public class MemberDAO implements InterMemberDAO {
 			}
 			*/
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " where " + colname + " like '%'|| ? || '%' ";
+				sql += " and " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
@@ -1512,6 +1513,34 @@ public class MemberDAO implements InterMemberDAO {
 
 			
 			
+		}
+
+		
+		@Override
+		public int boardEdit(Map<String, String> paraMap) throws SQLException {
+			
+			int n = 0;
+			
+			try {
+				conn = ds.getConnection(); 
+				
+				String sql = " update tbl_notice set notice_title = ?, notice_content = ? ) "
+						   + " where notice_id = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, paraMap.get("title"));
+				pstmt.setString(2, paraMap.get("content"));
+				pstmt.setString(3, paraMap.get("seq"));
+				
+				n = pstmt.executeUpdate();
+				
+				
+			} finally {
+				close();
+			}
+			
+			return n;
 		}
 
 }

@@ -10,7 +10,7 @@ import semiproject.dak.common.controller.AbstractController;
 import semiproject.dak.member.model.InterMemberDAO;
 import semiproject.dak.member.model.MemberDAO;
 
-public class InformBoardWriteEndAction extends AbstractController {
+public class InformBoardEditEndAction extends AbstractController {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -24,6 +24,7 @@ public class InformBoardWriteEndAction extends AbstractController {
 			
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
+			String seq = request.getParameter("id");
 			/*
 			 * content = content.replaceAll("<", "&lt;"); 
 			 * content = content.replaceAll(">",
@@ -33,22 +34,19 @@ public class InformBoardWriteEndAction extends AbstractController {
 			
 			
 			InterMemberDAO mdao = new MemberDAO();
-			String seq = String.valueOf(Integer.parseInt(mdao.getSeqNo())+1);
 			
-			System.out.println(seq);
 			System.out.println(title);
 			System.out.println(content);
 			
 			Map<String, String> paraMap = new HashMap<>();
-			paraMap.put("seq", seq);
 			paraMap.put("title", title);
 			paraMap.put("content", content);
+			paraMap.put("seq", seq);
 			
-			
-			int n = mdao.boardWrite(paraMap);
+			int n = mdao.boardEdit(paraMap);
 			
 			if(n==1) {
-				message = "공지사항 등록이 완료되었습니다.";
+				message = "공지사항 수정이 완료되었습니다.";
 				loc = request.getContextPath()+"/CSC/informBoardView.dak?num="+seq;
 
 				request.setAttribute("message", message);
@@ -58,7 +56,7 @@ public class InformBoardWriteEndAction extends AbstractController {
 				super.setViewPage("/WEB-INF/views/msg.jsp");
 			}
 			else {
-				message = "공지사항 등록이 실패하였습니다.";
+				message = "공지사항 수정이 실패하였습니다.";
 				loc = "javascript:location.reload()";
 
 				request.setAttribute("message", message);

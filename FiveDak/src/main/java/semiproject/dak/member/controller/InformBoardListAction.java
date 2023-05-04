@@ -88,6 +88,7 @@ public class InformBoardListAction extends AbstractController {
 	//	System.out.println("확인 totalPage => " + totalPage);
 		
 		
+		
 		// === GET 방식이므로 사용자가 웹브라우저 주소창에서 currentShowPageNo 에
 		//	   totalPage 보다 큰 값을 입력하여 장난친 경우에는 1페이지로 가게끔 막아주기
 		if(Integer.parseInt(currentShowPageNo) > totalPage) {
