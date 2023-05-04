@@ -194,7 +194,7 @@
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/register.dak">회원가입</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/orderList.dak">주문조회</a>
 				  </li>
 				  <li class="nav-item">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/CSC/informBoardList.dak">고객센터</a>
@@ -211,7 +211,7 @@
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/infoedit.dak">내정보수정</a>
 				  </li>
 				  <li class="nav-item border-right">
-				    <a style="font-size:10pt;" class="nav-link header-link" href="#">주문조회</a>
+				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/mypage/orderList.dak">주문조회</a>
 				  </li>
 				  <li class="nav-item">
 				    <a style="font-size:10pt;" class="nav-link header-link" href="<%= ctxPath %>/CSC/informBoardList.dak">고객센터</a>
@@ -259,7 +259,7 @@
 		<div id="my_menu" class="col-3 container">	
 			<ul class="nav row">
 				  <li class="nav-item col-3 offset-1">
-				    <a class="nav-link header-link" onclick=""><i class="fa-solid fa-user fa-2x"></i></a>
+				    <a class="nav-link header-link" href="<%= ctxPath %>/mypage/orderList.dak"><i class="fa-solid fa-user fa-2x"></i></a>
 				  </li>
 				  <li class="nav-item col-3">
 				    <a class="nav-link active header-link" href="<%= ctxPath %>/cart/cartlist.dak"><i class="fa-solid fa-cart-shopping fa-2x"  ></i></a>

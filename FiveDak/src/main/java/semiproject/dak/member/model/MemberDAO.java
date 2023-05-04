@@ -934,12 +934,12 @@ public class MemberDAO implements InterMemberDAO {
 			*/
 			
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " and " + colname + " like '%' || ? || '%' ";
+				sql += " where " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
 			
-			sql += " order by notice_id desc) V "
+			sql += " order by notice_id desc ) V "
 				 + " ) T "
 				 + " WHERE RNO between ? and ? ";
 			
@@ -1007,7 +1007,7 @@ public class MemberDAO implements InterMemberDAO {
 			}
 			*/
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " and " + colname + " like '%' || ? || '%' ";
+				sql += " Where " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
@@ -1015,7 +1015,7 @@ public class MemberDAO implements InterMemberDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, "10");
+			pstmt.setInt(1, 10);
 			
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
 				pstmt.setString(2, searchText);

@@ -223,7 +223,7 @@
 				  <div class="card text-center" style="border:0px;">
 				  	<div class="card-body">
 				  		<button class="btn-icon"><i class="fa-solid fa-4x fa-drumstick-bite" style="color: #666;"></i></button>	
-				  		<br><a>닭가슴살</a>
+				  		<br><a href="/FiveDak/product/searchProd.dak?searchWord=닭가슴살">닭가슴살</a>
 				  	</div>	
 				  </div>
 				  
@@ -237,21 +237,21 @@
 				  <div class="card text-center" style="border:0px;">
 					  <div class="card-body">
 					 	<button class="btn-icon"><i class="fa-solid  fa-4x fa-box" style="color: #666;"></i></button>
-					 	<br><a>도시락</a>	
+					 	<br><a href="/FiveDak/product/searchProd.dak?searchWord=도시락">도시락</a>	
 					  </div>					  
 				  </div>
 				 
 				  <div class="card text-center" style="border:0px;">
 					  <div class="card-body">
 					 	<button class="btn-icon"><i class="fa-solid fa-piggy-bank fa-4x"  style="color: #666;"></i></button>
-					 	<br><a>돼지고기</a>	
+					 	<br><a href="/FiveDak/product/searchProd.dak?searchWord=돼지고기">돼지고기</a>	
 					  </div>					  
 				  </div>
 				 
 				  <div class="card text-center" style="border:0px;">
 					  <div class="card-body">
 					 	<button class="btn-icon"><i class="fa-solid fa-4x fa-carrot" style="color: #666;"></i></button>
-					 	<br><a>샐러드</a>	
+					 	<br><a href="/FiveDak/product/searchProd.dak?searchWord=샐러드">샐러드</a>	
 					  </div>					  
 				  </div>
 				 
