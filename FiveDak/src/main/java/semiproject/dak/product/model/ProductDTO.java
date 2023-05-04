@@ -1,6 +1,5 @@
 package semiproject.dak.product.model;
 
-import semiproject.dak.member.model.MembershipTierDTO;
 
 public class ProductDTO {
 	private int prodNum ; // 제품번호
@@ -21,8 +20,15 @@ public class ProductDTO {
 	// 추후에 추가해야할 사항 : JOIN 을 하기 위해서 무조건 필요하다.
 	private CategoryDTO cateDTO ; // 카테고리 DTO 
 	private BrandDTO brandDTO ; // 브랜드 DTO 
-	private ReviewDTO reviewDTO; // 
-	
+
+
+	private OrderDTO orderDTO ; // 오더 DTO
+
+	private ReviewDTO reviewDTO;
+
+
+
+
 	public ReviewDTO getReviewDTO() {
 		return reviewDTO;
 	}
@@ -152,6 +158,16 @@ public class ProductDTO {
 	public BrandDTO getBrandDTO() {
 		return brandDTO;
 	}
+
+	
+	
+	public OrderDTO getOrderDTO() {
+		return orderDTO;
+	}
+
+
+	
+
 	public int getOrderNo() {
 		return orderNo;
 	}
@@ -159,6 +175,7 @@ public class ProductDTO {
 
 	public void setOrderNo(int orderNo) {
 		this.orderNo = orderNo;
+
 	}
 
 
