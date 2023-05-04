@@ -7,7 +7,16 @@ public class AdminQNADTO {
 	private String ANSWER_MEMBER_ID;
 	private String ANSWER_CONTENT;
 	private String ANSWER_CREATED_AT;
+	private String ANSWER_STATUS ;
 	
+	public String getANSWER_STATUS() {
+		return ANSWER_STATUS;
+	}
+
+	public void setANSWER_STATUS(String aNSWER_STATUS) {
+		ANSWER_STATUS = aNSWER_STATUS;
+	}
+
 	//기본 생성자
 	public AdminQNADTO() {
 		
