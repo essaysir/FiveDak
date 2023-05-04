@@ -35,7 +35,7 @@ public class GetReviewListAction extends AbstractController {
 				int startPage = ( ( Integer.parseInt(pageNum) -1 )/ blocksize) * blocksize + 1 ;
 				int endPage = Math.min(totalPage, startPage + blocksize - 1) ;
 				
-			    if ( reviewlist.size() > 0 ) {
+				if ( reviewlist.size() > 0 ) {
 			    	request.setAttribute("pageNum", pageNum);
 			    	request.setAttribute("startPage", startPage);
 			    	request.setAttribute("endPage", endPage);

@@ -69,10 +69,10 @@ public class Admin1to1AnwserAction extends AbstractController {
 		 int loop = 1; 	
 		 int pageNo  = ( ( Integer.parseInt(ShowPage) - 1)/blockSize ) * blockSize + 1;
 		
-		 pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage=1'>&lt;&lt;</a></li>"; 
+		 pageBar += "<li class='page-item'><a class='page-link' href='admin1to1Anwser.dak?ShowPage=1'>&lt;&lt;</a></li>"; 
 		
 		 if(pageNo != 1) {
-		 	pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+(pageNo-1)+"'>[이전페이지]</a></li>"; 
+		 	pageBar += "<li class='page-item'><a class='page-link' href='admin1to1Anwser.dak?ShowPage="+(pageNo-1)+"'>[이전페이지]</a></li>"; 
 	  	 }
 		
 		 while( !(loop > blockSize || pageNo > Show1to1TotalPageAdmin)) { 
@@ -81,7 +81,7 @@ public class Admin1to1AnwserAction extends AbstractController {
 				pageBar += "<li class='page-item active'><a style='background-color: #FF7E32; color:black; border-color : #FF7E32;' class='page-link' href= '#'>" + pageNo + "</a></li>";    
 			}																
 			else {
-				pageBar += "<li class='page-item'><a style='color:black;' class='page-link' href='1to1QNAAnswer.dak?ShowPage="+pageNo+"'>" + pageNo + "</a></li>"; 
+				pageBar += "<li class='page-item'><a style='color:black;' class='page-link' href='admin1to1Anwser.dak?ShowPage="+pageNo+"'>" + pageNo + "</a></li>"; 
 			}
 			
 			loop++;  
@@ -92,10 +92,10 @@ public class Admin1to1AnwserAction extends AbstractController {
 		
 		
 		 if(pageNo <= Show1to1TotalPageAdmin) {
-			pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+pageNo+"'>[다음페이지]</a></li>"; 
+			pageBar += "<li class='page-item'><a class='page-link' href='admin1to1Anwser.dak?ShowPage="+pageNo+"'>[다음페이지]</a></li>"; 
 		 }
 
-		 pageBar += "<li class='page-item'><a class='page-link' href='1to1QNAAnswer.dak?ShowPage="+Show1to1TotalPageAdmin+"'>&gt;&gt;</a></li>"; 
+		 pageBar += "<li class='page-item'><a class='page-link' href='admin1to1Anwser.dak?ShowPage="+Show1to1TotalPageAdmin+"'>&gt;&gt;</a></li>"; 
 		
 		
 		

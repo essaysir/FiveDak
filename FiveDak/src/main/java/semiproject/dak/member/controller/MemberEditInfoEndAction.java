@@ -49,16 +49,18 @@ public class MemberEditInfoEndAction extends AbstractController {
 					
 					// !!! session 에 저장된 loginuser 를 변경된 사용자의 정보값으로 변경해주어야 한다.
 					HttpSession session = request.getSession();
-					MemberDTO loginuser= (MemberDTO) session.getAttribute("loginuser");
+					mdao.updateMemberSession(session);
 					
-					loginuser.setMbrEmail(email);
-					loginuser.setMbrMobile(mobile);
-					loginuser.setMbrPostcode(postcode);
-					loginuser.setMbrAddress(address);
-					loginuser.setMbrDetailAddress(detailAddress);
-					loginuser.setMbrGender(gender);
-					loginuser.setMbrBirth(birthday);
-					
+//					MemberDTO loginuser= (MemberDTO) session.getAttribute("loginuser");
+//					
+//					loginuser.setMbrEmail(email);
+//					loginuser.setMbrMobile(mobile);
+//					loginuser.setMbrPostcode(postcode);
+//					loginuser.setMbrAddress(address);
+//					loginuser.setMbrDetailAddress(detailAddress);
+//					loginuser.setMbrGender(gender);
+//					loginuser.setMbrBirth(birthday);
+//					
 					
 					message = "회원정보가 정상적으로 변경되었습니다.";
 					loc = request.getContextPath() + "/index.dak";

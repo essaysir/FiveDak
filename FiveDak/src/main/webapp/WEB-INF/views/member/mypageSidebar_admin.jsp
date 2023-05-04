@@ -149,7 +149,7 @@
         <div class="card my-page-card">
           <div class="card-body">
             <p class="card-title">문의사항 요청</p>
-            <p class="card-text orange-text font-weight-bold"><span class="h3">100</span>건</p>
+            <p class="card-text orange-text font-weight-bold"><span class="h3">${requestScope.needtoAnswer }</span>건</p>
           </div>
         </div>
       </div>
@@ -188,19 +188,10 @@
 	                    <ul class="menu-list">
 	                        <li class="check"><a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminProductSearch.dak">전체 제품 관리</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="<%=ctxPath%>/admin/adminProductInsert.dak">제품 등록하기</a></li>
-	                        <li class="check"><a class="list admin-sidebar" href="">관심브랜드</a></li>
 	                        <li class="check"><a class="list admin-sidebar" href="<%=ctxPath%>/admin/admin1to1Anwser.dak">1:1문의</a></li>
-	                        <li class="check"><a class="list admin-sidebar" href="">상품후기</a></li>
-	                        <li class="check"><a class="list admin-sidebar" href="">상품문의내역</a></li>
 	                    </ul>
 	                </li>
-	                <li class="check">
-	                    <a href="" class="menu">회원정보관리</a>
-	                    <ul class="menu-list">
-	                        <li class="check"><a class="list admin-sidebar" href="">배송지 관리</a></li>
-	                        <li class="check"><a class="list admin-sidebar" href="">정보수정</a></li>
-	                    </ul>
-	                </li>
+
 	            </ul>
 	        </nav><!--end of menu-mypage -->
 	    </div><!--end of sidebar-menu-wrap -->

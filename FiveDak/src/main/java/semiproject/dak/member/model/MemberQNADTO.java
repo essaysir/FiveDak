@@ -7,8 +7,17 @@ public class MemberQNADTO {
 	private String QUESTION_TITLE;
 	private String QUESTION_CONTENT;
 	private String QUESTION_CREATED_AT;
+	private String QUESTION_STATUS ;
 	
 	
+	public String getQUESTION_STATUS() {
+		return QUESTION_STATUS;
+	}
+
+	public void setQUESTION_STATUS(String qUESTION_STATUS) {
+		QUESTION_STATUS = qUESTION_STATUS;
+	}
+
 	//기본 생성자
 	public MemberQNADTO() {
 		

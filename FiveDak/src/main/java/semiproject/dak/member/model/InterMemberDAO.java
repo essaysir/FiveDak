@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import semiproject.dak.product.model.OrderDTO;
+
 public interface InterMemberDAO {
 
 	//Register Method
@@ -82,6 +84,17 @@ public interface InterMemberDAO {
 
 	// 문의하기 답변하기 
 	int AdmingoQNA(Map<String, String> paraMap)  throws SQLException;
+	
+	int getOrderListTotalPage(Map<String, String> paraMap) throws SQLException;
+
+	List<OrderDTO> getOrdersByDateRange(Map<String, String> paraMap) throws SQLException;
+
+	// 문의하기 답변 보기 
+	AdminQNADTO getAdminQna(String qnaId)   throws SQLException ;
+
+	// 현재 총 QNA 등록된 질문들의 갯수 가져오기 
+	int getTotalQna()  throws SQLException  ;
+
 
 	
 	

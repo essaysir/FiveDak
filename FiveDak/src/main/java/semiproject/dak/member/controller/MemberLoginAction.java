@@ -20,7 +20,10 @@ public class MemberLoginAction extends AbstractController {
 		HttpSession session = request.getSession();
         
 		String redirectURL = request.getHeader("referer");
-		redirectURL = redirectURL.substring(redirectURL.indexOf(request.getContextPath()) + request.getContextPath().length());
+		if(redirectURL != null) {
+			redirectURL = redirectURL.substring(redirectURL.indexOf(request.getContextPath()) + request.getContextPath().length());
+		}
+		
 		
 		if(!"/login.dak".equals(redirectURL)) {
 			session.setAttribute("redirectURL", redirectURL);
