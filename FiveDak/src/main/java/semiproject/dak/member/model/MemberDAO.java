@@ -1528,6 +1528,7 @@ public class MemberDAO implements InterMemberDAO {
 			
 		}
 		
+		// 공지사항 수정
 		@Override
 		public int boardEdit(Map<String, String> paraMap) throws SQLException {
 			
@@ -1536,7 +1537,7 @@ public class MemberDAO implements InterMemberDAO {
 			try {
 				conn = ds.getConnection(); 
 				
-				String sql = " update tbl_notice set notice_title = ?, notice_content = ? ) "
+				String sql = " update tbl_notice set notice_title = ?, notice_content = ? "
 						   + " where notice_id = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
