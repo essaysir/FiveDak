@@ -7,10 +7,21 @@ public class OrderDetailDTO {
      private ProductDTO orderDetailProd;
      private int orderQuantity;           // 제품에 대한 주문수량
      private int pricePerUnit;         //  개당가격
-     
-     private String reviewedDate;
+     private int reviewStatus;
+
+	private String reviewedDate;
      private String orderedDate;
      
+     
+     
+
+     public int getReviewStatus() {
+		return reviewStatus;
+	}
+
+	public void setReviewStatus(int reviewStatus) {
+		this.reviewStatus = reviewStatus;
+	}
      
      
      public String getReviewedDate() {

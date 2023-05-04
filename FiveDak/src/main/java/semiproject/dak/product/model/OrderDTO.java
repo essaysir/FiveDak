@@ -1,5 +1,7 @@
 package semiproject.dak.product.model;
 
+import java.util.List;
+
 public class OrderDTO {
 	private int orderId ; // 주문 번호
 	private String orderSerial ; // 주문 시리얼 번호
@@ -19,7 +21,16 @@ public class OrderDTO {
 	private int reviewStatus ; // 리뷰 여부
 	private String orderStatus_name ; // 배송 상태 여부 이름 ( 원래는 dto 가 필요하지만 굳이 안만들고 여기에다가 함) 
 	
+	private List<OrderDetailDTO> orderdetailList;
 	
+
+	public List<OrderDetailDTO> getOrderdetailList() {
+		return orderdetailList;
+	}
+
+	public void setOrderdetailList(List<OrderDetailDTO> orderdetailList) {
+		this.orderdetailList = orderdetailList;
+	}
 
 	// 기본 생성자 
 	public OrderDTO () {}
