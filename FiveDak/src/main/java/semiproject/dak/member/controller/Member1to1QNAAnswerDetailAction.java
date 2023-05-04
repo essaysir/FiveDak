@@ -8,9 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
-
 import semiproject.dak.common.controller.AbstractController;
+import semiproject.dak.member.model.AdminQNADTO;
 import semiproject.dak.member.model.InterMemberDAO;
 import semiproject.dak.member.model.MemberDAO;
 import semiproject.dak.member.model.MemberDTO;
@@ -75,7 +74,10 @@ public class Member1to1QNAAnswerDetailAction extends AbstractController {
             }
             
             else {
-
+            	InterMemberDAO mdao = new MemberDAO();
+            	AdminQNADTO adminQnaDTO = mdao.getAdminQna(qnaId);
+            	
+            	request.setAttribute("adminQnaDTO", adminQnaDTO);
             	request.setAttribute("qnauserid", qnauserid);
             	request.setAttribute("qnaId", qnaId);
             	request.setAttribute("qnaId", qnaId);

@@ -25,7 +25,8 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		
-		// *** 특정 회원을 클릭하면 그 회원의 상세정보를 보여주도록 한다. *** //
+		
+		// "td	// *** 특정 회원을 클릭하면 그 회원의 상세정보를 보여주도록 한다. *** //
 		$("tr.Show1to1Detail").click((e) => {
 
 			const qnaId = $(e.target).parent().find("td#qna_ID").text();
@@ -78,6 +79,7 @@
 		      <th>글쓴 날짜</th>
 		      <th>제목</th>
 		      <th>글쓴이</th>
+		      <th>답변여부</th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -92,6 +94,9 @@
 			      <td id="QNA_MEMBER_ID">${qna.QNA_MEMBER_ID}</td>
 			      <td style="display: none" id="qna_ID">${qna.QNA_ID}</td>
 			      <td style="display: none" id="QUESTION_CONTENT">${qna.QUESTION_CONTENT}</td>
+			      <td id="status"style="color:red; font-weight: bold;">${qna.QUESTION_STATUS }</td>
+
+			      
 			    </tr>
 	  
 		  </c:forEach>

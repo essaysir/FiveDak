@@ -1,7 +1,11 @@
 package semiproject.dak.member.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import semiproject.dak.common.controller.AbstractController;
 import semiproject.dak.member.model.InterMemberDAO;
@@ -46,6 +50,20 @@ public class MemberRegisterAction extends AbstractController {
 				// 임시조치 login 메소드 구현후 재수정
 				msg = "회원가입에 성공했습니다.";
 				loc = request.getContextPath() + "/index.dak";
+				
+				Map<String, String> loginMap = new HashMap<>();
+			    String clientip = request.getRemoteAddr();
+				loginMap.put("userid", userid);
+			    loginMap.put("pwd", pwd);
+			    loginMap.put("clientip", clientip);
+			        
+			    MemberDTO loginuser = dao.getMemberByLoginMap(loginMap);
+			    //로그인 성공했을 때
+	        	int orderCount = dao.CountOrder(userid);
+	        	loginuser.setMbrOrderCount(orderCount);
+	            HttpSession session = request.getSession();
+	            
+	        	session.setAttribute("loginuser", loginuser);
 			} else {
 				
 				msg = "회원가입에 실패했습니다.";

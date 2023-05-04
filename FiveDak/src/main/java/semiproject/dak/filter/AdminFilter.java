@@ -15,10 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import semiproject.dak.member.model.InterMemberDAO;
+import semiproject.dak.member.model.MemberDAO;
 import semiproject.dak.member.model.MemberDTO;
 import semiproject.dak.product.model.InterOrderDAO;
 import semiproject.dak.product.model.OrderDAO;
-import semiproject.dak.product.model.ProductDAO;
 
 
 
@@ -78,7 +79,11 @@ public class AdminFilter extends HttpFilter implements Filter {
         		if (  !(sumMonthOrder == 0 ) ) {
         			percent = (successShipped)*100 / sumMonthOrder ;         			
         		}
+        		InterMemberDAO mdao = new MemberDAO();
+        		int needtoAnswer = mdao.getTotalQna();
         		
+        		
+        		request.setAttribute("needtoAnswer", needtoAnswer);
         		request.setAttribute("sumMonthOrder", sumMonthOrder);
         		request.setAttribute("sumNotShipped", sumNotShipped);
         		request.setAttribute("sumTotalSales", sumTotalSales);

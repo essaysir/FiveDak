@@ -75,6 +75,7 @@ tr.Show1to1Detail:hover{
 		      <th>글쓴 날짜</th>
 		      <th>제목</th>
 		      <th>글쓴이</th>
+		      <th>답변여부</th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -89,6 +90,7 @@ tr.Show1to1Detail:hover{
 			      <td id="QNA_MEMBER_ID">${qna.QNA_MEMBER_ID}</td>
 			      <td style="display: none" id="qna_ID">${qna.QNA_ID}</td>
 			      <td style="display: none" id="QUESTION_CONTENT">${qna.QUESTION_CONTENT}</td>
+			      <td id="status"style="color:red; font-weight: bold;">${qna.QUESTION_STATUS }</td>
 			    </tr>
 	  
 		  </c:forEach>

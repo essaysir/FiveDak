@@ -16,6 +16,10 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import semiproject.dak.product.model.BrandDTO;
+import semiproject.dak.product.model.OrderDTO;
+import semiproject.dak.product.model.OrderDetailDTO;
+import semiproject.dak.product.model.ProductDTO;
 import semiproject.dak.security.AES256;
 import semiproject.dak.security.SecretMyKey;
 import semiproject.dak.security.Sha256;
@@ -1104,7 +1108,7 @@ public class MemberDAO implements InterMemberDAO {
 				tierDTO.setTierId(rs.getInt("TIER_ID"));
 				tierDTO.setRewardPercentage(rs.getInt("REWARD_PERCENTAGE"));
 				tierDTO.setAmountNeeded(rs.getInt("AMOUNT_NEEDED"));
-				tierDTO.setTierImage("TIER_IMAGE");
+				tierDTO.setTierImage(rs.getString("TIER_IMAGE"));
 				tierDTO.setNextTierName(rs.getString("NEXT_TIER_NAME"));
 				tierDTO.setNextTierNeeded(rs.getInt("NEXT_TIER_AMOUNT"));
 				loginuser.setMbrTier(tierDTO);
@@ -1429,15 +1433,18 @@ public class MemberDAO implements InterMemberDAO {
 	         try {
 	            conn = ds.getConnection();     // return 타입 connection   이렇게 하면 자기 오라클 DB와 붙는다. 
 	         
-	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + " from (  select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + "        from ( select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT "
-	                     + "               from tbl_qna ";
-	            
+	            String sql = " select QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT , ANSWER_ID "
+	            		+ " from (   "
+	            		+ " select rownum AS RNO,QNA_ID, QNA_MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_CREATED_AT  , ANSWER_ID"
+	            		+ " from  "
+	            		+ " ( select Q.QNA_ID, Q.QNA_MEMBER_ID, Q.QUESTION_TITLE, Q.QUESTION_CONTENT, Q.QUESTION_CREATED_AT  , A.ANSWER_ID  "
+	            		+ " from tbl_qna Q LEFT JOIN TBL_QNA_ANSWER A "
+	            		+ " ON Q.QNA_ID = A.QNA_ID  ";
+	             
 	            String id = paraMap.get("id");
 	            
 	            if(!"admin".equalsIgnoreCase(id)) {
-	               sql += " where QNA_MEMBER_ID = ? ";
+	               sql += " WHERE Q.QNA_MEMBER_ID = ? ";
 	            }
 	            sql += "               order by QUESTION_CREATED_AT asc "
 	                + "               ) A "
@@ -1470,6 +1477,12 @@ public class MemberDAO implements InterMemberDAO {
 	               qnadto.setQUESTION_TITLE(rs.getString("QUESTION_TITLE"));
 	               qnadto.setQUESTION_CONTENT(rs.getString("QUESTION_CONTENT"));
 	               qnadto.setQUESTION_CREATED_AT(rs.getString("QUESTION_CREATED_AT"));
+	               if ( rs.getString("ANSWER_ID") == null) {
+	            	   qnadto.setQUESTION_STATUS("미답변");
+	               }
+	               else {
+	            	   qnadto.setQUESTION_STATUS("답변완료");
+	               }
 	               
 	               QNAList.add(qnadto);
 	            }  // end of while(rs.next())
@@ -1514,7 +1527,6 @@ public class MemberDAO implements InterMemberDAO {
 			
 			
 		}
-
 		
 		@Override
 		public int boardEdit(Map<String, String> paraMap) throws SQLException {
@@ -1542,5 +1554,195 @@ public class MemberDAO implements InterMemberDAO {
 			
 			return n;
 		}
+
+		// 관리자 답변 보여주는 메소드
+		@Override
+		public AdminQNADTO getAdminQna(String qnaId) throws SQLException {
+			AdminQNADTO qnadto = null ;
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " select ANSWER_ID , QNA_ID , ANSWER_MEMBER_ID, ANSWER_CONTENT , ANSWER_CREATED_AT  "
+						+ " from tbl_qna_answer  where QNA_ID = ?  ";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, qnaId);
+				rs = pstmt.executeQuery();
+				if ( rs.next()) {
+					qnadto = new AdminQNADTO();
+					qnadto.setANSWER_ID(rs.getInt("ANSWER_ID"));
+					qnadto.setANSWER_MEMBER_ID(rs.getString("ANSWER_MEMBER_ID"));
+					qnadto.setANSWER_CONTENT(rs.getString("ANSWER_CONTENT"));
+					qnadto.setANSWER_CREATED_AT(rs.getString("ANSWER_CREATED_AT"));
+				}
+				
+			}finally {
+				close();
+			}
+			
+			return qnadto ;
+		}
+
+		@Override
+		public int getTotalQna() throws SQLException {
+			int n = 0 ;
+			try {
+				
+				conn = ds.getConnection();
+				
+				String sql = " SELECT COUNT(*) AS NOANSWERCOUNT "
+						+ " FROM TBL_QNA Q "
+						+ " LEFT JOIN TBL_QNA_ANSWER A "
+						+ " ON Q.QNA_ID = A.QNA_ID "
+						+ " WHERE A.QNA_ID IS NULL " ;
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					n = rs.getInt(1);
+				}
+				
+				
+			}finally {
+				close();
+			}
+			
+			return n ;
+		}
+
+	
+
+	
+
+		@Override
+		public int getOrderListTotalPage(Map<String, String> paraMap) throws SQLException {
+			int totalOrder = 0;
+			
+			try {
+				
+				conn = ds.getConnection();
+				
+				
+				String sql = " SELECT COUNT(*) FROM tbl_order "
+						+ " WHERE order_member_id = ? AND order_date >= ? AND order_date <= ? ";
+
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, paraMap.get("userid"));
+				pstmt.setString(2, paraMap.get("startdate"));
+				pstmt.setString(3, paraMap.get("enddate"));
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					totalOrder = rs.getInt(1);
+				}
+				
+				
+				
+				
+			}finally { 
+				close();
+			}
+				
+				
+			return totalOrder;
+		}
+
+		@Override
+		public List<OrderDTO> getOrdersByDateRange(Map<String, String> paraMap) throws SQLException {
+			List<OrderDTO> orders = new ArrayList<>();
+			
+			
+			try {
+				conn = ds.getConnection();
+				String sql = " SELECT o.order_serial, to_char(o.order_date,'yyyy-mm-dd') as order_date , o.order_total_price , o.recipient_name, o.shipping_postcode, o.shipping_address, o.shipping_detail_address, o.recipient_mobile, o.order_message, o.order_status, od.order_detail_product_id, od.order_quantity, od.price_per_unit, od.review_status, p.product_name, p.product_image_url, p.product_brand_id, b.brand_name "
+						+ "FROM tbl_order o "
+						+ "JOIN tbl_order_detail od ON o.order_serial = od.fk_order_serial "
+						+ "JOIN tbl_product p ON od.order_detail_product_id = p.product_id "
+						+ "JOIN tbl_brand b ON p.product_brand_id = b.brand_id "
+						+ "WHERE o.order_date >= ? AND o.order_date <= ? and o.order_member_id = ? "
+						+ "AND o.order_serial IN ( "
+						+ "  SELECT order_serial FROM ( "
+						+ "    SELECT order_serial, ROW_NUMBER() OVER (ORDER BY order_serial DESC) AS row_num "
+						+ "    FROM tbl_order "
+						+ "    WHERE order_date >= ? AND order_date <= ? and order_member_id = ? "
+						+ "  ) "
+						+ "  WHERE row_num BETWEEN 0 AND 5 "
+						+ ") "
+						+ "ORDER BY o.order_serial DESC ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				
+				pstmt.setString(1, paraMap.get("startdate"));
+				pstmt.setString(2, paraMap.get("enddate"));
+				pstmt.setString(3, paraMap.get("userid"));
+				pstmt.setString(4, paraMap.get("startdate"));
+				pstmt.setString(5, paraMap.get("enddate"));
+				pstmt.setString(6, paraMap.get("userid"));
+				
+				rs = pstmt.executeQuery();
+				String currentOrderSerial = "";
+				OrderDTO currentOrder = null;
+				List<OrderDetailDTO> orderDetails = null;
+				
+				
+				while(rs.next()) {
+					String orderSerial = rs.getString("order_serial");
+					
+					if(!currentOrderSerial.equals(orderSerial)) {
+						if (currentOrder != null) {
+		                    currentOrder.setOrderdetailList(orderDetails);
+		                    orders.add(currentOrder);
+		                }
+						currentOrderSerial = orderSerial;
+						currentOrder = new OrderDTO();
+						orderDetails = new ArrayList<>();
+						currentOrder.setOrderSerial(orderSerial);
+				        currentOrder.setOrderDate(rs.getString("order_date"));
+				        currentOrder.setOrderTotalPrice(rs.getInt("order_total_price"));
+				        currentOrder.setRecipName(rs.getString("recipient_name"));
+				        currentOrder.setOrderPostcode(rs.getString("shipping_postcode"));
+				        currentOrder.setOrderAddress(rs.getString("shipping_address"));
+				        currentOrder.setOrderDetailAddress(rs.getString("shipping_detail_address"));
+				        currentOrder.setRecipMobile(rs.getString("recipient_mobile"));
+				        currentOrder.setOrderMessage(rs.getString("order_message"));
+				        currentOrder.setOrderStatus(rs.getInt("order_status"));
+					}
+					
+					
+				    OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+				    
+				    orderDetailDTO.setOrderQuantity(rs.getInt("order_quantity"));
+				    orderDetailDTO.setPricePerUnit(rs.getInt("price_per_unit"));
+				    orderDetailDTO.setReviewStatus(rs.getInt("review_status"));
+				    
+				    ProductDTO prod = new ProductDTO();
+				    prod.setProdNum(rs.getInt("order_detail_product_id"));
+				    prod.setProdName(rs.getString("product_name"));
+				    prod.setProdImage1(rs.getString("product_image_url"));
+				    BrandDTO brand = new BrandDTO();
+				    brand.setBrandName(rs.getString("brand_name"));
+				    prod.setBrandDTO(brand);
+				    orderDetailDTO.setOrderDetailProd(prod);
+				    
+				    orderDetails.add(orderDetailDTO);
+				}
+				if (currentOrder != null) {
+		            currentOrder.setOrderdetailList(orderDetails);
+		            orders.add(currentOrder);
+		        }
+				
+				
+			} finally {
+				close();
+			}
+			
+			
+			return orders;
+		}
+
 
 }
