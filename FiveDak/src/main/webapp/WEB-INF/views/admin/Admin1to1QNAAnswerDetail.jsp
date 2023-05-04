@@ -7,6 +7,7 @@
 	String ctxPath = request.getContextPath();
 %> 
     
+    
 
 <style type="text/css">
 
@@ -39,7 +40,7 @@ $(document).ready(function(){
 
 
 	function AdminGoback() {
-		location.href ="<%= ctxPath%>/index.dak"; 
+		location.href ="<%= ctxPath%>/admin/admin1to1Anwser.dak"; 
 	}
 	
 	function AdminGoQNA() {
@@ -79,6 +80,8 @@ $(document).ready(function(){
 		<h4 style="text-align: center; margin-bottom: 20px;">문의 답변</h4>
 		
 		<div style="border: solid 1px black; width:100%; margin-bottom: 20px;"></div>
+	    	    
+	    <c:if test="${requestScope.status eq '미답변'}">
 	     	
 	     	<form name="AdminO1to1Frm">
 	     	
@@ -103,15 +106,24 @@ $(document).ready(function(){
 	     			</tbody>
 	     		</table>		
 	     		
-	     		<div style="display: flex;">
+	     		<div style="display: flex; margin-bottom: 20px;">
 	     			<button type="button" class="col-md-3 offset-md-3" style="background-color: #e6e6e6; height:50px; border: none; border-radius: 5px;" onclick="AdminGoback();">취소하기</button>
 
-	     			<button type="button" class="col-md-3 offset-md-1" style="background-color: #FF7E32; height:50px; border: none; border-radius: 5px;" onclick="AdminGoQNA()">답변하기</button>
+	     			<button type="button" class="col-md-3 offset-md-1" style="background-color: #FF7E32; color: white; height:50px; border: none; border-radius: 5px;" onclick="AdminGoQNA()">답변하기</button>
 			</div>
 	     			
 		</form>		
 				
-				
+		</c:if>
+		
+		
+		<c:if test="${requestScope.status eq '답변완료'}">
+			<h3 style="margin-bottom: 50px;">답변이 완료되었습니다.</h3>
+			<div style="text-align: center; margin-bottom: 100px;">
+				<button type="button" style="background-color: #FF7E32; color: white; height:50px; width: 150px; border: none; border-radius: 5px;" onclick="AdminGoback()">목록보기</button>
+			</div>
+
+		</c:if> 		
 				
 				
 				

@@ -934,12 +934,12 @@ public class MemberDAO implements InterMemberDAO {
 			*/
 			
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " and " + colname + " like '%' || ? || '%' ";
+				sql += " where " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
 			
-			sql += " order by notice_id desc) V "
+			sql += " order by notice_id desc ) V "
 				 + " ) T "
 				 + " WHERE RNO between ? and ? ";
 			
@@ -1007,7 +1007,7 @@ public class MemberDAO implements InterMemberDAO {
 			}
 			*/
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
-				sql += " and " + colname + " like '%' || ? || '%' ";
+				sql += " Where " + colname + " like '%' || ? || '%' ";
 				// 컬럼명과 테이블명은 위치홀더(?)로 사용하면 꽝!!이다.
 				// 위치홀더(?)로 들어오는 것은 컬럼명과 테이블명이 아닌 오로지 데이터 값만 들어온다.
 			}
@@ -1015,7 +1015,7 @@ public class MemberDAO implements InterMemberDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, "10");
+			pstmt.setInt(1, 10);
 			
 			if(!"".equals(colname) && searchText != null && !searchText.trim().isEmpty()) {
 				pstmt.setString(2, searchText);
@@ -1446,7 +1446,7 @@ public class MemberDAO implements InterMemberDAO {
 	            if(!"admin".equalsIgnoreCase(id)) {
 	               sql += " WHERE Q.QNA_MEMBER_ID = ? ";
 	            }
-	            sql += "               order by QUESTION_CREATED_AT asc "
+	            sql += "               order by QUESTION_CREATED_AT desc "
 	                + "               ) A "
 	                + "      ) B "
 	                + "where RNO BETWEEN ? and ? ";
@@ -1744,6 +1744,44 @@ public class MemberDAO implements InterMemberDAO {
 			
 			return orders;
 		}
+		
+		
+		@Override
+		public int confirmOrder(String orderserial) throws SQLException {
+			int n = 0;
+			
+			try {
+				conn = ds.getConnection();
+				conn.setAutoCommit(false);
+				
+				pstmt = conn.prepareStatement("update tbl_order set order_status = 5 where order_serial = ?");
+				
+				pstmt.setString(1, orderserial);
+				int updateresult = pstmt.executeUpdate();
+				if (updateresult == 1) {
+					pstmt = conn.prepareStatement("update tbl_order_detail set review_status = 1 where fk_order_serial = ?");
+					pstmt.setString(1, orderserial);
+					updateresult = pstmt.executeUpdate();
+					if(updateresult > 0) {
+						conn.commit();
+						n = 1;
+					}
+				}
+				conn.setAutoCommit(true);
+				 
+				
+			} catch (SQLException e) {
+				conn.rollback();
+				conn.setAutoCommit(true);
+				e.printStackTrace();
+				
+			} finally {
+				close();
+			}
+					
+			return n;
+		}
+
 
 
 }

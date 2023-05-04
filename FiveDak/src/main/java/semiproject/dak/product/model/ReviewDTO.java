@@ -13,7 +13,26 @@ public class ReviewDTO {
 	private String review_content;
 	private Date review_date;
 	private int review_cnt;  //리뷰 개수
+	private String pimage ;
+	private String pimage1 ;
 	
+	
+	public String getPimage() {
+		return pimage;
+	}
+
+	public void setPimage(String pimage) {
+		this.pimage = pimage;
+	}
+
+	public String getPimage1() {
+		return pimage1;
+	}
+
+	public void setPimage1(String pimage1) {
+		this.pimage1 = pimage1;
+	}
+
 	public ReviewDTO() { }
 	
 	public ReviewDTO(int review_id, String review_member_id, int review_product_id, double review_score, 

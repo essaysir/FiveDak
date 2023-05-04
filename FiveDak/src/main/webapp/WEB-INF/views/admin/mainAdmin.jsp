@@ -1,4 +1,14 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+var maxLength = 20;
+	// 글자수를 체크하고 생략 부호("...")를 붙여주는 함수
+	  function truncateText() {
+	    $('td.prodName').each(function() {
+	      var text = $(this).text();
+	      if (text.length > maxLength) {
+	        var truncatedText = text.substring(0, maxLength) + '...';
+	        $(this).text(truncatedText);
+	      }
+	    });
+	  } // END OF  FUNCTION TRUNCATETEXT() {<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/header-final.jsp"/>
@@ -10,6 +20,7 @@
 </style>
 <script type="text/javascript">
 	$(document).ready(function(){
+		
 		$('span#countHIT').hide();
 	    $('span#totalHITCount').hide();
 		displayOrder("1");
@@ -50,6 +61,7 @@
 	
 	let lenHIT = 10 ;
 	
+
 	
  	function displayOrder(start){
  		$.ajax({ 
@@ -76,7 +88,7 @@
 					    +"<td class='orderid'>"+item.order_id+"</td>"
 					    +"<td>"+item.order_member_id+"</td>"
 					    +"<td>"+item.order_total_price+"</td>"
-					    +"<td>"+item.shipping_address+"</td>"
+					    +"<td class='shipping'>"+item.shipping_address+"</td>"
 					    +"<td>"+item.tracking_number+"</td>"
 					    +"<td>"+item.recipmobile+"</td>"
 					    +"<td>"+item.status_name+"</td>"

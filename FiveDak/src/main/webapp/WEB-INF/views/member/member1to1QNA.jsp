@@ -29,9 +29,9 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		
-		$("button#fileadd1to1").click(goaddfile1to11);
+		/* $("button#fileadd1to1").click(goaddfile1to11);
 		$("button#fileadd1to2").click(goaddfile1to12);
-		$("button#fileadd1to3").click(goaddfile1to13);
+		$("button#fileadd1to3").click(goaddfile1to13); */
 		
 		/* 
 		// 이미지 를 보여주는 곳이다. 
@@ -91,7 +91,7 @@
 
 	});
 	
-	
+/* 	
 	function goaddfile1to11() {
 		
 		 $("#fileInput1").click();
@@ -107,7 +107,7 @@
 		 $("#fileInput3").click();
 		
 	}
-	
+	 */
 	
 	
 	
@@ -115,7 +115,7 @@
 	
 	
 	function goback() {
-		location.href ="<%= ctxPath%>/index.dak"; 
+		location.href ="<%= ctxPath%>/mypage/orderlist.dak"; 
 	}
 	
 	function goQNA() {
@@ -151,14 +151,14 @@
 	     					
 	     					<td style="display: flex;">
 	     					
-	     						<select style="padding-right: 20px; margin-right: 20px;" class="1to1borderccc" name="select1to1">
+	     						<!-- <select style="padding-right: 20px; margin-right: 20px;" class="1to1borderccc" name="select1to1">
 					      			<option value="1">주문/결제</option>
 					      			<option value="2">취소/반품</option>
 					      			<option value="3">상품관련</option>
 					      			<option value="4">배송관련</option>
 					      			<option value="5">포인트</option>
 					      			<option value="6">기타</option>
-				      			</select>
+				      			</select> -->
 				      		
 				      			<input type="text" placeholder="   제목을 입력해주세요" style="width:100%;" class="1to1borderccc" name="title1to1"/>
 				      		</td>
@@ -211,11 +211,11 @@
 	     			</tbody>
 	     		</table>		
 	     		
-	     		<div style="display: flex;">
+	     		<div style="display: flex; margin-bottom: 20px;">
 	     			<button type="button" class="col-md-3 offset-md-3" style="background-color: #e6e6e6; height:50px; border: none; border-radius: 5px;" onclick="goback();">취소하기</button>
 
-	     			<button type="button" class="col-md-3 offset-md-1" style="background-color: #FF7E32; height:50px; border: none; border-radius: 5px;" onclick="goQNA()">문의하기</button>
-			</div>
+	     			<button type="button" class="col-md-3 offset-md-1" style="background-color: #FF7E32; height:50px; color: white; border: none; border-radius: 5px;" onclick="goQNA()">문의하기</button>
+				</div>
 	     			
 		</form>
 	     <!-- 오른쪽에 들어갈 내용 -->

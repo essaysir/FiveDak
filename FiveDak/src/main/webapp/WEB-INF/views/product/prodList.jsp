@@ -111,13 +111,21 @@
 			  
 			</c:forEach>  
 
-		  
+		  <nav class="my-5">
+	      	  <div style='display:flex; width:80%; position:relative; left :175px;'>
+	          <ul class="pagination" style='margin:auto;'>${requestScope.pageBar}</ul>
+	       </div>
+			</nav>
 	
 				
 	</c:if>
 
 	<c:if test="${empty requestScope.prodList}">
+		<div style="text-align: center; margin-bottom:100px;">
+		<div style="margin-top: 100px;"><i class="fad fa-exclamation fa-5x"></i></div>
+		<h3> 검색 내용에 해당하는 제품이 없습니다.</h3>
 	
+		</div>
 	
 	
 	</c:if>
@@ -154,11 +162,7 @@
 
 
 
-	<nav class="my-5">
-	        <div style='display:flex; width:80%; position:relative; left :175px;'>
-	          <ul class="pagination" style='margin:auto;'>${requestScope.pageBar}</ul>
-	       </div>
-	</nav>
+	
 
 
 

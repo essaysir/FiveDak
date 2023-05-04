@@ -22,7 +22,7 @@ public class Admin1to1QNAAnswerDetailAction extends AbstractController {
             String qnacontent = request.getParameter("qnacontent");
             String qnatitle = request.getParameter("qnatitle");
             String qnacreated_at = request.getParameter("qnacreated_at");
-	
+            String status = request.getParameter("status");
 
         	request.setAttribute("qnauserid", qnauserid);
         	request.setAttribute("qnaId", qnaId);
@@ -30,6 +30,8 @@ public class Admin1to1QNAAnswerDetailAction extends AbstractController {
         	request.setAttribute("qnacontent", qnacontent);
         	request.setAttribute("qnatitle", qnatitle);
         	request.setAttribute("qnacreated_at", qnacreated_at);
+        	request.setAttribute("status", status);
+        	
         	
         	
         	super.setRedirect(false);
