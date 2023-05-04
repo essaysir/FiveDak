@@ -34,6 +34,7 @@
 			const qnacontent = $(e.target).parent().find("td#QUESTION_CONTENT").text();
 			const qnatitle = $(e.target).parent().find("td#QUESTION_TITLE").text();
 			const qnacreated_at = $(e.target).parent().find("td#QUESTION_CREATED_AT").text();
+			const status = $(e.target).parent().find("td#status").text();
 					$.ajax({
 					  url:"<%=ctxPath%>/admin/1to1QNAAnswerDetail.dak",
 					  type:"POST",
@@ -41,7 +42,8 @@
 						     "qnauserid": qnauserid,
 						     "qnacontent": qnacontent,
 						     "qnatitle": qnatitle,
-						     "qnacreated_at":qnacreated_at},
+						     "qnacreated_at":qnacreated_at,
+						     "status":status},
 					  success: function(result) {
 						  $('div#mbr1to1').html(result);
 					  },
@@ -94,9 +96,7 @@
 			      <td id="QNA_MEMBER_ID">${qna.QNA_MEMBER_ID}</td>
 			      <td style="display: none" id="qna_ID">${qna.QNA_ID}</td>
 			      <td style="display: none" id="QUESTION_CONTENT">${qna.QUESTION_CONTENT}</td>
-			      <td id="status"style="color:red; font-weight: bold;">${qna.QUESTION_STATUS }</td>
-
-			      
+			      <td id="status" style="font-weight: bold;"><c:choose><c:when test="${qna.QUESTION_STATUS == '답변완료'}"><span style="color: red;">${qna.QUESTION_STATUS}</span></c:when><c:when test="${qna.QUESTION_STATUS == '미답변'}"><span style="color: black;">${qna.QUESTION_STATUS}</span></c:when></c:choose></td>
 			    </tr>
 	  
 		  </c:forEach>

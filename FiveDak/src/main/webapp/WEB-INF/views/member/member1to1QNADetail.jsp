@@ -23,6 +23,13 @@
 		
 		
 	});
+	
+	function goList() {
+		
+		location.href = "<%= ctxPath %>/mypage/1to1QNAAnswer.dak";
+		
+		
+	}
 
 	
 </script>	
@@ -65,13 +72,15 @@
 		</c:if>
 
 		<c:if test="${empty adminQnaDTO }">
-			<h2 style="color:navy"> 아직 답변이 등록되지 않았습니다.</h2>
-			<h2 style="color:navy"> 조금만 기다려주시면 감사하겠습니다. </h2>
-			<h2 style="color:navy"> 빠른 시일내에 답변 드리겠습니다.</h2>
+			<h3 style="color:navy"> 아직 답변이 등록되지 않았습니다.</h3>
+			<h3 style="color:navy"> 조금만 기다려주시면 감사하겠습니다. </h3>
+			<h3 style="color:navy"> 빠른 시일내에 답변 드리겠습니다.</h3>
 		</c:if>
-		<div style="border-top: solid 1px black; padding: 20px; margin-bottom: 100px;">${adminQnaDTO.ANSWER_CONTENT}</div>
-				
-				
+		<div style="border-top: solid 1px black; padding: 20px; margin-bottom: 50px;">${adminQnaDTO.ANSWER_CONTENT}</div>
+		
+		<div style="text-align: center; margin-bottom: 100px;">
+			<button type="button" style="background-color: #FF7E32; width: 150px; height:50px; color: white; border: none; border-radius: 5px; text-align: center;" onclick="goList()">목록보기</button>
+		</div>		
 				
 				
 				

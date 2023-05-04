@@ -89,7 +89,16 @@
 			      <td id="QNA_MEMBER_ID">${qna.QNA_MEMBER_ID}</td>
 			      <td style="display: none" id="qna_ID">${qna.QNA_ID}</td>
 			      <td style="display: none" id="QUESTION_CONTENT">${qna.QUESTION_CONTENT}</td>
-			      <td id="status"style="color:red; font-weight: bold;">${qna.QUESTION_STATUS }</td>
+			      <td id="status" style="font-weight: bold;">
+					  <c:choose>
+					    <c:when test="${qna.QUESTION_STATUS == '답변완료'}">
+					      <span style="color: red;">${qna.QUESTION_STATUS}</span>
+					    </c:when>
+					    <c:when test="${qna.QUESTION_STATUS == '미답변'}">
+					      <span style="color: black;">${qna.QUESTION_STATUS}</span>
+					    </c:when>
+					  </c:choose>  
+				  </td>
 			    </tr>
 	  
 		  </c:forEach>
