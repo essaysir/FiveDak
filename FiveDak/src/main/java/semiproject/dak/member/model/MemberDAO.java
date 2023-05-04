@@ -1743,6 +1743,44 @@ public class MemberDAO implements InterMemberDAO {
 			
 			return orders;
 		}
+		
+		
+		@Override
+		public int confirmOrder(String orderserial) throws SQLException {
+			int n = 0;
+			
+			try {
+				conn = ds.getConnection();
+				conn.setAutoCommit(false);
+				
+				pstmt = conn.prepareStatement("update tbl_order set order_status = 5 where order_serial = ?");
+				
+				pstmt.setString(1, orderserial);
+				int updateresult = pstmt.executeUpdate();
+				if (updateresult == 1) {
+					pstmt = conn.prepareStatement("update tbl_order_detail set review_status = 1 where fk_order_serial = ?");
+					pstmt.setString(1, orderserial);
+					updateresult = pstmt.executeUpdate();
+					if(updateresult > 0) {
+						conn.commit();
+						n = 1;
+					}
+				}
+				conn.setAutoCommit(true);
+				 
+				
+			} catch (SQLException e) {
+				conn.rollback();
+				conn.setAutoCommit(true);
+				e.printStackTrace();
+				
+			} finally {
+				close();
+			}
+					
+			return n;
+		}
+
 
 
 }

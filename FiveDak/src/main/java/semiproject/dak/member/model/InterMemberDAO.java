@@ -109,7 +109,7 @@ public interface InterMemberDAO {
 	// 공지사항 수정
 	int boardEdit(Map<String, String> paraMap) throws SQLException;
 
-	
+	int confirmOrder(String orderserial) throws SQLException;
 	
 	
 }
