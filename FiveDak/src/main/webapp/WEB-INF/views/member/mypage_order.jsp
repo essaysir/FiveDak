@@ -801,10 +801,20 @@ button.btn_review_write {
 	      
 	   }
 	
+	function confirmOrder(orderSerial) {
+		if(!confirm("아직 배송이 완료되지 않은 주문입니다. 정말로 구매확정하시겠습니까?"));
+		$("#orderConfirmInput").val(orderSerial);
+		
+		$("#orderConfirmFrm").submit();
+		
+	}
+	
 	
 
 </script>
-
+		<form id="orderConfirmFrm" name="orderConfirmFrm" action="<%=ctxPath %>/mypage/orderlist/confirmOrder.dak" method="post">
+		<input type="hidden" id="orderConfirmInput" name="orderSerial" value ="">
+		</form>
 
 		
 		<div class="order-list-wrap">
@@ -939,7 +949,10 @@ button.btn_review_write {
                                                         </div><!--// column  -->
                                                         <div class="column price text-left"><span class="num"><fmt:formatNumber type="number" value="${orderdetail.pricePerUnit * orderdetail.orderQuantity}"  pattern="#,###"/></span>원</div>
                                                         <div class="column dlv">
-                                                        	<c:if test="${orderdetail.reviewStatus eq 1 || orderdetail.reviewStatus eq 0}">
+                                                        	<c:if test="${orderdetail.reviewStatus eq 0}">
+                                                        	<button type="button" id="btnCommentOK" class="btn_review_write" onclick="confirmOrder('${order.orderSerial}')">구매확정</button>
+                                                        	</c:if>
+                                                        	<c:if test="${orderdetail.reviewStatus eq 1}">
                                                         	<button type="button" id="btnCommentOK" class="btn_review_write" onclick="goReviewWrite('${orderdetail.orderDetailProd.prodNum}','${order.orderSerial }')"><i class="fa-solid fa-pen"></i> 후기작성</button>
                                                         	</c:if>
                                                         	<c:if test="${orderdetail.reviewStatus eq 2 }">

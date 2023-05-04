@@ -9,7 +9,7 @@
 <jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
 
 <style type="text/css">
-   div {
+   div#editInfoBox {
     color: #333;
     font-size: 14px;
     font-weight: 400;
@@ -25,6 +25,9 @@
     padding: 0 30px;
     float: right;
 } */
+	p{
+		margin-bottom: 0px;
+	}
 .MPE2{
     width: 820px;
 }

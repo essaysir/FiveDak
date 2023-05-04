@@ -7,15 +7,16 @@
 <%
 	String ctxPath = request.getContextPath();
 %> 
-   
+
 <jsp:include page="/WEB-INF/views/member/mypageSidebar.jsp"/>
 
 
 <style type="text/css">
 
-
-
-
+tr.Show1to1Detail:hover{
+	background-color: #dcdcdc;
+	cursor: pointer;
+}
 
 </style>
 

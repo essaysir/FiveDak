@@ -149,33 +149,34 @@
     line-height: 160%;
     font-size: 16px;
 }
-
+.cont {
+	height: 300px;
+}
+.button1 {width:100px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #999; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; border-radius: 3px; background-color: #fff;}
+.button2 {width:100px; margin-right:10px; box-sizing: border-box; display: inline-block; *zoom: 1; *display: inline; vertical-align: middle; border: 1px solid; border-color: #c82370; text-align: center; overflow: hidden; text-decoration: none!important; cursor: pointer; border-radius: 3px; background-color: #ff7E32;}
+span.button_gray {color:#555; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;}
+span.button_orange {color:#fff; padding:13px 20px 14px 20px; box-sizing: border-box; display: block; font-size: 15px; font-weight: bold;} 
+.button2 span:hover {text-decoration: none!important; background: #ff7232!important; padding:13px 20px 14px 20px; }
+.button1 span:hover {text-decoration: none!important; background: #fafafa!important; padding:13px 20px 14px 20px; }
 
 </style>
 
-<%--
-<c:if test="${not empty requestScope.mvo}">
-   <h3>::: ${requestScope.mvo.name}님의 회원 상세정보 :::</h3>
+<script type="text/javascript">
 
-   <div id="mvoInfo">
-    <ol>   
-       <li><span class="myli">아이디 : </span>${mvo.userid}</li>
-       <li><span class="myli">회원명 : </span>${mvo.name}</li>
-       <li><span class="myli">이메일 : </span>${mvo.email}</li>
-       <li><span class="myli">휴대폰 : </span>${fn:substring(mobile, 0, 3)}-${fn:substring(mobile, 3, 7)}-${fn:substring(mobile, 7, 11)}</li>
-       <li><span class="myli">우편번호 : </span>${mvo.postcode}</li>
-       <li><span class="myli">주소 : </span>${mvo.address}&nbsp;${mvo.detailaddress}&nbsp;${mvo.extraaddress}</li>
-       <li><span class="myli">성별 : </span><c:choose><c:when test="${mvo.gender eq '1'}">남</c:when><c:otherwise>여</c:otherwise></c:choose></li> 
-       <li><span class="myli">생년월일 : </span>${fn:substring(birthday, 0, 4)}.${fn:substring(birthday, 4, 6)}.${fn:substring(birthday, 6, 8)}</li> 
-       <li><span class="myli">나이 : </span>${mvo.age}세</li> 
-       <li><span class="myli">코인액 : </span><fmt:formatNumber value="${mvo.coin}" pattern="###,###" /> 원</li>
-       <li><span class="myli">포인트 : </span><fmt:formatNumber value="${mvo.point}" pattern="###,###" /> POINT</li>
-       <li><span class="myli">가입일자 : </span>${mvo.registerday}</li>
-     </ol>
-   </div>
-   
-</c:if>
- --%>
+$(document).ready(function(){
+	
+
+	$("span.button_orange").click(function(){
+		
+		const frm = document.boardViewFrm;
+		frm.action = "informBoardEdit.dak";
+		frm.method = "post";
+		frm.submit();
+	});
+	
+});
+
+</script>
 
 <body>
     <div class="board_wrap">
@@ -184,48 +185,62 @@
             <p>공지사항을 안내해드립니다.</p>
         </div>
         <div class="board_view_wrap">
-            <div class="board_view">
-            <c:if test="${empty requestScope.ndto}">
-			   <div class="title">
-                </div>
-                <div class="info">
-                    <dl>
-                        <dt>번호</dt>
-                        <dd></dd>
-                    </dl>
-                    <dl>
-                        <dt>작성일</dt>
-                        <dd></dd>
-                    </dl>
-                </div>
-                <div class="cont">
-                </div>
-			</c:if>
-
-			<c:if test="${not empty requestScope.ndto}">
-                <div class="title">
-                    ${ndto.note_title}
-                </div>
-                <div class="info">
-                    <dl>
-                        <dt>번호</dt>
-                        <dd>${ndto.note_id}</dd>
-                    </dl>
-                    <dl>
-                        <dt>작성일</dt>
-                        <dd>${ndto.note_created_at}</dd>
-                    </dl>
-                </div>
-                <div class="cont">
-                    ${ndto.note_content}
-                </div>
-            </c:if>
+        
+	        <form name="boardViewFrm">
+	            <div class="board_view">
+	            <c:if test="${empty requestScope.ndto}">
+				   <div class="title">
+	                </div>
+	                <div class="info">
+	                    <dl>
+	                        <dt>번호</dt>
+	                        <dd></dd>
+	                    </dl>
+	                    <dl>
+	                        <dt>작성일</dt>
+	                        <dd></dd>
+	                    </dl>
+	                </div>
+	                <div class="cont">
+	                </div>
+				</c:if>
+	
+				<c:if test="${not empty requestScope.ndto}">
+	                <div class="title">
+	                    ${ndto.note_title}
+	                </div>
+	                <div class="info">
+	                    <dl>
+	                        <dt>번호</dt>
+	                        <dd>${ndto.note_id}</dd>
+	                    </dl>
+	                    <dl>
+	                        <dt>작성일</dt>
+	                        <dd>${ndto.note_created_at}</dd>
+	                    </dl>
+	                </div>
+	                <div class="cont">
+	                    ${ndto.note_content}
+	                </div>
+	            </c:if>
+            	</div>
+            </form>
             
-            </div>
-            <div class="bt_wrap">
+            <%-- <div class="bt_wrap">
                 <a href="<%= ctxPath%>/CSC/informBoardList.dak" class="on">목록</a>
-                <a href="<%= ctxPath%>/CSC/informBoardEdit.dak">수정</a>
-            </div>
+                <c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.mbrId == 'admin'}">
+                	<a href="<%= ctxPath%>/CSC/InformBoardEdit.dak">수정</a>
+            	</c:if>
+            </div> --%>
+            
+            <div class="bt_wrap" style="list-style: none">
+            	<button type="button" class="button1" name="button1" onClick="location.href='informBoardList.dak'"><span class="button_gray">목록</span></button>
+            	
+		      	<c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.mbrId == 'admin'}">
+		         	<button type="button" class="button2" name="button2"><span class="button_orange">수정</span></button>
+		      	</c:if>
+		   	</div> 
+            
         </div>
     </div>
 
